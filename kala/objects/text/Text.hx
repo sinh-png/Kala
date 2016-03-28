@@ -36,9 +36,12 @@ class Text extends BasicText {
 	public var eolSymbol(default, set):String = '\n';
 	
 	public var padding:Vec2 = new Vec2();
+	
 	public var borderSize:UInt = 0;
 	public var borderColor:Color = new Color();
 	public var bgColor:Color = new Color(0);
+	public var textColor:Color = new Color();
+	public var colorBlendMode:ColorBlendMode = ColorBlendMode.NORMAL;
 	
 	private var _lines:Array<LineData> = new Array<LineData>();
 	
@@ -47,6 +50,8 @@ class Text extends BasicText {
 		
 		this.width = width;
 		this.align = align == null ? TextAlign.LEFT : align;
+		
+		color.set(0);
 	}
 	
 	override public function destroy(componentsDestroy:Bool = true):Void {
@@ -55,6 +60,7 @@ class Text extends BasicText {
 		padding = null;
 		borderColor = null;
 		bgColor = null;
+		textColor = null;
 		
 		while (_lines.length > 0) _lines.pop();
 		_lines = null;
@@ -76,6 +82,11 @@ class Text extends BasicText {
 		borderSize = 0;
 		borderColor.set();
 		bgColor.set(0);
+		textColor.set();
+		
+		color.set(0);
+		
+		colorBlendMode = ColorBlendMode.NORMAL;
 	}
 	
 	override public function draw(
@@ -90,25 +101,24 @@ class Text extends BasicText {
 			dirty = false;
 		}
 		
-		applyDrawingData(antialiasing, transformation, color, colorBlendMode, opacity, canvas);
+		applyDrawingData(antialiasing, transformation, null, colorBlendMode, opacity, canvas);
+		
+		if (color == null) {
+			color = this.color;
+		} else {
+			color = Color.blendColors(this.color, color, colorBlendMode);
+		}
 		
 		var g2 = canvas.g2;
 		
-		var c = g2.color;
+		g2.color = new Color().overlayBy(Color.blendColors(bgColor, color, this.colorBlendMode)).argb();
+		g2.fillRect(0, 0, width, height);
 
-		if (bgColor.alpha > 0) {
-			g2.color = bgColor.argb();
-			g2.fillRect(0, 0, width, height);
-		}
-		
-		if (borderSize > 0 && borderColor.alpha > 0) {
-			g2.color = borderColor.argb();
-			g2.drawRect(0, 0, width, height, borderSize);
-		}
-		
-		g2.color = c;
-		var t = g2.transformation.clone();
-		
+		g2.color = new Color().overlayBy(Color.blendColors(borderColor, color, this.colorBlendMode)).argb();
+		g2.drawRect(0, 0, width, height, borderSize);
+
+		var defaultTextColor = new Color().overlayBy(Color.blendColors(textColor, color, this.colorBlendMode)).argb();
+	
 		switch(align) {
 			case TextAlign.JUSTIFY:
 				var contextWidth = this.contextWidth;
@@ -134,7 +144,7 @@ class Text extends BasicText {
 						for (textData in line) {
 							g2.font = textData.font;
 							g2.fontSize = textData.size;
-							g2.color = textData.color == null ? c : textData.color.argb();
+							g2.color = textData.color == null ? defaultTextColor : new Color().overlayBy(Color.blendColors(textData.color, color, this.colorBlendMode)).argb();
 							g2.drawString(textData.text, tx, ty);
 							
 							tx += textData.getWidth();
@@ -146,7 +156,7 @@ class Text extends BasicText {
 							for (word in words) {
 								g2.font = font;
 								g2.fontSize = size;
-								g2.color = c;
+								g2.color = defaultTextColor;
 								g2.drawString(word, tx, ty);
 								
 								tx += font.getWidth(word, size, bold) + spaceSize;
@@ -156,8 +166,7 @@ class Text extends BasicText {
 								for (word in textData.text.words(eolSymbol, false, false)) {
 									g2.font = textData.font;
 									g2.fontSize = textData.size;
-									g2.color = textData.color == null ? c : textData.color.argb();
-									g2.drawString(word, tx, ty);
+									g2.color = textData.color == null ? defaultTextColor : new Color().overlayBy(Color.blendColors(textData.color, color, this.colorBlendMode)).argb();
 									
 									tx += textData.font.getWidth(word, textData.size, textData.bold) + spaceSize;
 								}
@@ -187,7 +196,7 @@ class Text extends BasicText {
 					for (textData in line) {
 						g2.font = textData.font;
 						g2.fontSize = textData.size;
-						g2.color = textData.color == null ? c : textData.color.argb();
+						g2.color = textData.color == null ? defaultTextColor : new Color().overlayBy(Color.blendColors(textData.color, color, this.colorBlendMode)).argb();
 						g2.drawString(textData.text, tx, ty);
 						
 						tx += textData.getWidth();

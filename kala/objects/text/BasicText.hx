@@ -40,11 +40,6 @@ class BasicText extends Object {
 	}
 	
 	override public function reset(componentsReset:Bool = true):Void {
-		_text = null;
-		
-		font = Kala.defaultFont;
-		
-		size = 24;
 		bold = false;
 		italic = false;
 		underlined = false;

@@ -128,6 +128,11 @@ class Object extends EventHandle {
 		_groups = null;
 	}
 	
+	/**
+	 * Reset properties of this object to their default values except for the ones that can be set via constructor.
+	 * 
+	 * @param	componentsReset		If true will call reset() on components. 
+	 */
 	public function reset(componentsReset:Bool = true):Void {
 		alive = true;
 		active = true;
@@ -364,9 +369,7 @@ class Object extends EventHandle {
 		if (color == null) {
 			g2.color = this.color.argb();
 		} else {
-			g2.color = Color.fromARGB(0xffffffff)
-				.blend(Color.blendColors(this.color, color, colorBlendMode), ColorBlendMode.OVERLAY)
-				.argb();
+			g2.color = new Color().overlayBy(Color.blendColors(this.color, color, colorBlendMode)).argb();
 		}
 		
 		g2.opacity = this.opacity * opacity;

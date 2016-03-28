@@ -39,6 +39,13 @@ class Color {
 		return this;
 	}
 	
+	@:extern 
+	public inline function copy(color:Color):Color {
+		alpha = color.alpha;
+		rgb = color.rgb;
+		return this;
+	}
+	
 	@:extern
 	public inline function clone():Color {
 		return new Color(alpha, rgb);
@@ -142,6 +149,12 @@ class Color {
 		var color = Color.fromARGB(argb);
 		blend(color, blendMode);
 		
+		return this;
+	}
+	
+	@:extern
+	public inline function overlayBy(color:Color):Color {
+		blend(color, OVERLAY);
 		return this;
 	}
 	

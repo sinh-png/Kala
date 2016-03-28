@@ -86,8 +86,7 @@ class Group<T:Object> extends Object {
 			if (color == null) {
 				color = this.color;
 			} else {
-				color = Color.fromARGB(0xffffffff)
-					.blend(Color.blendColors(this.color, color, colorBlendMode), ColorBlendMode.OVERLAY);
+				color = Color.blendColors(this.color, color, colorBlendMode);
 			}
 			
 			g2.opacity = this.opacity * opacity;
