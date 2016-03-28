@@ -2,6 +2,7 @@ package kala;
 
 import kala.input.Keyboard;
 import kala.input.Mouse;
+import kala.math.Color;
 import kala.objects.Object;
 import kala.objects.group.Group;
 import kha.Assets;
@@ -34,11 +35,13 @@ class Kala {
 	
 	/**
 	 * The unit used for timing. 
-	 * DEFAULT: FRAMES
+	 * DEFAULT: FRAME
 	 */
-	public static var timingUnit:TimingUnit = TimingUnit.FRAMES;
+	public static var timingUnit:TimeUnit = TimeUnit.FRAME;
 	
 	public static var antiAliasingSamples(default, null):UInt;
+	
+	public static var bgColor(default, null):Color = new Color(1, 0x000000);
 	
 	public static var defaultFont(default, set):Font;
 	
@@ -90,23 +93,23 @@ class Kala {
 		Kala.updateRate = updateRate;
 	}
 	
-	static function renderWorld(frameBuffer:Framebuffer):Void {
-		frameBuffer.g2.begin();
-		world.callDraw(frameBuffer);
-		frameBuffer.g2.end();
+	static function renderWorld(framebuffer:Framebuffer):Void {
+		framebuffer.g2.begin(true, bgColor.argb());
+		world.callDraw(framebuffer);
+		framebuffer.g2.end();
 	}
 	
 	static function updateWorld():Void {
 		var time = Scheduler.time();
-		var elapsed = time - _lastUpdateTime;
+		var delta = time - _lastUpdateTime;
 		_lastUpdateTime = time;
 		
-		fps = Std.int(1 / elapsed);
+		fps = Std.int(1 / delta);
 		
 		Keyboard.onPreUpdate();
 		Mouse.onPreUpdate();
 		
-		world.callUpdate(elapsed);
+		world.callUpdate(delta);
 		
 		Keyboard.onPostUpdate();
 		Mouse.onPostUpdate();
@@ -133,7 +136,7 @@ class Kala {
 
 }
 
-enum TimingUnit {
-	FRAMES;
-	MILLISECONDS;
+enum TimeUnit {
+	FRAME;
+	MILLISECOND;
 }

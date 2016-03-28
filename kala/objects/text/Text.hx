@@ -108,7 +108,7 @@ class Text extends BasicText {
 		
 		g2.color = c;
 		var t = g2.transformation.clone();
-
+		
 		switch(align) {
 			case TextAlign.JUSTIFY:
 				var contextWidth = this.contextWidth;

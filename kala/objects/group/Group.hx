@@ -47,7 +47,7 @@ class Group<T:Object> extends Object {
 		colorBlendMode = ColorBlendMode.NORMAL;
 	}
 	
-	override public function update(elapsed:FastFloat):Void {
+	override public function update(delta:FastFloat):Void {
 		var removedIndices = new Array<Int>();
 		var child:T;
 		var index = 0;
@@ -60,7 +60,7 @@ class Group<T:Object> extends Object {
 				continue;
 			}
 			
-			child.callUpdate(this, elapsed);
+			child.callUpdate(this, delta);
 		}
 		
 		for (index in removedIndices) {

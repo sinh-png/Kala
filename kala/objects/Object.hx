@@ -167,7 +167,7 @@ class Object extends EventHandle {
 		removefromGroups();
 	}
 	
-	public function update(elapsed:FastFloat):Void {
+	public function update(delta:FastFloat):Void {
 
 	}
 	
@@ -316,13 +316,13 @@ class Object extends EventHandle {
 		}
 	}
 	
-	inline function callUpdate(?caller:Object, elapsed:FastFloat):Void {
+	inline function callUpdate(?caller:Object, delta:FastFloat):Void {
 		_crGroup = caller;
 		
 		execFirstFrame();
-		for (callback in onPreUpdate) callback.cbFunction(this, elapsed);
-		update(elapsed);
-		for (callback in onPostUpdate) callback.cbFunction(this, elapsed);
+		for (callback in onPreUpdate) callback.cbFunction(this, delta);
+		update(delta);
+		for (callback in onPostUpdate) callback.cbFunction(this, delta);
 	}
 	
 	inline function callDraw(

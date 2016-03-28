@@ -1,11 +1,11 @@
 package kala.objects.text;
+
 import kala.EventHandle.CallbackHandle;
+import kala.math.Color;
+import kala.math.Color.ColorBlendMode;
+import kala.objects.Object;
 import kha.Canvas;
 import kha.FastFloat;
-import kala.math.Color.ColorBlendMode;
-
-import kala.math.Color;
-import kala.objects.Object;
 import kha.math.FastMatrix3;
 
 class BasicText extends Object {
@@ -20,7 +20,7 @@ class BasicText extends Object {
 	public var italic:Bool = false;
 	public var underlined:Bool = false;
 	
-	public var onTextChanged:CallbackHandle<Text->Void>;
+	public var onTextChanged:CallbackHandle<BasicText->Void>;
 	
 	public function new(?text:String, ?font:Font, ?size:UInt = 24) {
 		super();
@@ -30,9 +30,9 @@ class BasicText extends Object {
 		this.size = size;
 		this.font = font;
 		
-		onTextChanged = addCBHandle(new CallbackHandle<Text->Void>());
+		onTextChanged = addCBHandle(new CallbackHandle<BasicText->Void>());
 	}
-	
+
 	override public function destroy(componentsDestroy:Bool = true):Void {
 		super.destroy(componentsDestroy);
 		font = null;
@@ -70,14 +70,6 @@ class BasicText extends Object {
 		return super.isVisible() && _text != null && _text.length > 0 && font != null && size > 0;
 	}
 	
-	/*function drawString(str:String, canvas:Canvas):Void {
-		if (font.isBitmapFont()) {
-			return;
-		} else {
-			
-		}
-	}*/
-	
 	override function get_width():FastFloat {
 		return font.getWidth(text, size, bold);
 	}
@@ -92,7 +84,7 @@ class BasicText extends Object {
 	
 	function set_text(value:String):String {
 		_text = value;
-		for (callback in onTextChanged) callback.cbFunction(cast this);
+		for (callback in onTextChanged) callback.cbFunction(this);
 		return value;
 	}
 	

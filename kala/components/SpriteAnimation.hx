@@ -1,9 +1,8 @@
-package kala.components.animation;
+package kala.components;
 
 import haxe.ds.StringMap;
 import kala.EventHandle.CallbackHandle;
-import kala.Kala.TimingUnit;
-import kala.components.SpriteAnimation.SpriteAnimationData;
+import kala.Kala.TimeUnit;
 import kala.math.Rect.RectI;
 import kala.objects.Object;
 import kala.objects.Sprite;
@@ -83,37 +82,6 @@ class SpriteAnimation extends Component<Sprite> {
 	
 	public inline function pause():Void {
 		crAnim.delay = -1;
-	}
-	
-	public function update(obj:Object, elapsed:FastFloat):Void {
-		if (crAnim != null && crAnim.delay > -1) {
-			if (Kala.timingUnit == TimingUnit.FRAMES) {
-				_timeLeft--;
-			} else {
-				_timeLeft -= Std.int(elapsed * 1000);
-			}
-			
-			if (_timeLeft <= 0) {
-				_timeLeft = crAnim.delay;
-				
-				if (!crAnim.reversed) {
-					crFrame++;
-					if (crFrame == crAnim.frames.length) {
-						crFrame = 0;
-						for (callback in onAnimComplete) callback.cbFunction(this);
-					}
-				} else {
-					crFrame--;
-					if (crFrame == -1) {
-						crFrame = crAnim.frames.length - 1;
-						for (callback in onAnimComplete) callback.cbFunction(this);
-					}
-				}
-
-			}
-			
-			object.frameRect.copy(crAnim.frames[crFrame]);
-		}
 	}
 	
 	/**
@@ -199,6 +167,37 @@ class SpriteAnimation extends Component<Sprite> {
 	
 	public function removeAllAnimations():Void {
 		for (key in _animations.keys()) _animations.remove(key);
+	}
+	
+	function update(obj:Object, delta:FastFloat):Void {
+		if (crAnim != null && crAnim.delay > -1) {
+			if (Kala.timingUnit == TimeUnit.FRAME) {
+				_timeLeft--;
+			} else {
+				_timeLeft -= Std.int(delta * 1000);
+			}
+			
+			if (_timeLeft <= 0) {
+				_timeLeft = crAnim.delay;
+				
+				if (!crAnim.reversed) {
+					crFrame++;
+					if (crFrame == crAnim.frames.length) {
+						crFrame = 0;
+						for (callback in onAnimComplete) callback.cbFunction(this);
+					}
+				} else {
+					crFrame--;
+					if (crFrame == -1) {
+						crFrame = crAnim.frames.length - 1;
+						for (callback in onAnimComplete) callback.cbFunction(this);
+					}
+				}
+
+			}
+			
+			object.frameRect.copy(crAnim.frames[crFrame]);
+		}
 	}
 
 }
