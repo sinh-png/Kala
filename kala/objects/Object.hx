@@ -17,30 +17,30 @@ import kha.math.FastMatrix3;
 @:allow(kala.components.Component)
 class Object extends EventHandle {
 	
-	public var alive:Bool = true;
-	public var active:Bool = true;
-	public var visible:Bool = true;
+	public var alive:Bool;
+	public var active:Bool;
+	public var visible:Bool;
 	
 	//
 	
-	public var position:Vec2T = new Vec2T(0, 0, 0, 0);
+	public var position:Vec2T = new Vec2T();
 	
-	public var flipX:Bool = false;
-	public var flipY:Bool = false;
+	public var flipX:Bool;
+	public var flipY:Bool;
 	
-	public var scale:Vec2T = new Vec2T(1, 1, 0, 0);
-	public var skew:Vec2T = new Vec2T(0, 0, 0, 0);
-	public var rotation:Rotation = new Rotation(0, 0, 0);
+	public var scale:Vec2T = new Vec2T();
+	public var skew:Vec2T = new Vec2T();
+	public var rotation:Rotation = new Rotation();
 	
-	public var color:Color = new Color(1, 0xffffff);
-	public var opacity:FastFloat = 1;
+	public var color:Color = new Color();
+	public var opacity:FastFloat;
 	
-	public var antialiasing:Bool = false;
+	public var antialiasing:Bool;
 	
 	//
-	var _width:FastFloat = 0;
+	var _width:FastFloat;
 	public var width(get, set):FastFloat;
-	var _height:FastFloat = 0;
+	var _height:FastFloat;
 	public var height(get, set):FastFloat;
 	
 	public var tWidth(get, never):FastFloat;
@@ -48,7 +48,7 @@ class Object extends EventHandle {
 	
 	//
 	
-	public var dirty:Bool = false;
+	public var dirty:Bool;
 	
 	//
 	
@@ -63,7 +63,7 @@ class Object extends EventHandle {
 	
 	public var onFirstFrame:CallbackHandle<Object->Void>;
 					
-	private var _firstFrameExecuted:Bool = false;
+	private var _firstFrameExecuted:Bool;
 	
 	//
 	
@@ -89,11 +89,45 @@ class Object extends EventHandle {
 		onPostDraw = addCBHandle(new CallbackHandle<Object->Bool->FastMatrix3->Color->ColorBlendMode->FastFloat->Canvas->Void>());
 		
 		onFirstFrame = addCBHandle(new CallbackHandle<Object->Void>());
+		
+		reset();
 	}
 	
 	override public function clearCBHandles():Void {
 		removeComponents();
 		super.clearCBHandles();
+	}
+	
+		/**
+	 * Reset properties to their values when this object was created. 
+	 * This won't remove this object from its groups.
+	 * This won't remove this object components.
+	 * 
+	 * @param	componentsReset		If true will also reset components. 
+	 */
+	public function reset(componentsReset:Bool = false):Void {
+		alive = true;
+		active = true;
+		visible = true;
+
+		position.set(0, 0, 0, 0);
+
+		scale.set(1, 1, 0, 0);
+		skew.set(0, 0, 0, 0);
+		rotation.set(0, 0, 0);
+		
+		color.set(1, 0xffffff);
+		opacity = 1;
+		
+		antialiasing = false;
+		
+		dirty = false;
+
+		_firstFrameExecuted = false;
+		
+		for (callback in onReset) callback.cbFunction(this, componentsReset);
+
+		if (componentsReset) resetComponents();
 	}
 	
 	public function destroy(componentsDestroy:Bool = true):Void {
@@ -126,43 +160,6 @@ class Object extends EventHandle {
 		
 		removefromGroups();
 		_groups = null;
-	}
-	
-	/**
-	 * Reset properties of this object to their default values except for the ones that can be set via constructor.
-	 * 
-	 * @param	componentsReset		If true will call reset() on components. 
-	 */
-	public function reset(componentsReset:Bool = true):Void {
-		alive = true;
-		active = true;
-		
-		//
-		
-		visible = true;
-
-		position.set(0, 0, 0, 0);
-
-		scale.set(1, 1, 0, 0);
-		skew.set(0, 0, 0, 0);
-		rotation.set(0, 0, 0);
-		
-		color.set(1, 0xffffff);
-		opacity = 1;
-		
-		antialiasing = false;
-		
-		dirty = false;
-		
-		//
-		
-		_firstFrameExecuted = false;
-		
-		for (callback in onReset) callback.cbFunction(this, componentsReset);
-		
-		//
-		
-		if (componentsReset) resetComponents();
 	}
 	
 	public function deepReset(componentsDeepReset:Bool = true):Void {

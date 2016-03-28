@@ -23,12 +23,12 @@ class View extends Object {
 	/**
 	 * Background color in RGB fortmat.
 	 */
-	public var bgColor:UInt = 0;
+	public var bgColor:UInt;
 	
 	/**
-	 * If true, the view display will be fully transparent.
+	 * If true, will be fully transparent.
 	 */
-	public var transparent:Bool = true;
+	public var transparent:Bool;
 	
 	public function new(
 		viewX:FastFloat, viewY:FastFloat, viewWidth:UInt, viewHeight:UInt,
@@ -46,6 +46,12 @@ class View extends Object {
 		this.viewHeight = viewHeight;
 	}
 	
+	override public function reset(componentsReset:Bool = false):Void {
+		super.reset(componentsReset);
+		bgColor = 0;
+		transparent = true;
+	}
+	
 	override public function destroy(componentsDestroy:Bool = true):Void {
 		super.destroy(componentsDestroy);
 		
@@ -53,13 +59,6 @@ class View extends Object {
 		buffer = null;
 		
 		viewPos = null;
-	}
-	
-	override public function reset(componentsReset:Bool = true):Void {
-		super.reset(componentsReset);
-		
-		bgColor = 0;
-		transparent = true;
 	}
 	
 	override public function draw(

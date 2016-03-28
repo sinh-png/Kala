@@ -21,6 +21,12 @@ class Component<T:Object> extends EventHandle implements IComponent {
 		onReset = addCBHandle(new CallbackHandle<Component<T>->Void>());
 		onAdd = addCBHandle(new CallbackHandle<Component<T>->Void>());
 		onRemove = addCBHandle(new CallbackHandle<Component<T>->Void>());
+		
+		reset();
+	}
+	
+	public function reset():Void {
+		for (callback in onReset) callback.cbFunction(this);
 	}
 	
 	public function destroy():Void {
@@ -30,10 +36,6 @@ class Component<T:Object> extends EventHandle implements IComponent {
 		onReset = null;
 		onAdd = null;
 		onRemove = null;
-	}
-	
-	public function reset():Void {
-		for (callback in onReset) callback.cbFunction(this);
 	}
 	
 	public function deepReset():Void {

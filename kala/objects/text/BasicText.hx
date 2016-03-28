@@ -8,6 +8,8 @@ import kha.Canvas;
 import kha.FastFloat;
 import kha.math.FastMatrix3;
 
+using StringTools;
+
 class BasicText extends Object {
 
 	var _text:String;
@@ -16,9 +18,9 @@ class BasicText extends Object {
 	public var font(default, set):Font;
 	
 	public var size(default, set):UInt;
-	public var bold(default, set):Bool = false;
-	public var italic:Bool = false;
-	public var underlined:Bool = false;
+	public var bold(default, set):Bool;
+	public var italic:Bool;
+	public var underlined:Bool;
 	
 	public var onTextChanged:CallbackHandle<BasicText->Void>;
 	
@@ -33,18 +35,18 @@ class BasicText extends Object {
 		onTextChanged = addCBHandle(new CallbackHandle<BasicText->Void>());
 	}
 
-	override public function destroy(componentsDestroy:Bool = true):Void {
-		super.destroy(componentsDestroy);
-		font = null;
-		onTextChanged = null;
-	}
-	
-	override public function reset(componentsReset:Bool = true):Void {
+	override public function reset(componentsReset:Bool = false):Void {
 		bold = false;
 		italic = false;
 		underlined = false;
 		
 		super.reset(componentsReset);
+	}
+	
+	override public function destroy(componentsDestroy:Bool = true):Void {
+		super.destroy(componentsDestroy);
+		font = null;
+		onTextChanged = null;
 	}
 	
 	override public function draw(
@@ -78,6 +80,7 @@ class BasicText extends Object {
 	}
 	
 	function set_text(value:String):String {
+		//value = value.replace('\r', "").replace('\n', "");
 		_text = value;
 		for (callback in onTextChanged) callback.cbFunction(this);
 		return value;

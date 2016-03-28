@@ -13,10 +13,10 @@ typedef BasicGroup = Group<Object>;
 
 class Group<T:Object> extends Object {
 	
-	public var colorBlendMode:ColorBlendMode = ColorBlendMode.NORMAL;
-	
 	public var transformEnable:Bool;
 	
+	public var colorBlendMode:ColorBlendMode;
+
 	public var views(default, null):Array<View> = new Array<View>();
 	
 	private var _children(default, null):Array<T> = new Array<T>();
@@ -28,7 +28,12 @@ class Group<T:Object> extends Object {
 	public function new(transformEnable:Bool = false) {
 		super();
 		this.transformEnable = transformEnable;
+	}
+	
+	override public function reset(componentsReset:Bool = false):Void {
+		super.reset(componentsReset);
 		color.set(0);
+		colorBlendMode = ColorBlendMode.NORMAL;
 	}
 	
 	override public function destroy(componentsDestroy:Bool = true):Void {
@@ -39,12 +44,6 @@ class Group<T:Object> extends Object {
 		
 		while (views.length > 0) views.pop();
 		views = null;
-	}
-	
-	override public function reset(componentsReset:Bool = true):Void {
-		super.reset(componentsReset);
-		color.set(0);
-		colorBlendMode = ColorBlendMode.NORMAL;
 	}
 	
 	override public function update(delta:FastFloat):Void {

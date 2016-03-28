@@ -7,19 +7,31 @@ import kala.objects.Object;
 import kala.util.types.Pair;
 import kha.FastFloat;
 
+// There is something in this file that breaks code-completion.
+
 class Timer extends Component<Object> {
 
 	private var _coolingDownIDs:Array<Pair<Int, Int>> = new Array<Pair<Int, Int>>();
 	private var _coolingDownFunctions:Array<Pair<Void->Void, Int>> = new Array<Pair<Void->Void, Int>>();
 	
-	private var _tasks:Array<TimerTask> = new Array<TimerTask>();
+	// This line breaks code-completion and function name coloring in FlashDevelop.
+	// The problem with functions declared without access modifiers still stay when this line get removed.
+	private var _tasks:Array<TimerTask> = new Array<TimerTask>(); // *[1]
+	
+	override public function reset():Void {
+		super.reset();
+		
+		while (_coolingDownIDs.length > 0)_coolingDownIDs.pop();
+		while (_coolingDownFunctions.length > 0)_coolingDownFunctions.pop();
+		while (_tasks.length > 0)_tasks.pop();
+	}
 	
 	override public function addTo(object:Object):Timer {
 		super.addTo(object);
 		object.onPostUpdate.addComponentCB(this, update);
 		return this;
 	}
-	
+
 	override public function remove():Bool {
 		if (object != null) {
 			object.onPostUpdate.removeComponentCB(this, update);
@@ -62,6 +74,7 @@ class Timer extends Component<Object> {
 		return task;
 	}
 	
+	// Without "private" code-completion will work incorrectly even after *[1] get removed.
 	private function update(obj:Object, delta:FastFloat):Void {
 		var elapsed  = 1;
 		if (Kala.timingUnit == TimeUnit.MILLISECOND) {

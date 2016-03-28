@@ -27,12 +27,6 @@ class Sprite extends Object {
 		frameRect = null;
 	}
 	
-	override public function reset(componentsReset:Bool = true):Void {
-		super.reset();
-		image = null;
-		frameRect.set();
-	}
-	
 	override public function draw(
 		?antialiasing:Bool = false,
 		?transformation:FastMatrix3, 

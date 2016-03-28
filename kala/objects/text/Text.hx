@@ -19,29 +19,32 @@ using StringTools;
 class Text extends BasicText {
 	
 	var _htmlText:String;
-	/**
-	 * Not implemented yet.
-	 */
 	public var htmlText(get, set):String;
 	
 	public var lineSpacing:Int;
-	public var fixedLineSpacing:Bool = false;
+	public var fixedLineSpacing:Bool;
 	
 	public var align:TextAlign;
 	
 	public var contextWidth(get, null):FastFloat;
 	
-	public var wrapByWord(default, set):Bool = true;
+	public var wrapByWord(default, set):Bool;
 	
-	public var eolSymbol(default, set):String = '\n';
+	public var eolSymbol(default, set):String;
 	
 	public var padding:Vec2 = new Vec2();
 	
-	public var borderSize:UInt = 0;
+	public var borderSize:UInt;
 	public var borderColor:Color = new Color();
-	public var bgColor:Color = new Color(0);
+	public var borderOpacity:FastFloat;
+	
+	public var bgColor:Color = new Color();
+	public var bgOpacity:FastFloat;
+	
 	public var textColor:Color = new Color();
-	public var colorBlendMode:ColorBlendMode = ColorBlendMode.NORMAL;
+	public var textOpacity:FastFloat;
+	
+	public var colorBlendMode:ColorBlendMode;
 	
 	private var _lines:Array<LineData> = new Array<LineData>();
 	
@@ -50,8 +53,35 @@ class Text extends BasicText {
 		
 		this.width = width;
 		this.align = align == null ? TextAlign.LEFT : align;
+	}
+	
+	override public function reset(componentsReset:Bool = false):Void {
+		super.reset(componentsReset);
+		
+		_htmlText = null;
+		
+		fixedLineSpacing = false;
+	
+		align =  TextAlign.LEFT;
+		width = 0;
+		wrapByWord = true;
+		eolSymbol = "\n";
+		
+		padding.set();
+		
+		borderSize = 1;
+		borderColor.set();
+		borderOpacity = 0;
+		
+		bgColor.set(0);
+		bgOpacity = 0;
+		
+		textColor.set();
+		textOpacity = 1;
 		
 		color.set(0);
+		
+		colorBlendMode = ColorBlendMode.NORMAL;
 	}
 	
 	override public function destroy(componentsDestroy:Bool = true):Void {
@@ -65,30 +95,7 @@ class Text extends BasicText {
 		while (_lines.length > 0) _lines.pop();
 		_lines = null;
 	}
-	
-	override public function reset(componentsReset:Bool = true):Void {
-		super.reset(componentsReset);
 		
-		_htmlText = null;
-		
-		fixedLineSpacing = false;
-	
-		align =  TextAlign.LEFT;
-		width = 0;
-		wrapByWord = true;
-		eolSymbol = "\n";
-		
-		padding.set();
-		borderSize = 0;
-		borderColor.set();
-		bgColor.set(0);
-		textColor.set();
-		
-		color.set(0);
-		
-		colorBlendMode = ColorBlendMode.NORMAL;
-	}
-	
 	override public function draw(
 		?antialiasing:Bool = false,
 		?transformation:FastMatrix3, 
@@ -111,14 +118,19 @@ class Text extends BasicText {
 		
 		var g2 = canvas.g2;
 		
+		opacity = g2.opacity;
+		
 		g2.color = new Color().overlayBy(Color.blendColors(bgColor, color, this.colorBlendMode)).argb();
+		g2.opacity = opacity * bgOpacity;
 		g2.fillRect(0, 0, width, height);
 
 		g2.color = new Color().overlayBy(Color.blendColors(borderColor, color, this.colorBlendMode)).argb();
+		g2.opacity = opacity * borderOpacity;
 		g2.drawRect(0, 0, width, height, borderSize);
 
 		var defaultTextColor = new Color().overlayBy(Color.blendColors(textColor, color, this.colorBlendMode)).argb();
-	
+		g2.opacity = opacity * textOpacity;
+		
 		switch(align) {
 			case TextAlign.JUSTIFY:
 				var contextWidth = this.contextWidth;
