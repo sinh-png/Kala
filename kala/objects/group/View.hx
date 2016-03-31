@@ -1,5 +1,6 @@
 package kala.objects.group;
 
+import kala.DrawingData;
 import kala.math.Vec2;
 import kala.objects.Object;
 import kala.math.Color;
@@ -61,14 +62,8 @@ class View extends Object {
 		viewPos = null;
 	}
 	
-	override public function draw(
-		?antialiasing:Bool = false,
-		?transformation:FastMatrix3, 
-		?color:Color, ?colorBlendMode:ColorBlendMode, 
-		?opacity:FastFloat = 1, 
-		canvas:Canvas
-	):Void {
-		applyDrawingData(antialiasing, transformation, color, colorBlendMode, opacity, canvas);
+	override public function draw(data:DrawingData, canvas:Canvas):Void {
+		applyDrawingData(data, canvas);
 		canvas.g2.drawImage(buffer, 0, 0);
 	}
 	

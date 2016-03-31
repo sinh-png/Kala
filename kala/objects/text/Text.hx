@@ -96,19 +96,16 @@ class Text extends BasicText {
 		_lines = null;
 	}
 		
-	override public function draw(
-		?antialiasing:Bool = false,
-		?transformation:FastMatrix3, 
-		?color:Color, ?colorBlendMode:ColorBlendMode,
-		?opacity:FastFloat = 1,
-		canvas:Canvas
-	):Void {
+	override public function draw(data:DrawingData, canvas:Canvas):Void {
 		if (dirty) {
 			refresh();
 			dirty = false;
 		}
 		
-		applyDrawingData(antialiasing, transformation, null, colorBlendMode, opacity, canvas);
+		applyDrawingData(data, canvas);
+		
+		var color = data.color;
+		var colorBlendMode = data.colorBlendMode;
 		
 		if (color == null) {
 			color = this.color;
@@ -120,15 +117,15 @@ class Text extends BasicText {
 		
 		opacity = g2.opacity;
 		
-		g2.color = new Color().overlayBy(Color.blendColors(bgColor, color, this.colorBlendMode)).argb();
+		g2.color = new Color().setOverlay(Color.blendColors(bgColor, color, this.colorBlendMode)).argb();
 		g2.opacity = opacity * bgOpacity;
 		g2.fillRect(0, 0, width, height);
 
-		g2.color = new Color().overlayBy(Color.blendColors(borderColor, color, this.colorBlendMode)).argb();
+		g2.color = new Color().setOverlay(Color.blendColors(borderColor, color, this.colorBlendMode)).argb();
 		g2.opacity = opacity * borderOpacity;
 		g2.drawRect(0, 0, width, height, borderSize);
 
-		var defaultTextColor = new Color().overlayBy(Color.blendColors(textColor, color, this.colorBlendMode)).argb();
+		var defaultTextColor = new Color().setOverlay(Color.blendColors(textColor, color, this.colorBlendMode)).argb();
 		g2.opacity = opacity * textOpacity;
 		
 		switch(align) {
@@ -156,7 +153,7 @@ class Text extends BasicText {
 						for (textData in line) {
 							g2.font = textData.font;
 							g2.fontSize = textData.size;
-							g2.color = textData.color == null ? defaultTextColor : new Color().overlayBy(Color.blendColors(textData.color, color, this.colorBlendMode)).argb();
+							g2.color = textData.color == null ? defaultTextColor : new Color().setOverlay(Color.blendColors(textData.color, color, this.colorBlendMode)).argb();
 							g2.drawString(textData.text, tx, ty);
 							
 							tx += textData.getWidth();
@@ -178,7 +175,7 @@ class Text extends BasicText {
 								for (word in textData.text.words(eolSymbol, false, false)) {
 									g2.font = textData.font;
 									g2.fontSize = textData.size;
-									g2.color = textData.color == null ? defaultTextColor : new Color().overlayBy(Color.blendColors(textData.color, color, this.colorBlendMode)).argb();
+									g2.color = textData.color == null ? defaultTextColor : new Color().setOverlay(Color.blendColors(textData.color, color, this.colorBlendMode)).argb();
 									
 									tx += textData.font.getWidth(word, textData.size, textData.bold) + spaceSize;
 								}
@@ -208,7 +205,7 @@ class Text extends BasicText {
 					for (textData in line) {
 						g2.font = textData.font;
 						g2.fontSize = textData.size;
-						g2.color = textData.color == null ? defaultTextColor : new Color().overlayBy(Color.blendColors(textData.color, color, this.colorBlendMode)).argb();
+						g2.color = textData.color == null ? defaultTextColor : new Color().setOverlay(Color.blendColors(textData.color, color, this.colorBlendMode)).argb();
 						g2.drawString(textData.text, tx, ty);
 						
 						tx += textData.getWidth();

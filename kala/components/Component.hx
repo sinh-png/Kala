@@ -45,6 +45,8 @@ class Component<T:Object> extends EventHandle implements IComponent {
 	}
 	
 	public function addTo(object:T):Component<T> {
+		if (this.object != null) remove();
+		
 		this.object = object;
 		object._components.push(this);
 		for (callback in onAdd) callback.cbFunction(this);
@@ -52,16 +54,16 @@ class Component<T:Object> extends EventHandle implements IComponent {
 		return this;
 	}
 	
-	public function remove():Bool {
+	public function remove():Void {
 		if (object != null) {
 			for (callback in onRemove) callback.cbFunction(this);
 			object._components.remove(this);
 			object = null;
-			
-			return true;
 		}
-		
-		return false;
+	}
+	
+	public function getObject():Object {
+		return cast object;
 	}
 	
 }
@@ -71,6 +73,7 @@ interface IComponent {
 	public function destroy():Void;
 	public function reset():Void;
 	public function deepReset():Void;
-	public function remove():Bool;
+	public function remove():Void;
+	public function getObject():Object;
 	
 }

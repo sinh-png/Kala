@@ -48,16 +48,20 @@ class SpriteAnimation extends Component<Sprite> {
 	
 	override public function addTo(object:Sprite):SpriteAnimation {
 		super.addTo(object);
+		
 		object.onPostUpdate.addComponentCB(this, update);
+		object.animation = this;
+		
 		return this;
 	}
 	
-	override public function remove():Bool {
+	override public function remove():Void {
+		super.remove();
+		
 		if (object != null) {
 			object.onPostUpdate.removeComponentCB(this, update);
+			object.animation = null;
 		}
-			
-		return super.remove();
 	}
 	
 	public function play(?key:String, ?delay:UInt, ?reversed:Bool):SpriteAnimation {
@@ -88,16 +92,16 @@ class SpriteAnimation extends Component<Sprite> {
 	 * Add a new animation.
 	 * 
 	 * @param	key				String key used to access animation.
-	 * @param	image			Source image contains sprite sheet. If set to null, will use the current image of the owner sprite (set by sprite.loadImage or most preview calling of add). If this argument is null and the component wasn't added to a sprite or the sprite image is null, this method will do nothing and return null.
-	 * @param	sheetX			X position of sprite sheet. If set to smaller than 0, will use the current frame x of the owner sprite (set by sprite.loadImage or most preview calling of add). If this argument is set to smaller than 0 and the component wasn't added to a sprite, this method will do nothing and return null.
-	 * @param	sheetY			Y position of sprite sheet. If set to smaller than 0, will use the current frame y of the owner sprite (set by sprite.loadImage or most preview calling of add). If this argument is set to to smaller than 0 and the component wasn't added to a sprite, this method will do nothing and return null.
-	 * @param	frameWidth		Frame width. If set to 0, will use the current frame width of the owner sprite (set by sprite.loadImage or most preview calling of add). If this argument is set to 0 and the component wasn't added to a sprite, this method will do nothing and return null.
-	 * @param	frameHeight		Frame height. If set to 0, will use the current frame height of the owner sprite (set by sprite.loadImage or most preview calling of add). If this argument is set to 0 and the component wasn't added to a sprite, this method will do nothing and return null.
+	 * @param	image			Source image contains sprite sheet. If set to null, will use the current image of the owner sprite (set by sprite.loadImage or most preview calling of addAnim). If this argument is null and the component wasn't added to a sprite or the sprite image is null, this method will do nothing and return null.
+	 * @param	sheetX			X position of sprite sheet. If set to smaller than 0, will use the current frame x of the owner sprite (set by sprite.loadImage or most preview calling of addAnim). If this argument is set to smaller than 0 and the component wasn't added to a sprite, this method will do nothing and return null.
+	 * @param	sheetY			Y position of sprite sheet. If set to smaller than 0, will use the current frame y of the owner sprite (set by sprite.loadImage or most preview calling of addAnim). If this argument is set to to smaller than 0 and the component wasn't added to a sprite, this method will do nothing and return null.
+	 * @param	frameWidth		Frame width. If set to 0, will use the current frame width of the owner sprite (set by sprite.loadImage or most preview calling of addAnim). If this argument is set to 0 and the component wasn't added to a sprite, this method will do nothing and return null.
+	 * @param	frameHeight		Frame height. If set to 0, will use the current frame height of the owner sprite (set by sprite.loadImage or most preview calling of addAnim). If this argument is set to 0 and the component wasn't added to a sprite, this method will do nothing and return null.
 	 * @param	totalFrames		Total number of frames in sprite sheet.
 	 * @param	framesPerRow	Number of frames per row. (Last row may have less frames.)
 	 * @param	delay			Delay time between frames. In frames or milliseconds depends on Kala.timingUnit.
 	 * 
-	 * @return	Return this component if success otherwise return null.
+	 * @return					Return this component if success otherwise return null.
 	 */
 	public function addAnim(
 		key:String,

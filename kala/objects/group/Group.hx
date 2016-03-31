@@ -1,5 +1,6 @@
 package kala.objects.group;
 
+import kala.DrawingData;
 import kala.objects.Object;
 import kala.math.Color;
 import kala.math.Color.ColorBlendMode;
@@ -17,13 +18,8 @@ class Group<T:Object> extends Object {
 	
 	public var colorBlendMode:ColorBlendMode;
 
-	public var views(default, null):Array<View> = new Array<View>();
-	
-	private var _children(default, null):Array<T> = new Array<T>();
-	
-	public inline function iterator():Iterator<T> {
-		return _children.iterator();
-	}
+	private var _children:Array<T> = new Array<T>();
+	private var _views:Array<View> = new Array<View>();
 	
 	public function new(transformEnable:Bool = false) {
 		super();
@@ -42,15 +38,14 @@ class Group<T:Object> extends Object {
 		while (_children.length > 0 ) _children.pop();
 		_children = null;
 		
-		while (views.length > 0) views.pop();
-		views = null;
+		while (_views.length > 0) _views.pop();
+		_views = null;
 	}
 	
 	override public function update(delta:FastFloat):Void {
 		var removedIndices = new Array<Int>();
 		var child:T;
-		var index = 0;
-		
+
 		for (index in 0..._children.length) {
 			child = _children[index];
 			
@@ -58,69 +53,102 @@ class Group<T:Object> extends Object {
 				removedIndices.push(index);
 				continue;
 			}
-			
-			child.callUpdate(this, delta);
+
+			if (child.alive && child.active) child.callUpdate(this, delta);
 		}
 		
 		for (index in removedIndices) {
 			_children.splice(index, 1);
 		}
+		
+		removedIndices = new Array<Int>();
+		var view:View;
+		
+		for (index in 0..._views.length) {
+			view = _views[index];
+			
+			if (view == null) {
+				removedIndices.push(index);
+				continue;
+			}
+
+			if (view.alive && view.active) view.callUpdate(this, delta);
+		}
+		
+		for (index in removedIndices) {
+			_views.splice(index, 1);
+		}
 	}
 	
-	override public function draw(
-		?antialiasing:Bool = false,
-		?transformation:FastMatrix3, ?color:Color, 
-		?colorBlendMode:ColorBlendMode, 
-		?opacity:FastFloat = 1, 
-		canvas:Canvas
-	):Void {
+	override public function draw(data:DrawingData, canvas:Canvas):Void {
 		var g2 = canvas.g2;
 		
 		if (transformEnable) {
-			antialiasing = this.antialiasing || antialiasing;
+			data.antialiasing = this.antialiasing || data.antialiasing;
 			
-			if (transformation == null) transformation = getMatrix();
-			else transformation = transformation.multmat(getMatrix());
+			if (data.transformation == null) data.transformation = _drawingMatrixCache = getMatrix();
+			else data.transformation = _drawingMatrixCache = data.transformation.multmat(getMatrix());
 		
-			if (color == null) {
-				color = this.color;
+			if (data.color == null) {
+				data.color = this.color;
 			} else {
-				color = Color.blendColors(this.color, color, colorBlendMode);
+				data.color = Color.blendColors(this.color, data.color, data.colorBlendMode);
 			}
 			
-			g2.opacity = this.opacity * opacity;
+			g2.opacity = this.opacity * data.opacity;
 		}
 		
-		if (views.length == 0) {
+		if (_views.length == 0) {
 			for (child in _children) {
-				if (child.isVisible()) {
-					child.callDraw(this, antialiasing, transformation, color, this.colorBlendMode, opacity, canvas);
+				if (child.alive && child.isVisible()) {
+					var drawingData = new DrawingData(
+						data.antialiasing,
+						data.transformation,
+						data.color, this.colorBlendMode,
+						data.opacity
+					);
+					child.callDraw(this, drawingData, canvas);
 				}
 			}
 		} else {
-			
 			g2.end();
 			
 			var buffer:Image;
 			var matrix:FastMatrix3;
 
-			for (view in views) {
+			for (view in _views) {
 				buffer = view.buffer;
-				matrix = transformation.multmat(
+				matrix = data.transformation.multmat(
 					FastMatrix3.translation( -view.viewPos.x, -view.viewPos.y)
 				);
 				
 				buffer.g2.begin(true, view.transparent ? 0 : (255 << 24 | view.bgColor));
 				for (child in _children) {
-					child.callDraw(this, antialiasing, matrix, color, this.colorBlendMode, opacity, buffer);
+					if (child.alive && child.isVisible()) {
+						var drawingData = new DrawingData(
+							data.antialiasing,
+							matrix,
+							data.color, this.colorBlendMode,
+							data.opacity
+						);
+						child.callDraw(this, drawingData, buffer);
+					}
 				}
 				buffer.g2.end();
 			}
 			
 			g2.begin(false);
 			
-			for (view in views) {
-				view.callDraw(this, antialiasing, transformation, color, this.colorBlendMode, opacity, canvas);
+			for (view in _views) {
+				if (view.alive && view.isVisible()) {
+					var drawingData = new DrawingData(
+						data.antialiasing,
+						data.transformation,
+						data.color, this.colorBlendMode,
+						data.opacity
+					);
+					view.callDraw(this, drawingData, canvas);
+				}
 			}
 		}
 	}
@@ -149,16 +177,28 @@ class Group<T:Object> extends Object {
 		return obj;
 	}
 	
-	public inline function addView(view:View):Void {
-		if (views.indexOf(view) == -1) {
-			views.push(view);
-			view._groups.push(this);
-		}
+	public inline function addView(view:View):View {
+		if (_views.indexOf(view) != -1) return null;
+		_views.push(view);
+		view._groups.push(this);
+		return view;
 	}
 	
-	public inline function removeView(view:View):Void {
-		views.remove(view);
+	public inline function removeView(view:View, splice:Bool = false):View {
+		var index = _views.indexOf(view);
+		
+		if (index == -1) return null;
+		
+		if (splice) _views.splice(index, 1);
+		else _views[index] = null;
+		
 		view._groups.remove(this);
+		
+		return view;
+	}
+	
+	public inline function iterator():Iterator<T> {
+		return _children.iterator();
 	}
 	
 }

@@ -1,5 +1,6 @@
 package kala.objects.shapes;
 
+import kala.DrawingData;
 import kala.math.Color;
 import kala.math.Vec2;
 import kha.Canvas;
@@ -17,20 +18,22 @@ class Polygon extends Shape {
 		this.vertices = vertices;
 	}
 	
-	override public function draw(
-		?antialiasing:Bool = false, 
-		?transformation:FastMatrix3, 
-		?color:Color, ?colorBlendMode:ColorBlendMode, 
-		?opacity:FastFloat = 1, 
-		canvas:Canvas
-	):Void {
-		applyDrawingData(antialiasing, transformation, null, colorBlendMode, opacity, canvas);
-
+	override public function draw(data:DrawingData, canvas:Canvas):Void {
+		applyDrawingData(data, canvas);
+		
 		applyDrawingFillData();
-		canvas.g2.fillPolygon(0, 0, [for (vector in vertices) vector]);
+		canvas.g2.fillPolygon(0, 0, [for (vector in vertices) vector.toVector2()]);
 		
 		applyDrawingLineData();
-		canvas.g2.drawPolygon(0, 0, [for (vector in vertices) vector], lineStrenght);
+		canvas.g2.drawPolygon(0, 0, [for (vector in vertices) vector.toVector2()], lineStrenght);
+	}
+	
+	public function getTransformedVertices():Array<Vec2> {
+		var verts = new Array<Vec2>();
+		for (vert in vertices) {
+			verts.push(vert.transform(getDrawingMatrix()));
+		}
+		return verts;
 	}
 	
 }

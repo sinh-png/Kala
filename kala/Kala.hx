@@ -95,7 +95,7 @@ class Kala {
 	
 	static function renderWorld(framebuffer:Framebuffer):Void {
 		framebuffer.g2.begin(true, bgColor.argb());
-		world.callDraw(framebuffer);
+		world.callDraw(new DrawingData(), framebuffer);
 		framebuffer.g2.end();
 	}
 	
@@ -104,7 +104,7 @@ class Kala {
 		var delta = time - _lastUpdateTime;
 		_lastUpdateTime = time;
 		
-		fps = Std.int(1 / delta);
+		fps = Math.ceil(1 / delta);
 		
 		Keyboard.onPreUpdate();
 		Mouse.onPreUpdate();

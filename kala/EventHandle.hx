@@ -54,10 +54,6 @@ class CallbackHandle<T> implements ICallbackHandle {
 		_callbacks = null;
 	}
 	
-	public function iterator():Iterator<Callback<T>> {
-		return _callbacks.iterator();
-	}
-	
 	public function add(callback:T):Void {
 		_callbacks.push(new Callback(callback));
 	}
@@ -92,7 +88,11 @@ class CallbackHandle<T> implements ICallbackHandle {
 			i++;
 		}
 		
-		Log.error('Incorrectly tried to remove a callback of component $component from object $this');
+		Debug.error('Incorrectly tried to remove a callback of component $component from object $this');
+	}
+	
+	public function iterator():Iterator<Callback<T>> {
+		return _callbacks.iterator();
 	}
 	
 }

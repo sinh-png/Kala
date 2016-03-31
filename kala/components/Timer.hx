@@ -2,7 +2,6 @@ package kala.components;
 
 import kala.Kala.TimeUnit;
 import kala.components.Component;
-import kala.components.Timer.TimerTask;
 import kala.objects.Object;
 import kala.util.types.Pair;
 import kha.FastFloat;
@@ -16,14 +15,14 @@ class Timer extends Component<Object> {
 	
 	// This line breaks code-completion and function name coloring in FlashDevelop.
 	// The problem with functions declared without access modifiers still stay when this line get removed.
-	private var _tasks:Array<TimerTask> = new Array<TimerTask>(); // *[1]
+	private var _loopTasks:Array<LoopTask> = new Array<LoopTask>(); // *[1]
 	
 	override public function reset():Void {
 		super.reset();
 		
 		while (_coolingDownIDs.length > 0)_coolingDownIDs.pop();
 		while (_coolingDownFunctions.length > 0)_coolingDownFunctions.pop();
-		while (_tasks.length > 0)_tasks.pop();
+		while (_loopTasks.length > 0)_loopTasks.pop();
 	}
 	
 	override public function addTo(object:Object):Timer {
@@ -32,12 +31,12 @@ class Timer extends Component<Object> {
 		return this;
 	}
 
-	override public function remove():Bool {
+	override public function remove():Void {
+		super.remove();
+		
 		if (object != null) {
 			object.onPostUpdate.removeComponentCB(this, update);
 		}
-		
-		return super.remove();
 	}
 	
 	public function cooldown(?id:Int, func:Void->Void, coolingTime:Int):Bool {
@@ -59,19 +58,27 @@ class Timer extends Component<Object> {
 		return true;
 	}
 	
-	public function delay(delayTime:Int, func:Void->Void):TimerTask {
-		var task = new TimerTask(delayTime, 1, func, null);
-		_tasks.push(task);
+	public function delay(delayTime:Int, func:Void->Void):LoopTask {
+		var task = new LoopTask(delayTime, 1, func, null);
+		_loopTasks.push(task);
 		return task;
 	}
 	
-	public function loop(duration:Int, execTimes:Int, ?execFirst:Bool = false, onExecute:Void->Void, onComplete:Void->Void):TimerTask {
-		var task = new TimerTask(duration, execTimes, onExecute, onComplete);
-		_tasks.push(task);
+	public function loop(duration:Int, execTimes:Int, ?execFirst:Bool = false, onExecute:Void->Void, onComplete:Void->Void):LoopTask {
+		var task = new LoopTask(duration, execTimes, onExecute, onComplete);
+		_loopTasks.push(task);
 		
-		if (execFirst) onExecute();
+		if (execFirst) {
+			task.elapsedExecutions++;
+			onExecute();
+		}
 		
 		return task;
+	}
+	
+	public function cancelLoop(task:LoopTask):Timer {
+		_loopTasks.remove(task);
+		return this;
 	}
 	
 	// Without "private" code-completion will work incorrectly even after *[1] get removed.
@@ -96,17 +103,17 @@ class Timer extends Component<Object> {
 		}
 		
 		i = 0;	
-		for (task in _tasks) {
+		for (task in _loopTasks.copy()) {
 			task.elapsedTime += elapsed;
 			
 			if (task.elapsedTime >= task.duration) {
 				task.elapsedTime = 0;
-				task.elapsedExecutions++;
 				
+				task.elapsedExecutions++;
 				task.onExecCB();
 				
-				if (task.elapsedExecutions == task.totalExecutions) {
-					_tasks.splice(i, 1);
+				if (task.totalExecutions > 0 && (task.elapsedExecutions == task.totalExecutions)) {
+					_loopTasks.splice(i, 1);
 					if (task.onCompleteCB != null) task.onCompleteCB();
 				}
 			}
@@ -118,7 +125,7 @@ class Timer extends Component<Object> {
 }
 
 @:allow(kala.components.Timer)
-class TimerTask {
+class LoopTask {
 
 	public var onExecCB(default, null):Void->Void;
 	public var onCompleteCB(default, null):Void->Void;

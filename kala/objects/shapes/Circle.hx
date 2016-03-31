@@ -1,5 +1,6 @@
 package kala.objects.shapes;
 
+import kala.DrawingData;
 import kala.math.Color;
 import kala.objects.shapes.Shape.ShapeType;
 import kha.Canvas;
@@ -11,7 +12,7 @@ using kha.graphics2.GraphicsExtension;
 class Circle extends Shape {
 
 	public var radius:FastFloat;
-	public var segments:Null<Int>;
+	public var segments:Int;
 	
 	public function new(radius:FastFloat) {
 		super();
@@ -21,23 +22,17 @@ class Circle extends Shape {
 	
 	override public function reset(componentsReset:Bool = false):Void {
 		super.reset(componentsReset);
-		segments = null;
+		segments = 0;
 	}
 	
-	override public function draw(
-		?antialiasing:Bool = false, 
-		?transformation:FastMatrix3, 
-		?color:Color, ?colorBlendMode:ColorBlendMode, 
-		?opacity:FastFloat = 1, 
-		canvas:Canvas
-	):Void {
-		applyDrawingData(antialiasing, transformation, null, colorBlendMode, opacity, canvas);
+	override public function draw(data:DrawingData, canvas:Canvas):Void {
+		applyDrawingData(data, canvas);
 
 		applyDrawingFillData();
-		canvas.g2.fillCircle(radius, radius, radius, segments);
+		canvas.g2.fillCircle(0, 0, radius, segments);
 		
 		applyDrawingLineData();
-		canvas.g2.drawCircle(radius, radius, radius, lineStrenght, segments);
+		canvas.g2.drawCircle(0, 0, radius, lineStrenght, segments);
 	}
 	
 }

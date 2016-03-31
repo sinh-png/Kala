@@ -1,5 +1,6 @@
 package kala.objects.shapes;
 
+import kala.DrawingData;
 import kala.math.Color;
 import kala.objects.Object;
 import kha.Canvas;
@@ -46,14 +47,8 @@ class Shape extends Object {
 		lineColor = fillColor = null;
 	}
 	
-	override function applyDrawingData(
-		antialiasing:Bool = false, 
-		transformation:FastMatrix3, 
-		color:Color, ?colorBlendMode:ColorBlendMode, 
-		opacity:FastFloat = 1, 
-		canvas:Canvas
-	):Void {
-		super.applyDrawingData(antialiasing, transformation, null, colorBlendMode, opacity, canvas);
+	override function applyDrawingData(data:DrawingData, canvas:Canvas):Void {
+		super.applyDrawingData(data, canvas);
 		
 		if (color == null) {
 			_color = this.color;
@@ -68,12 +63,12 @@ class Shape extends Object {
 	}
 	
 	inline function applyDrawingFillData():Void {
-		_canvas.g2.color = new Color().overlayBy(Color.blendColors(fillColor, _color, this.colorBlendMode)).argb();
+		_canvas.g2.color = new Color().setOverlay(Color.blendColors(fillColor, _color, this.colorBlendMode)).argb();
 		_canvas.g2.opacity = _opacity * fillOpacity;
 	}
 	
 	inline function applyDrawingLineData():Void {
-		_canvas.g2.color = new Color().overlayBy(Color.blendColors(lineColor, _color, this.colorBlendMode)).argb();
+		_canvas.g2.color = new Color().setOverlay(Color.blendColors(lineColor, _color, this.colorBlendMode)).argb();
 		_canvas.g2.opacity = _opacity * lineOpacity;
 	}
 	

@@ -1,14 +1,17 @@
 package kala.objects;
 
+import kala.DrawingData;
 import kala.EventHandle;
 import kala.components.Component.IComponent;
 import kala.math.helpers.AngleHelper;
+import kala.math.helpers.FastMatrix3Helper;
 import kala.objects.group.Group;
 import kala.math.Color;
 import kala.math.Rect;
 import kala.math.Rotation;
 import kala.math.Vec2T;
 import kala.math.Vec2;
+import kala.pool.ObjectPool;
 import kha.Canvas;
 import kha.FastFloat;
 import kha.graphics2.ImageScaleQuality;
@@ -52,14 +55,19 @@ class Object extends EventHandle {
 	
 	//
 	
+	public var group(get, never):BasicGroup;
+	public var pool:ObjectPool<Object>;
+	
+	//
+	
 	public var onDestroy:CallbackHandle<Object->Bool->Void>;
 	public var onReset:CallbackHandle<Object->Bool->Void>;
 	
 	public var onPreUpdate:CallbackHandle<Object->FastFloat->Void>;
 	public var onPostUpdate:CallbackHandle<Object->FastFloat->Void>;
 	
-	public var onPreDraw:CallbackHandle<Object->Bool->FastMatrix3->Color->ColorBlendMode->FastFloat->Canvas->Void>;
-	public var onPostDraw:CallbackHandle<Object->Bool->FastMatrix3->Color->ColorBlendMode->FastFloat->Canvas->Void>;
+	public var onPreDraw:CallbackHandle<Object->DrawingData->Canvas->Void>;
+	public var onPostDraw:CallbackHandle<Object->DrawingData->Canvas->Void>;
 	
 	public var onFirstFrame:CallbackHandle<Object->Void>;
 					
@@ -70,11 +78,11 @@ class Object extends EventHandle {
 	private var _crGroup:Object;
 	private var _groups:Array<Object> = [];
 	
-	//
-	
 	private var _components:Array<IComponent> = new Array<IComponent>();
 	
 	//
+	
+	private var _drawingMatrixCache:FastMatrix3;
 	
 	public function new() {
 		super();
@@ -85,8 +93,8 @@ class Object extends EventHandle {
 		onPreUpdate = addCBHandle(new CallbackHandle<Object->FastFloat->Void>());
 		onPostUpdate = addCBHandle(new CallbackHandle<Object->FastFloat->Void>());
 		
-		onPreDraw = addCBHandle(new CallbackHandle<Object->Bool->FastMatrix3->Color->ColorBlendMode->FastFloat->Canvas->Void>());
-		onPostDraw = addCBHandle(new CallbackHandle<Object->Bool->FastMatrix3->Color->ColorBlendMode->FastFloat->Canvas->Void>());
+		onPreDraw = addCBHandle(new CallbackHandle<Object->DrawingData->Canvas->Void>());
+		onPostDraw = addCBHandle(new CallbackHandle<Object->DrawingData->Canvas->Void>());
 		
 		onFirstFrame = addCBHandle(new CallbackHandle<Object->Void>());
 		
@@ -173,13 +181,7 @@ class Object extends EventHandle {
 
 	}
 	
-	public function draw(
-		?antialiasing:Bool = false,
-		?transformation:FastMatrix3,
-		?color:Color, ?colorBlendMode:ColorBlendMode,
-		?opacity:FastFloat = 1,
-		canvas:Canvas
-	):Void {
+	public function draw(data:DrawingData, canvas:Canvas):Void {
 
 	}
 	
@@ -189,7 +191,7 @@ class Object extends EventHandle {
 	
 	public function isVisible():Bool {
 		//alive && visible && transformWidth != 0 && transformHeight != 0 && opacity > 0
-		return alive && visible && scale.x != 0 && scale.y != 0 && opacity > 0;
+		return visible && scale.x != 0 && scale.y != 0 && opacity > 0;
 	}
 	
 	public inline function setOrigin(x:FastFloat, y:FastFloat):Object {
@@ -201,7 +203,7 @@ class Object extends EventHandle {
 		return this;
 	}
 	
-	public inline function setTransformOrigin(x:FastFloat, y:FastFloat):Object {
+	public inline function setTransformationOrigin(x:FastFloat, y:FastFloat):Object {
 		scale.setOrigin(x, y);
 		skew.setOrigin(x, y);
 		rotation.setPivot(x, y);
@@ -221,7 +223,7 @@ class Object extends EventHandle {
 		return this;
 	}
 	
-	public inline function centerTransformOrigin(centerX:Bool = true, centerY:Bool = true):Object {
+	public inline function centerTransformation(centerX:Bool = true, centerY:Bool = true):Object {
 		if (centerX) {
 			scale.ox = skew.ox = rotation.px = width / 2;
 		}
@@ -233,56 +235,24 @@ class Object extends EventHandle {
 		return this;
 	}
 
-	public function getMatrix():FastMatrix3 {
-		var x = position.x - position.ox;
-		var y = position.y - position.oy;
-		
-		// Positing
-		var matrix = FastMatrix3.translation(x, y);
-		
-		// Scaling
-		var centerX = x + scale.ox;
-		var centerY = y + scale.oy;
-		
-		matrix = FastMatrix3.translation(centerX, centerY)
-				.multmat(FastMatrix3.scale(scale.x * (flipX ? -1 : 1), scale.y * (flipY ? -1 : 1)))
-				.multmat(FastMatrix3.translation( -centerX, -centerY))
-				.multmat(matrix);
-				
-		// Skewing
-		centerX = x + skew.ox;
-		centerY = y + skew.oy;
-		
-		matrix = FastMatrix3.translation(centerX, centerY)
-				.multmat(new FastMatrix3(1, Math.tan(skew.x * AngleHelper.CONST_RAD), 0, Math.tan(skew.y * AngleHelper.CONST_RAD), 1, 0, 0, 0, 1))
-				.multmat(FastMatrix3.translation( -centerX, -centerY))
-				.multmat(matrix);
-		
-		// Rotating
-		centerX = x + rotation.px;
-		centerY = y + rotation.py;
-		
-		matrix = FastMatrix3.translation(centerX, centerY)
-				.multmat(FastMatrix3.rotation(rotation.rad()))
-				.multmat(FastMatrix3.translation( -centerX, -centerY))
-				.multmat(matrix);
-		
-		return matrix;
+	public inline function getMatrix():FastMatrix3 {
+		return FastMatrix3Helper.getTransformMatrix(position, scale, skew, rotation, flipX, flipY);
 	}
 	
 	public inline function getDrawingMatrix():FastMatrix3 {
 		if (_crGroup == null) return getMatrix();
-		return _crGroup.getMatrix().multmat(getMatrix());
+		return _crGroup.getDrawingMatrix().multmat(getMatrix());
+	}
+	
+	public inline function put():Object {	
+		pool.put(this);
+		return this;
 	}
 	
 	public inline function getGroups():Array<Group<Object>> {
 		var array = new Array<Group<Object>>();
 		for (group in _groups) array.push(cast group);
 		return array;
-	}
-	
-	public inline function getGroup():Group<Object> {
-		return cast _crGroup;
 	}
 	
 	public inline function removefromGroups():Void {
@@ -327,29 +297,16 @@ class Object extends EventHandle {
 		for (callback in onPostUpdate) callback.cbFunction(this, delta);
 	}
 	
-	inline function callDraw(
-		?caller:Object,
-		?antialiasing:Bool = false,
-		?transformation:FastMatrix3, 
-		?color:Color, ?colorBlendMode:ColorBlendMode,
-		?opacity:FastFloat = 1,
-		canvas:Canvas
-	):Void {
+	inline function callDraw(?caller:Object, data:DrawingData, canvas:Canvas):Void {
 		_crGroup = caller;
 		
 		execFirstFrame();
-		for (callback in onPreDraw) callback.cbFunction(this, antialiasing, transformation, color, colorBlendMode, opacity, canvas);
-		draw(antialiasing, transformation, color, colorBlendMode, opacity, canvas);
-		for (callback in onPostDraw) callback.cbFunction(this, antialiasing, transformation, color, colorBlendMode, opacity, canvas);
+		for (callback in onPreDraw) callback.cbFunction(this, data, canvas);
+		draw(data, canvas);
+		for (callback in onPostDraw) callback.cbFunction(this, data, canvas);
 	}
 	
-	function applyDrawingData(
-		antialiasing:Bool = false,
-		transformation:FastMatrix3,
-		color:Color, ?colorBlendMode:ColorBlendMode,
-		opacity:FastFloat = 1,
-		canvas:Canvas
-	):Void {
+	function applyDrawingData(data:DrawingData, canvas:Canvas):Void {
 		var g2 = canvas.g2;
 		
 		if (this.antialiasing || antialiasing) {
@@ -360,13 +317,13 @@ class Object extends EventHandle {
 			g2.imageScaleQuality = ImageScaleQuality.Low;
 		}
 	
-		if (transformation == null) g2.transformation = getMatrix();
-		else g2.transformation = transformation.multmat(getMatrix());
+		if (data.transformation == null) g2.transformation = _drawingMatrixCache = getMatrix();
+		else g2.transformation = _drawingMatrixCache = data.transformation.multmat(getMatrix());
 		
 		if (color == null) {
 			g2.color = this.color.argb();
 		} else {
-			g2.color = new Color().overlayBy(Color.blendColors(this.color, color, colorBlendMode)).argb();
+			g2.color = new Color().setOverlay(Color.blendColors(this.color, color, data.colorBlendMode)).argb();
 		}
 		
 		g2.opacity = this.opacity * opacity;
@@ -394,6 +351,10 @@ class Object extends EventHandle {
 	
 	function get_tHeight():FastFloat {
 		return Math.abs(height * scale.y) + Math.abs(width  * scale.x  * Math.tan(skew.y * AngleHelper.CONST_RAD));
+	}
+	
+	function get_group():BasicGroup {
+		return cast _crGroup;
 	}
 
 }

@@ -1,5 +1,7 @@
 package kala.objects;
 
+import kala.DrawingData;
+import kala.components.SpriteAnimation;
 import kala.math.Color;
 import kala.math.Rect;
 import kha.Canvas;
@@ -12,13 +14,18 @@ class Sprite extends Object {
 	public var image(default, null):Image;
 	public var frameRect:RectI = new RectI();
 	
+	public var animation(default, null):SpriteAnimation;
+	
 	public function new(
 		?image:Image, 
 		?frameX:Int, ?frameY:Int, 
-		?frameWidth:Int, ?frameHeight:Int
+		?frameWidth:Int, ?frameHeight:Int,
+		?animated:Bool = false
 	) {
 		super();
 		if (image != null) loadImage(image, frameX, frameY, frameWidth, frameHeight);
+		
+		if (animated) new SpriteAnimation().addTo(this);
 	}
 
 	override public function destroy(componentsDestroy:Bool = true):Void {
@@ -27,14 +34,8 @@ class Sprite extends Object {
 		frameRect = null;
 	}
 	
-	override public function draw(
-		?antialiasing:Bool = false,
-		?transformation:FastMatrix3, 
-		?color:Color, ?colorBlendMode:ColorBlendMode,
-		?opacity:FastFloat = 1,
-		canvas:Canvas
-	):Void {
-		applyDrawingData(antialiasing, transformation, color, colorBlendMode, opacity, canvas);
+	override public function draw(data:DrawingData, canvas:Canvas):Void {
+		applyDrawingData(data, canvas);
 		canvas.g2.drawSubImage(image, 0, 0, frameRect.x, frameRect.y, frameRect.width, frameRect.height);
 	}
 	

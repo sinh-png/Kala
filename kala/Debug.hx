@@ -1,6 +1,6 @@
 package kala;
 
-class Log {
+class Debug {
 
 	public static function error(message:String):Void {
 		

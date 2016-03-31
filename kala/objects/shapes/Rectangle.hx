@@ -1,4 +1,6 @@
 package kala.objects.shapes;
+
+import kala.DrawingData;
 import kha.Canvas;
 import kha.FastFloat;
 import kala.math.Color.ColorBlendMode;
@@ -13,14 +15,8 @@ class Rectangle extends Shape {
 		_height = height;
 	}
 	
-	override public function draw(
-		?antialiasing:Bool = false, 
-		?transformation:FastMatrix3, 
-		?color:Color, ?colorBlendMode:ColorBlendMode, 
-		?opacity:FastFloat = 1, 
-		canvas:Canvas
-	):Void {
-		applyDrawingData(antialiasing, transformation, null, colorBlendMode, opacity, canvas);
+	override public function draw(data:DrawingData, canvas:Canvas):Void {
+		applyDrawingData(data, canvas);
 
 		applyDrawingFillData();
 		canvas.g2.fillRect(0, 0, _width, _height);

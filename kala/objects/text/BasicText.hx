@@ -1,5 +1,6 @@
 package kala.objects.text;
 
+import kala.DrawingData;
 import kala.EventHandle.CallbackHandle;
 import kala.math.Color;
 import kala.math.Color.ColorBlendMode;
@@ -49,14 +50,8 @@ class BasicText extends Object {
 		onTextChanged = null;
 	}
 	
-	override public function draw(
-		?antialiasing:Bool = false,
-		?transformation:FastMatrix3, 
-		?color:Color, ?colorBlendMode:ColorBlendMode, 
-		?opacity:FastFloat = 1, 
-		canvas:Canvas
-	):Void {
-		applyDrawingData(antialiasing, transformation, color, colorBlendMode, opacity, canvas);
+	override public function draw(data:DrawingData, canvas:Canvas):Void {
+		applyDrawingData(data, canvas);
 		var g2 = canvas.g2;
 		g2.font = font;
 		g2.fontSize = size;

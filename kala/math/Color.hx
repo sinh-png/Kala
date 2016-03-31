@@ -16,7 +16,7 @@ class Color {
 	
 	@:extern
 	public static inline function blendColors(backgroundColor:Color, foregroundColor:Color, ?blendMode:ColorBlendMode):Color {
-		return new Color(backgroundColor.alpha, backgroundColor.rgb).blend(foregroundColor, blendMode);
+		return new Color(backgroundColor.alpha, backgroundColor.rgb).setBlend(foregroundColor, blendMode);
 	}
 	
 	//
@@ -94,7 +94,7 @@ class Color {
 	}
 	
 	@:extern
-	public inline function blend(color:Color, ?blendMode:ColorBlendMode):Color {
+	public inline function setBlend(color:Color, ?blendMode:ColorBlendMode):Color {
 		correctAlpha();
 		color.correctAlpha();
 		
@@ -145,16 +145,16 @@ class Color {
 	}
 	
 	@:extern
-	public inline function blendARGB(argb:UInt, ?blendMode:ColorBlendMode):Color {
+	public inline function setBlendARGB(argb:UInt, ?blendMode:ColorBlendMode):Color {
 		var color = Color.fromARGB(argb);
-		blend(color, blendMode);
+		setBlend(color, blendMode);
 		
 		return this;
 	}
 	
 	@:extern
-	public inline function overlayBy(color:Color):Color {
-		blend(color, OVERLAY);
+	public inline function setOverlay(color:Color):Color {
+		setBlend(color, OVERLAY);
 		return this;
 	}
 	
