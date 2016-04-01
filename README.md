@@ -1,7 +1,18 @@
-Kala is a 2D game engine powered by [Kha](https://github.com/KTXSoftware/Kha). The project is in its very early development and still a proof of concept but you can expect it to grow a lot in a near future.
+Kala is a component based 2D game engine powered by [Kha](https://github.com/KTXSoftware/Kha). The project is in its very early development and still a proof of concept but you can expect it to grow a lot in the future.
+
+Kala aims for:
+
+1. Ease of use.
+2. Flexibility.
+3. Reusability of code.
 
 The examples below will show you some of the implemented features of the engine and how to use them.
 
+1. [Hello world](https://github.com/hazagames/Kala#hello-world)
+2. [Sprite](https://github.com/hazagames/Kala#sprite)
+3. [Shapes](https://github.com/hazagames/Kala#shapes)
+4. [Keyboard, mouse input and object transformation](https://github.com/hazagames/Kala#keyboard-mouse-input--object-transformation)
+5. [Group transformation](https://github.com/hazagames/Kala#group-transformation)
 
 #####HELLO WORLD
 
@@ -82,12 +93,6 @@ class Main {
 	
 }
 ```
-
-Using a callback and component based system, Kala aims for:
-
-1. Ease of use.
-2. Flexibility.
-3. Reusability of code.
 
 
 #####SHAPES
