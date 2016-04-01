@@ -13,8 +13,8 @@ class Polygon extends Shape {
 
 	public var vertices:Array<Vec2>;
 	
-	public function new(vertices:Array<Vec2>) {
-		super();
+	public function new(vertices:Array<Vec2>, fill:Bool = true, outline:Bool = false) {
+		super(fill, outline);
 		this.vertices = vertices;
 	}
 	

@@ -27,6 +27,13 @@ class Shape extends Object {
 	private var _opacity:FastFloat;
 	private var _canvas:Canvas;
 	
+	public function new(fill:Bool = true, outline:Bool = false) {
+		super();
+		
+		if (fill) fillOpacity = 1; else fillOpacity = 0;
+		if (outline) lineOpacity = 1; else lineOpacity = 0;
+	}
+	
 	override public function reset(componentsReset:Bool = false):Void {
 		super.reset(componentsReset);
 	
@@ -34,17 +41,19 @@ class Shape extends Object {
 		
 		lineStrenght = 1;
 		lineColor.set();
-		lineOpacity = 0;
 		
 		fillColor.set();
-		fillOpacity = 1;
-		
+
 		colorBlendMode = ColorBlendMode.NORMAL;
 	}
 	
 	override public function destroy(componentsDestroy:Bool = true):Void {
 		super.destroy(componentsDestroy);
 		lineColor = fillColor = null;
+	}
+	
+	override public function isVisible():Bool {
+		return super.isVisible() && (fillOpacity > 0 || lineOpacity > 0);
 	}
 	
 	override function applyDrawingData(data:DrawingData, canvas:Canvas):Void {

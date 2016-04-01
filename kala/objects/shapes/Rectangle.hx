@@ -9,8 +9,8 @@ import kha.math.FastMatrix3;
 
 class Rectangle extends Shape {
 
-	public function new(width:Int, height:Int) {
-		super();
+	public function new(width:Int, height:Int, fill:Bool = true, outline:Bool = false) {
+		super(fill, outline);
 		_width = width;
 		_height = height;
 	}

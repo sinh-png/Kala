@@ -14,8 +14,8 @@ class Circle extends Shape {
 	public var radius:FastFloat;
 	public var segments:Int;
 	
-	public function new(radius:FastFloat) {
-		super();
+	public function new(radius:FastFloat, fill:Bool = true, outline:Bool = false) {
+		super(fill, outline);
 		type = ShapeType.CIRCLE;
 		this.radius = radius;
 	}

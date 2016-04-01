@@ -13,7 +13,8 @@ The examples below will show you some of the implemented features of the engine 
 3. [Shapes](https://github.com/hazagames/Kala#shapes)
 4. [Keyboard, mouse input and object transformation](https://github.com/hazagames/Kala#keyboard-mouse-input--object-transformation)
 5. [Group transformation](https://github.com/hazagames/Kala#group-transformation)
-6. [Text](https://github.com/hazagames/Kala#text)
+6. [Group view](https://github.com/hazagames/Kala#group-view)
+7. [Text](https://github.com/hazagames/Kala#text)
 
 #####HELLO WORLD
 
@@ -28,7 +29,7 @@ class Main {
 	
 	public static function main() {
 		
-		// Kala.world is the root group that contains all other objects. Groups are also a type of object.
+		// Kala.world is the root group that contains all other objects. Group is also a type of object.
 		// onFirstFrame is a handle for callbacks that will be executed right before the first update / draw of an object. 
 		Kala.world.onFirstFrame.add(function(_) {
 			
@@ -43,7 +44,7 @@ class Main {
 			
 		});
 		
-		// Does just what you expect.
+		// Does just what you would expect.
 		Kala.start("Hello!", 800, 600); 
 		
 	}
@@ -119,10 +120,8 @@ class Main {
 			circle.position.setXYBetween(0, 0, 800, 600, 20, 50);
 			Kala.world.add(circle);
 			
-			var rect = new Rectangle(200, 160);
-			rect.position.setOrigin(100, 80);
-			rect.position.setXYBetween(0, 0, 800, 600, 50, 50);
-			rect.lineOpacity = 1;
+			var rect = new Rectangle(200, 160, true, true);
+			rect.position.setOrigin(100, 80).setXYBetween(0, 0, 800, 600, 50, 50);
 			rect.lineColor.rgb = 0xff0000;
 			rect.lineStrenght = 4;
 			Kala.world.add(rect);
@@ -131,10 +130,8 @@ class Main {
 				new Vec2(0, 0),
 				new Vec2(160, 160),
 				new Vec2(160, 0)
-			]);
-			polygon.position.setOrigin(80, 80);
-			polygon.position.setXYBetween(0, 0, 800, 600, 80, 50);
-			polygon.fillOpacity = 0;
+			], false);
+			polygon.position.setOrigin(80, 80).setXYBetween(0, 0, 800, 600, 80, 50);
 			polygon.lineOpacity = 1;
 			polygon.lineStrenght = 2;
 			Kala.world.add(polygon);
@@ -159,7 +156,6 @@ package;
 import kala.Kala;
 import kala.input.Keyboard;
 import kala.input.Mouse;
-import kala.objects.shapes.Circle;
 import kala.objects.shapes.Rectangle;
 
 class Main {
@@ -171,7 +167,7 @@ class Main {
 			var rect = new Rectangle(200, 100);
 			rect.position.setOrigin(100, 50);
 			
-			// Eac of these transformation has its own origin point.
+			// Each of these transformation has their own origin point.
 			// Skewing and rotation angle values are in degrees.
 			rect.scale.setOrigin(100, 50);
 			rect.skew.set(40, 0, 100, 50);
@@ -276,6 +272,54 @@ class Main {
 }
 ```
 
+#####GROUP VIEW
+
+```haxe
+package;
+
+import kala.Kala;
+import kala.input.Mouse;
+import kala.objects.Sprite;
+import kala.objects.group.Group;
+import kala.objects.group.View;
+import kha.Assets;
+
+class Main {
+	
+	public static function main() {
+		
+		Kala.world.onFirstFrame.add(function(_) {
+			
+			var group = new BasicGroup();
+			Kala.world.add(group);
+			
+			var view = new View(0, 0, 200, 200);
+			view.position.setOrigin(100, 100).setXYBetween(0, 0, 800, 600);
+			view.rotation.setPivot(100, 100);
+			view.skew.setOrigin(100, 100);
+			view.viewPos.setOrigin(100, 100);
+			group.addView(view);
+			
+			var background = new Sprite(Assets.images.background);
+			group.add(background);
+			
+			group.onPreUpdate.add(function(_, _) {
+				view.viewPos.x = Mouse.x;
+				view.viewPos.y = Mouse.y;
+				
+				if (Mouse.pressed.LEFT) view.rotation.angle += 1;
+				if (Mouse.pressed.RIGHT) view.skew.x += 1;
+			});
+			
+		});
+		
+		Kala.start();
+		
+	}
+	
+}
+```
+
 #####TEXT
 
 ```haxe
@@ -323,8 +367,7 @@ class Main {
 			
 		});
 
-		// Does just what you expect.
-		Kala.start("Hello!", 800, 600); 
+		Kala.start(); 
 		
 	}
 	

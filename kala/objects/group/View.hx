@@ -1,7 +1,7 @@
 package kala.objects.group;
 
 import kala.DrawingData;
-import kala.math.Vec2;
+import kala.math.Vec2T;
 import kala.objects.Object;
 import kala.math.Color;
 import kala.math.Rect;
@@ -16,7 +16,7 @@ class View extends Object {
 
 	public var buffer(default, null):Image;
 	
-	public var viewPos:Vec2;
+	public var viewPos:Vec2T;
 	
 	public var viewWidth(default, null):UInt;
 	public var viewHeight(default, null):UInt;
@@ -42,7 +42,7 @@ class View extends Object {
 			DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples
 		);
 		
-		viewPos = new Vec2(viewX, viewY);
+		viewPos = new Vec2T(viewX, viewY);
 		this.viewWidth = viewWidth;
 		this.viewHeight = viewHeight;
 	}

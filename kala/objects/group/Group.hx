@@ -119,7 +119,7 @@ class Group<T:Object> extends Object {
 			for (view in _views) {
 				buffer = view.buffer;
 				matrix = data.transformation.multmat(
-					FastMatrix3.translation( -view.viewPos.x, -view.viewPos.y)
+					FastMatrix3.translation( -view.viewPos.x + view.viewPos.ox, -view.viewPos.y + view.viewPos.oy)
 				);
 				
 				buffer.g2.begin(true, view.transparent ? 0 : (255 << 24 | view.bgColor));
