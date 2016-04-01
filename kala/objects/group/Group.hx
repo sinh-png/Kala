@@ -48,12 +48,12 @@ class Group<T:Object> extends Object {
 
 		for (index in 0..._children.length) {
 			child = _children[index];
-			
+
 			if (child == null) {
 				removedIndices.push(index);
 				continue;
 			}
-
+			
 			if (child.alive && child.active) child.callUpdate(this, delta);
 		}
 		
@@ -100,6 +100,8 @@ class Group<T:Object> extends Object {
 		
 		if (_views.length == 0) {
 			for (child in _children) {
+				if (child == null) continue;
+				
 				if (child.alive && child.isVisible()) {
 					var drawingData = new DrawingData(
 						data.antialiasing,
@@ -117,6 +119,8 @@ class Group<T:Object> extends Object {
 			var matrix:FastMatrix3;
 
 			for (view in _views) {
+				if (view == null) continue;
+				
 				buffer = view.buffer;
 				matrix = data.transformation.multmat(
 					FastMatrix3.translation( -view.viewPos.x + view.viewPos.ox, -view.viewPos.y + view.viewPos.oy)
@@ -124,6 +128,8 @@ class Group<T:Object> extends Object {
 				
 				buffer.g2.begin(true, view.transparent ? 0 : (255 << 24 | view.bgColor));
 				for (child in _children) {
+					if (child == null) continue;
+					
 					if (child.alive && child.isVisible()) {
 						var drawingData = new DrawingData(
 							data.antialiasing,
@@ -140,6 +146,8 @@ class Group<T:Object> extends Object {
 			g2.begin(false);
 			
 			for (view in _views) {
+				if (view == null) continue;
+				
 				if (view.alive && view.isVisible()) {
 					var drawingData = new DrawingData(
 						data.antialiasing,
@@ -171,7 +179,7 @@ class Group<T:Object> extends Object {
 		
 		if (splice) _children.splice(index, 1);
 		else _children[index] = null;
-		
+
 		obj._groups.remove(this);
 		
 		return obj;

@@ -16,7 +16,7 @@ class Main {
 		Kala.world.onFirstFrame.add(function(_) {
 			
 			var rect1 = new Rectangle(200, 100, false, true);
-			rect1.position.setOrigin(100, 50).setXYBetween(0, 0, 800, 600);
+			rect1.position.set(400, 300, 100, 50);
 			rect1.skew.setOrigin(100, 50).x = 50;
 			Kala.world.add(rect1);
 			
@@ -33,7 +33,7 @@ class Main {
 			group.add(circle);
 			
 			var rect2 = new Rectangle(160, 80, false, true);
-			rect2.position.setOrigin(80, 40).setXY( -160, 0);
+			rect2.position.set( -160, 0, 80, 40);
 			rect2.lineStrenght = 2;
 			group.add(rect2);
 			
@@ -43,7 +43,7 @@ class Main {
 				new Vec2(160, 0)
 			];
 			var polygon = new Polygon(vertices, false, true);
-			polygon.position.setOrigin(80, 40).setXY(160, 0);
+			polygon.position.set(160, 0, 80, 40);
 			polygon.lineStrenght = 2;
 			group.add(polygon);
 			

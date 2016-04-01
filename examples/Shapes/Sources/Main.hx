@@ -17,7 +17,7 @@ class Main {
 			Kala.world.add(circle);
 			
 			var rect = new Rectangle(200, 160, true, true);
-			rect.position.setOrigin(100, 80).setXYBetween(0, 0, 800, 600, 50, 50);
+			rect.position.setOrigin(100, 80).setXY(400, 300);
 			rect.lineColor.rgb = 0xff0000;
 			rect.lineStrenght = 4;
 			Kala.world.add(rect);

@@ -16,6 +16,7 @@ The examples below will show you some of the implemented features of the engine 
 6. [Group view](https://github.com/hazagames/Kala#group-view)
 7. [Text](https://github.com/hazagames/Kala#text)
 8. [Collision detection](https://github.com/hazagames/Kala#collision-detection)
+9. [Timer](https://github.com/hazagames/Kala#timer)
 
 #####HELLO WORLD
 
@@ -38,20 +39,18 @@ class Main {
 			Kala.defaultFont = Assets.fonts.ClearSans_Regular;
 			
 			var text = new BasicText("HELLO WORLD", 40);
-			text.position.setOrigin(text.width / 2, text.height / 2); // Center the original position.
-			text.position.setXYBetween(0, 0, 800, 600); // Center the text on screen.
+			text.position.set(800, 600, text.width / 2, text.height / 2); // Center the text on screen.
 			text.color.rgb = 0x00ffff; // Make it aqua blue because I like the color.  
 			Kala.world.add(text); // Add it into the root group.
 			
 		});
 		
-		// Does just what you would expect.
+		// Does just what you expect.
 		Kala.start("Hello!", 800, 600); 
 		
 	}
 	
 }
-
 ```
 
 
@@ -122,7 +121,7 @@ class Main {
 			Kala.world.add(circle);
 			
 			var rect = new Rectangle(200, 160, true, true);
-			rect.position.setOrigin(100, 80).setXYBetween(0, 0, 800, 600, 50, 50);
+			rect.position.setOrigin(100, 80).setXY(400, 300);
 			rect.lineColor.rgb = 0xff0000;
 			rect.lineStrenght = 4;
 			Kala.world.add(rect);
@@ -255,7 +254,7 @@ class Main {
 			group.add(circle);
 			
 			var rect = new Rectangle(200, 160);
-			rect.position.setOrigin(100, 80).setXY( -200, 0);
+			rect.position.set( -200, 0, 100, 80);
 			group.add(rect);
 			
 			var polygon = new Polygon([
@@ -277,6 +276,8 @@ class Main {
 
 #####GROUP VIEW
 
+View is a special kind of object. It can be used as camera or to make effects like shadow, mirror, etc.
+
 ```haxe
 package;
 
@@ -297,7 +298,7 @@ class Main {
 			Kala.world.add(group);
 			
 			var view = new View(0, 0, 200, 200);
-			view.position.setOrigin(100, 100).setXYBetween(0, 0, 800, 600);
+			view.position.set(400, 300, 100, 100);
 			view.rotation.setPivot(100, 100);
 			view.skew.setOrigin(100, 100);
 			view.viewPos.setOrigin(100, 100);
@@ -383,7 +384,7 @@ Collider is a component using SAT for collision detection. It can be applied to 
 
 Collision shapes will always get transformed correctly as theirs objects get transformed.
 
-You can also use kala.math.Collision directly without the component for better performance. We can forget the awkward bounding box.
+You can also use `kala.math.Collision` directly without the component for better performance. We can forget the awkward bounding box.
 
 ```haxe
 package;
@@ -404,7 +405,7 @@ class Main {
 		Kala.world.onFirstFrame.add(function(_) {
 			
 			var rect1 = new Rectangle(200, 100, false, true);
-			rect1.position.setOrigin(100, 50).setXYBetween(0, 0, 800, 600);
+			rect1.position.set(400, 300, 100, 50);
 			rect1.skew.setOrigin(100, 50).x = 50;
 			Kala.world.add(rect1);
 			
@@ -421,7 +422,7 @@ class Main {
 			group.add(circle);
 			
 			var rect2 = new Rectangle(160, 80, false, true);
-			rect2.position.setOrigin(80, 40).setXY( -160, 0);
+			rect2.position.set( -160, 0, 80, 40);
 			rect2.lineStrenght = 2;
 			group.add(rect2);
 			
@@ -431,7 +432,7 @@ class Main {
 				new Vec2(160, 0)
 			];
 			var polygon = new Polygon(vertices, false, true);
-			polygon.position.setOrigin(80, 40).setXY(160, 0);
+			polygon.position.set(160, 0, 80, 40);
 			polygon.lineStrenght = 2;
 			group.add(polygon);
 			
@@ -463,6 +464,71 @@ class Main {
 		});
 		
 		Kala.start();
+		
+	}
+	
+}
+```
+
+#####TIMER
+
+```haxe
+package;
+
+import kala.Kala;
+import kala.components.Timer;
+import kala.input.Keyboard;
+import kala.objects.shapes.Circle;
+import kala.objects.shapes.Rectangle;
+
+
+class Main {
+	
+	public static function main() {
+		
+		Kala.world.onFirstFrame.add(function(_) {
+			
+			var player = new Rectangle(60, 60);
+			player.position.setOrigin(30, 30).setXY(300, 300);
+			Kala.world.add(player);
+			
+			var timer = new Timer().addTo(player);
+			
+			player.onPreUpdate.add(function(_, _) {
+				if (Keyboard.pressed.LEFT) player.x -= 4;
+				if (Keyboard.pressed.RIGHT) player.x += 4;
+				if (Keyboard.pressed.UP) player.y -= 4;
+				if (Keyboard.pressed.DOWN) player.y += 4;
+				
+				if (Keyboard.pressed.Z) {
+					timer.cooldown(1, 15, function() {
+						// We create new bullet with inlined callback and destroy them when out of screen
+						// only for the sake of simplicity. In a real project, we should pool them using 
+						// pool.ObjectPool to avoid memory leak.
+						var bullet = new Rectangle(30, 5);
+						Kala.world.add(bullet);
+						
+						bullet.position.copy(player.position);
+						
+						bullet.onPostUpdate.add(function(_, _) {
+							bullet.x += 15;
+							if (bullet.x > 800) bullet.destroy();
+						});
+					});
+				}
+			});
+			
+			var circle = new Circle(40);
+			circle.position.setXY(500, 300);
+			circle.scale.x = 2;
+			Kala.world.add(circle);
+			
+			timer.loop(60, 0, true, function(loopTask) {
+				circle.rotation.angle = 36 * loopTask.elapsedExecutions;
+			});
+		});
+		
+		Kala.start(); 
 		
 	}
 	

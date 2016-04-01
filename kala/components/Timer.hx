@@ -20,9 +20,9 @@ class Timer extends Component<Object> {
 	override public function reset():Void {
 		super.reset();
 		
-		while (_coolingDownIDs.length > 0)_coolingDownIDs.pop();
-		while (_coolingDownFunctions.length > 0)_coolingDownFunctions.pop();
-		while (_loopTasks.length > 0)_loopTasks.pop();
+		while (_coolingDownIDs.length > 0) _coolingDownIDs.pop();
+		while (_coolingDownFunctions.length > 0) _coolingDownFunctions.pop();
+		while (_loopTasks.length > 0 )_loopTasks.pop();
 	}
 	
 	override public function addTo(object:Object):Timer {
@@ -39,7 +39,7 @@ class Timer extends Component<Object> {
 		}
 	}
 	
-	public function cooldown(?id:Int, func:Void->Void, coolingTime:Int):Bool {
+	public function cooldown(?id:Int, coolingTime:Int, func:Void->Void):Bool {
 		if (id == null) {
 			for (cdFunc in _coolingDownFunctions) {
 				if (cdFunc.a == func) return false;
@@ -55,22 +55,25 @@ class Timer extends Component<Object> {
 			if (cdID.a == id) return false;
 		}
 		
+		_coolingDownIDs.push(new Pair<Int, Int>(id, coolingTime));
+		func();
+		
 		return true;
 	}
 	
-	public function delay(delayTime:Int, func:Void->Void):LoopTask {
+	public function delay(delayTime:Int, func:LoopTask->Void):LoopTask {
 		var task = new LoopTask(delayTime, 1, func, null);
 		_loopTasks.push(task);
 		return task;
 	}
 	
-	public function loop(duration:Int, execTimes:Int, ?execFirst:Bool = false, onExecute:Void->Void, onComplete:Void->Void):LoopTask {
+	public function loop(duration:Int, execTimes:Int, ?execFirst:Bool = false, onExecute:LoopTask->Void, ?onComplete:LoopTask->Void):LoopTask {
 		var task = new LoopTask(duration, execTimes, onExecute, onComplete);
 		_loopTasks.push(task);
 		
 		if (execFirst) {
 			task.elapsedExecutions++;
-			onExecute();
+			onExecute(task);
 		}
 		
 		return task;
@@ -110,11 +113,11 @@ class Timer extends Component<Object> {
 				task.elapsedTime = 0;
 				
 				task.elapsedExecutions++;
-				task.onExecCB();
+				task.onExecCB(task);
 				
 				if (task.totalExecutions > 0 && (task.elapsedExecutions == task.totalExecutions)) {
 					_loopTasks.splice(i, 1);
-					if (task.onCompleteCB != null) task.onCompleteCB();
+					if (task.onCompleteCB != null) task.onCompleteCB(task);
 				}
 			}
 			
@@ -127,8 +130,8 @@ class Timer extends Component<Object> {
 @:allow(kala.components.Timer)
 class LoopTask {
 
-	public var onExecCB(default, null):Void->Void;
-	public var onCompleteCB(default, null):Void->Void;
+	public var onExecCB(default, null):LoopTask->Void;
+	public var onCompleteCB(default, null):LoopTask->Void;
 	
 	public var duration:Int;
 	public var elapsedTime(default, null):Int;
@@ -136,7 +139,7 @@ class LoopTask {
 	public var totalExecutions:UInt;
 	public var elapsedExecutions(default, null):UInt;
 	
-	public inline function new(duration:Int, totalExecutions:UInt, onExecCB:Void->Void, onCompleteCB:Void->Void) {
+	public inline function new(duration:Int, totalExecutions:UInt, onExecCB:LoopTask->Void, onCompleteCB:LoopTask->Void) {
 		this.duration = duration;
 		this.totalExecutions = totalExecutions;
 		this.onExecCB = onExecCB;

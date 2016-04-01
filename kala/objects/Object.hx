@@ -265,8 +265,8 @@ class Object extends EventHandle {
 		return array;
 	}
 	
-	public inline function removefromGroups():Void {
-		for (group in getGroups()) group.remove(this);
+	public inline function removefromGroups(splice:Bool = false):Void {
+		for (group in getGroups()) group.remove(this, splice);
 	}
 	
 	public inline function getComponents():Array<IComponent> {

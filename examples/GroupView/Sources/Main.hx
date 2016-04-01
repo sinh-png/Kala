@@ -17,7 +17,7 @@ class Main {
 			Kala.world.add(group);
 			
 			var view = new View(0, 0, 200, 200);
-			view.position.setOrigin(100, 100).setXYBetween(0, 0, 800, 600);
+			view.position.set(400, 300, 100, 100);
 			view.rotation.setPivot(100, 100);
 			view.skew.setOrigin(100, 100);
 			view.viewPos.setOrigin(100, 100);

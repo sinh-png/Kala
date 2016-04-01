@@ -40,7 +40,7 @@ class Main {
 			group.add(circle);
 			
 			var rect = new Rectangle(200, 160);
-			rect.position.setOrigin(100, 80).setXY( -200, 0);
+			rect.position.set( -200, 0, 100, 80);
 			group.add(rect);
 			
 			var polygon = new Polygon([

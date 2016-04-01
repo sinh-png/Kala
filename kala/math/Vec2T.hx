@@ -33,6 +33,14 @@ class Vec2T {
 	}
 	
 	@:extern
+	public inline function copy(vec:Vec2T):Vec2T {
+		this.x = vec.x;
+		this.y = vec.y;
+		
+		return this;
+	}
+	
+	@:extern
 	public inline function setXY(x:FastFloat = 0, y:FastFloat = 0):Vec2T {
 		this.x = x;
 		this.y = y;
