@@ -16,7 +16,7 @@ class Main {
 			Kala.defaultFont = Assets.fonts.ClearSans_Regular;
 			
 			var text = new BasicText("HELLO WORLD", 40);
-			text.position.set(800, 600, text.width / 2, text.height / 2); // Center the text on screen.
+			text.position.set(400, 300, text.width / 2, text.height / 2); // Center the text on screen.
 			text.color.rgb = 0x00ffff; // Make it aqua blue because I like the color.  
 			Kala.world.add(text); // Add it into the root group.
 			
