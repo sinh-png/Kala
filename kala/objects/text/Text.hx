@@ -101,11 +101,13 @@ class Text extends BasicText {
 			refresh();
 			dirty = false;
 		}
-		
-		applyDrawingData(data, canvas);
-		
+
 		var color = data.color;
 		var colorBlendMode = data.colorBlendMode;
+		
+		data.color = null;
+		
+		applyDrawingData(data, canvas);
 		
 		if (color == null) {
 			color = this.color;
@@ -117,10 +119,12 @@ class Text extends BasicText {
 		
 		opacity = g2.opacity;
 		
+		// Drawing background
 		g2.color = new Color().setOverlay(Color.blendColors(bgColor, color, this.colorBlendMode)).argb();
 		g2.opacity = opacity * bgOpacity;
 		g2.fillRect(0, 0, width, height);
 
+		// Draw border 
 		g2.color = new Color().setOverlay(Color.blendColors(borderColor, color, this.colorBlendMode)).argb();
 		g2.opacity = opacity * borderOpacity;
 		g2.drawRect(0, 0, width, height, borderSize);

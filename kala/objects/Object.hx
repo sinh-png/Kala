@@ -309,7 +309,7 @@ class Object extends EventHandle {
 	function applyDrawingData(data:DrawingData, canvas:Canvas):Void {
 		var g2 = canvas.g2;
 		
-		if (this.antialiasing || antialiasing) {
+		if (this.antialiasing || data.antialiasing) {
 			if (g2.imageScaleQuality != ImageScaleQuality.High) {
 				g2.imageScaleQuality = ImageScaleQuality.High;
 			}
@@ -320,13 +320,13 @@ class Object extends EventHandle {
 		if (data.transformation == null) g2.transformation = _drawingMatrixCache = getMatrix();
 		else g2.transformation = _drawingMatrixCache = data.transformation.multmat(getMatrix());
 		
-		if (color == null) {
+		if (data.color == null) {
 			g2.color = this.color.argb();
 		} else {
-			g2.color = new Color().setOverlay(Color.blendColors(this.color, color, data.colorBlendMode)).argb();
+			g2.color = new Color().setOverlay(Color.blendColors(this.color, data.color, data.colorBlendMode)).argb();
 		}
 		
-		g2.opacity = this.opacity * opacity;
+		g2.opacity = this.opacity * data.opacity;
 	}
 		
 	function get_width():FastFloat {

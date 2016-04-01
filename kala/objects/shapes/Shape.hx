@@ -53,7 +53,7 @@ class Shape extends Object {
 		if (color == null) {
 			_color = this.color;
 		} else {
-			_color = Color.blendColors(this.color, color, colorBlendMode);
+			_color = Color.blendColors(this.color, data.color, data.colorBlendMode);
 		}
 				
 		_opacity = canvas.g2.opacity;
