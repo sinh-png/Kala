@@ -26,6 +26,16 @@ class Object extends EventHandle {
 	
 	//
 	
+	/**
+	 * Shortcut to access position.x
+	 */
+	public var x(get, set):FastFloat;
+	
+	/**
+	 * Shortcut to access position.y
+	 */
+	public var y(get, set):FastFloat;
+	
 	public var position:Vec2T = new Vec2T();
 	
 	public var flipX:Bool;
@@ -355,6 +365,22 @@ class Object extends EventHandle {
 	
 	function get_group():BasicGroup {
 		return cast _crGroup;
+	}
+	
+	function get_x():FastFloat {
+		return position.x;
+	}
+	
+	function set_x(value:FastFloat):FastFloat {
+		return position.x = value;
+	}
+	
+	function get_y():FastFloat {
+		return position.y;
+	}
+	
+	function set_y(value:FastFloat):FastFloat {
+		return position.y = value;
 	}
 
 }

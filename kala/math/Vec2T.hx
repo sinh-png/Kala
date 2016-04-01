@@ -48,4 +48,15 @@ class Vec2T {
 		return this;
 	}
 	
+	@:extern
+	public inline function setXYBetween(
+		x1:FastFloat, y1:FastFloat, x2:FastFloat, y2:FastFloat,
+		xpercent:Int = 50, ypercent:Int = 50
+	):Vec2T {
+		this.x = x1 + (x2 - x1) * xpercent / 100;
+		this.y = y1 + (y2 - y1) * ypercent / 100;
+		
+		return this;
+	}
+	
 }
