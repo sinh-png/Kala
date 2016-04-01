@@ -42,8 +42,7 @@ class Main {
 			
 		});
 
-		// Does just what you expect.
-		Kala.start("Hello!", 800, 600); 
+		Kala.start(); 
 		
 	}
 	

@@ -8,7 +8,7 @@ class Main {
 	
 	public static function main() {
 		
-		// Kala.world is the root group that contains all other objects. Groups are also a type of object.
+		// Kala.world is the root group that contains all other objects. Group is also a type of object.
 		// onFirstFrame is a handle for callbacks that will be executed right before the first update / draw of an object. 
 		Kala.world.onFirstFrame.add(function(_) {
 			

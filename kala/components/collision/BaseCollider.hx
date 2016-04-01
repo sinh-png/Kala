@@ -141,13 +141,13 @@ class BaseCollider<T:Object> extends Component<T> implements ICollider {
 		return result;
 	}
 	
-	public function drawDebug(color:Color, ?lineStrenght:FastFloat = 1, canvas:Canvas):Void {
+	public function drawDebug(color:UInt, ?lineStrenght:FastFloat = 1, canvas:Canvas):Void {
 		if (object == null) return;
 		
 		if (!postDrawUpdate) update();
 		
 		var g2 = canvas.g2;
-		g2.color = color.argb();
+		g2.color = color;
 		g2.opacity = 1;
 		
 		for (shape in _shapes) {

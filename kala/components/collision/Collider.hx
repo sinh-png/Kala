@@ -41,5 +41,20 @@ class Collider extends BaseCollider<Object> {
 		return rect;
 	}
 	
+	// TODO: If concave set to true, break polygon into multiple triangles.
+	public function addPolygon(x:FastFloat, y:FastFloat, vertices:Array<Vec2>, concave:Bool = false):Array<CollisionPolygon> {
+		if (concave) {
+			return null;
+		}
+		
+		var polygon = CollisionPolygon.get();
+		polygon.collider = this;
+		polygon.position.set(x, y);
+		polygon.vertices = vertices.copy();
+		_shapes.push(polygon);
+		
+		return [polygon];
+	}
+	
 }
 

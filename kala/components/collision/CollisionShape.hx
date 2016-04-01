@@ -139,7 +139,7 @@ class CollisionCircle extends CollisionShape {
 		updateMatrix();
 		circle.updateMatrix();
 		
-		var otherStillCircle = circle.stillCircleAfterTrasnform();
+		var otherStillCircle = circle.hasSymmetricalTransformation();
 		
 		var otherX = circle.matrix._20;
 		var otherY = circle.matrix._21;
@@ -147,7 +147,7 @@ class CollisionCircle extends CollisionShape {
 		
 		var data:CollisionData;
 		
-		if (stillCircleAfterTrasnform()) {
+		if (hasSymmetricalTransformation()) {
 			var x = matrix._20;
 			var y = matrix._21;
 			var radius = radius * matrix._00;
@@ -186,7 +186,7 @@ class CollisionCircle extends CollisionShape {
 		
 		var data:CollisionData;
 		
-		if (stillCircleAfterTrasnform()) {
+		if (hasSymmetricalTransformation()) {
 			data = Collision.circleVsPolygon(matrix._20, matrix._21, radius * matrix._00, polygon.getTransformedVertices());
 			if (data == null) return null;
 			return new CollisionResult(this, polygon, data);
@@ -206,7 +206,7 @@ class CollisionCircle extends CollisionShape {
 	override public function testPoint(pointX:FastFloat, pointY:FastFloat):Bool {
 		updateMatrix();
 		
-		if (stillCircleAfterTrasnform()) {
+		if (hasSymmetricalTransformation()) {
 			return Collision.pointVsCircle(pointX, pointY, matrix._20, matrix._21, radius * matrix._00);
 		}
 		
@@ -258,7 +258,7 @@ class CollisionCircle extends CollisionShape {
 		_verticesUpdated = true;
 	}
 	
-	public inline function stillCircleAfterTrasnform():Bool {
+	public inline function hasSymmetricalTransformation():Bool {
 		return matrix._00 == matrix._11 && matrix._10 == 0 && matrix._01 == 0;
 	}
 	
@@ -309,6 +309,8 @@ class CollisionPolygon extends CollisionShape {
 		var result = Collision.polygonVsPolygon(
 			updateMatrix().getTransformedVertices(), polygon.updateMatrix().getTransformedVertices()
 		);
+		
+		if (result == null) return null;
 		
 		if (result.b) {
 			return new CollisionResult(polygon, this, result.a);
