@@ -15,6 +15,7 @@ The examples below will show you some of the implemented features of the engine 
 5. [Group transformation](https://github.com/hazagames/Kala#group-transformation)
 6. [Group view](https://github.com/hazagames/Kala#group-view)
 7. [Text](https://github.com/hazagames/Kala#text)
+8. [Collision detection](https://github.com/hazagames/Kala#collision-detection)
 
 #####HELLO WORLD
 
