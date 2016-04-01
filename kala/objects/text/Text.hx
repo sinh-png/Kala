@@ -73,7 +73,7 @@ class Text extends BasicText {
 		borderColor.set();
 		borderOpacity = 0;
 		
-		bgColor.set(0);
+		bgColor.set();
 		bgOpacity = 0;
 		
 		textColor.set();
@@ -119,15 +119,17 @@ class Text extends BasicText {
 		
 		opacity = g2.opacity;
 		
-		// Drawing background
-		g2.color = new Color().setOverlay(Color.blendColors(bgColor, color, this.colorBlendMode)).argb();
-		g2.opacity = opacity * bgOpacity;
-		g2.fillRect(0, 0, width, height);
-
-		// Draw border 
-		g2.color = new Color().setOverlay(Color.blendColors(borderColor, color, this.colorBlendMode)).argb();
-		g2.opacity = opacity * borderOpacity;
-		g2.drawRect(0, 0, width, height, borderSize);
+		if (bgOpacity > 0) {
+			g2.color = new Color().setOverlay(Color.blendColors(bgColor, color, this.colorBlendMode)).argb();
+			g2.opacity = opacity * bgOpacity;
+			g2.fillRect(0, 0, width, height);
+		}
+		
+		if (borderOpacity > 0 || borderSize > 0) {
+			g2.color = new Color().setOverlay(Color.blendColors(borderColor, color, this.colorBlendMode)).argb();
+			g2.opacity = opacity * borderOpacity;
+			g2.drawRect(0, 0, width, height, borderSize);
+		}
 
 		var defaultTextColor = new Color().setOverlay(Color.blendColors(textColor, color, this.colorBlendMode)).argb();
 		g2.opacity = opacity * textOpacity;
