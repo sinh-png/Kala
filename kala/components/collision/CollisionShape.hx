@@ -1,9 +1,9 @@
 package kala.components.collision;
-import kala.components.collision.CollisionShape.CollisionCircle;
-import kala.components.collision.CollisionShape.CollisionPolygon;
 
 import kala.components.collision.BaseCollider.ICollider;
 import kala.components.collision.CollisionResult;
+import kala.components.collision.CollisionShape.CollisionCircle;
+import kala.components.collision.CollisionShape.CollisionPolygon;
 import kala.math.Collision;
 import kala.math.Rotation;
 import kala.math.Vec2;

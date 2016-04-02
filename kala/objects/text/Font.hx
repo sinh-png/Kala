@@ -24,11 +24,11 @@ abstract Font(Dynamic) from kha.Font to kha.Font from BitmapFont to BitmapFont {
 	}
 	
 	public inline function getBaseline(size:Int):FastFloat {
-		if (Std.is(this, kha.Font)) {
+		if (isBitmapFont()) {
+			return 0;
+		} else {
 			var font:kha.Font = cast this;
 			return font.baseline(size);
-		} else {
-			return 0;
 		}
 	}
 

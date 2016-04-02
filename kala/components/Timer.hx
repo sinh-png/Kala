@@ -6,6 +6,8 @@ import kala.objects.Object;
 import kala.util.types.Pair;
 import kha.FastFloat;
 
+// TODO: Timeline
+
 // There is something in this file that breaks code-completion.
 
 class Timer extends Component<Object> {
