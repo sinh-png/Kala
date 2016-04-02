@@ -12,7 +12,7 @@ class Main {
 		// onFirstFrame is a handle for callbacks that will be executed right before the first update / draw of an object. 
 		Kala.world.onFirstFrame.add(function(_) {
 			
-			// We set a default font that will be used for all text rendering.
+			// We set a default font that will be used for text rendering.
 			Kala.defaultFont = Assets.fonts.ClearSans_Regular;
 			
 			var text = new BasicText("HELLO WORLD", 40);

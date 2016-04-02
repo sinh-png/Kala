@@ -34,11 +34,11 @@ class Timer extends Component<Object> {
 	}
 
 	override public function remove():Void {
-		super.remove();
-		
 		if (object != null) {
 			object.onPostUpdate.removeComponentCB(this, update);
 		}
+		
+		super.remove();
 	}
 	
 	public function cooldown(?id:Int, coolingTime:Int, func:Void->Void):Bool {

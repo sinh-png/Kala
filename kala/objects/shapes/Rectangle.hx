@@ -18,10 +18,10 @@ class Rectangle extends Shape {
 	override public function draw(data:DrawingData, canvas:Canvas):Void {
 		applyDrawingData(data, canvas);
 
-		applyDrawingFillData();
+		applyFillDrawingData();
 		canvas.g2.fillRect(0, 0, _width, _height);
 
-		applyDrawingLineData();
+		applyLineDrawingData();
 		canvas.g2.drawRect(0, 0, _width, _height, lineStrenght);
 	}
 	

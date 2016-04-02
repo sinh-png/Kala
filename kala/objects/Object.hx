@@ -92,7 +92,7 @@ class Object extends EventHandle {
 	
 	//
 	
-	private var _drawingMatrixCache:FastMatrix3;
+	private var _cachedDrawingMatrix:FastMatrix3;
 	
 	public function new() {
 		super();
@@ -116,10 +116,10 @@ class Object extends EventHandle {
 		super.clearCBHandles();
 	}
 	
-		/**
+	/**
 	 * Reset properties to their values when this object was created. 
-	 * This won't remove this object from its groups.
-	 * This won't remove this object components.
+	 * This won't remove the object from its groups.
+	 * This won't remove the object components.
 	 * 
 	 * @param	componentsReset		If true will also reset components. 
 	 */
@@ -200,7 +200,7 @@ class Object extends EventHandle {
 	}
 	
 	public function isVisible():Bool {
-		//alive && visible && transformWidth != 0 && transformHeight != 0 && opacity > 0
+		//alive && visible && tWidth != 0 && tHeight != 0 && opacity > 0
 		return visible && scale.x != 0 && scale.y != 0 && opacity > 0;
 	}
 	
@@ -327,8 +327,8 @@ class Object extends EventHandle {
 			g2.imageScaleQuality = ImageScaleQuality.Low;
 		}
 	
-		if (data.transformation == null) g2.transformation = _drawingMatrixCache = getMatrix();
-		else g2.transformation = _drawingMatrixCache = data.transformation.multmat(getMatrix());
+		if (data.transformation == null) g2.transformation = _cachedDrawingMatrix = getMatrix();
+		else g2.transformation = _cachedDrawingMatrix = data.transformation.multmat(getMatrix());
 		
 		if (data.color == null) {
 			g2.color = this.color.argb();

@@ -13,7 +13,7 @@ class Main {
 		Kala.world.onFirstFrame.add(function(_) {
 			
 			var circle = new Circle(80);
-			circle.position.setXYBetween(0, 0, 800, 600, 20, 50);
+			circle.position.setXYBetween(0, 0, 800, 600, 20);
 			Kala.world.add(circle);
 			
 			var rect = new Rectangle(200, 160, true, true);
@@ -27,7 +27,7 @@ class Main {
 				new Vec2(160, 160),
 				new Vec2(160, 0)
 			], false);
-			polygon.position.setOrigin(80, 80).setXYBetween(0, 0, 800, 600, 80, 50);
+			polygon.position.setOrigin(80, 80).setXYBetween(0, 0, 800, 600, 80);
 			polygon.lineOpacity = 1;
 			polygon.lineStrenght = 2;
 			Kala.world.add(polygon);

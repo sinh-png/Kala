@@ -71,12 +71,12 @@ class Shape extends Object {
 		
 	}
 	
-	inline function applyDrawingFillData():Void {
+	inline function applyFillDrawingData():Void {
 		_canvas.g2.color = new Color().setOverlay(Color.blendColors(fillColor, _color, this.colorBlendMode)).argb();
 		_canvas.g2.opacity = _opacity * fillOpacity;
 	}
 	
-	inline function applyDrawingLineData():Void {
+	inline function applyLineDrawingData():Void {
 		_canvas.g2.color = new Color().setOverlay(Color.blendColors(lineColor, _color, this.colorBlendMode)).argb();
 		_canvas.g2.opacity = _opacity * lineOpacity;
 	}

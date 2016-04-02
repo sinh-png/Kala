@@ -10,9 +10,9 @@ class Vec2 {
 		return [for (vec in vectors) new Vector2(vec.x, vec.y)];
 	}
 	
-	public var x:Float;
-	public var y:Float;
-	public var length(get, set):Float;
+	public var x:FastFloat;
+	public var y:FastFloat;
+	public var length(get, set):FastFloat;
 	
 	public inline function new(x:FastFloat = 0, y:FastFloat = 0): Void {
 		this.x = x;
@@ -138,11 +138,11 @@ class Vec2 {
         return this;
     }
 	
-	function get_length():FastFloat {
+	inline function get_length():FastFloat {
 		return Math.sqrt(x * x + y * y);
 	}
 	
-	function set_length(value:FastFloat):FastFloat {
+	inline function set_length(value:FastFloat):FastFloat {
         var angle = Math.atan2(y, x);
 
         x = Math.cos(angle) * value;
@@ -158,8 +158,4 @@ class Vec2 {
 		return "Vec2(x: " + x + ", y: " + y + ")";
 	}
 	
-
-
-	
-
 } 

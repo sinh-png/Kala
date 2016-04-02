@@ -86,8 +86,8 @@ class Group<T:Object> extends Object {
 		if (transformEnable) {
 			data.antialiasing = this.antialiasing || data.antialiasing;
 			
-			if (data.transformation == null) data.transformation = _drawingMatrixCache = getMatrix();
-			else data.transformation = _drawingMatrixCache = data.transformation.multmat(getMatrix());
+			if (data.transformation == null) data.transformation = _cachedDrawingMatrix = getMatrix();
+			else data.transformation = _cachedDrawingMatrix = data.transformation.multmat(getMatrix());
 		
 			if (data.color == null) {
 				data.color = this.color;

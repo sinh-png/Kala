@@ -28,10 +28,10 @@ class Circle extends Shape {
 	override public function draw(data:DrawingData, canvas:Canvas):Void {
 		applyDrawingData(data, canvas);
 
-		applyDrawingFillData();
+		applyFillDrawingData();
 		canvas.g2.fillCircle(0, 0, radius, segments);
 		
-		applyDrawingLineData();
+		applyLineDrawingData();
 		canvas.g2.drawCircle(0, 0, radius, lineStrenght, segments);
 	}
 	

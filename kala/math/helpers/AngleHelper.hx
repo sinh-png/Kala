@@ -1,4 +1,5 @@
 package kala.math.helpers;
+
 import kha.FastFloat;
 
 class AngleHelper {
@@ -7,13 +8,13 @@ class AngleHelper {
 	public static var CONST_DEG(default, never):FastFloat = 180 / Math.PI;
 	
 	@:extern
-	public static inline function degToRad(deg:FastFloat):FastFloat {
+	public static inline function toRad(deg:FastFloat):FastFloat {
 		return deg * CONST_RAD;
 	}
 	
 	
 	@:extern
-	public static inline function radToDeg(rad:FastFloat):FastFloat {
+	public static inline function toDeg(rad:FastFloat):FastFloat {
 		return rad * CONST_DEG;
 	}
 	

@@ -74,12 +74,12 @@ class BaseCollider<T:Object> extends Component<T> implements ICollider {
 	}
 	
 	override public function remove():Void {
-		super.remove();
-		
 		if (postDrawUpdate && object != null) {
 			object.onPostDraw.removeComponentCB(this, postDrawCB);
 			_postDrawCBAdded = false;
 		}
+		
+		super.remove();
 	}
 
 	/**

@@ -56,12 +56,12 @@ class SpriteAnimation extends Component<Sprite> {
 	}
 	
 	override public function remove():Void {
-		super.remove();
-		
 		if (object != null) {
 			object.onPostUpdate.removeComponentCB(this, update);
 			object.animation = null;
 		}
+		
+		super.remove();
 	}
 	
 	public function play(?key:String, ?delay:UInt, ?reversed:Bool):SpriteAnimation {

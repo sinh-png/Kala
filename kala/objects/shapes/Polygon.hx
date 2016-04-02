@@ -21,10 +21,10 @@ class Polygon extends Shape {
 	override public function draw(data:DrawingData, canvas:Canvas):Void {
 		applyDrawingData(data, canvas);
 		
-		applyDrawingFillData();
+		applyFillDrawingData();
 		canvas.g2.fillPolygon(0, 0, [for (vector in vertices) vector.toVector2()]);
 		
-		applyDrawingLineData();
+		applyLineDrawingData();
 		canvas.g2.drawPolygon(0, 0, [for (vector in vertices) vector.toVector2()], lineStrenght);
 	}
 	

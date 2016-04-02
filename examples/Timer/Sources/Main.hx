@@ -14,7 +14,7 @@ class Main {
 		Kala.world.onFirstFrame.add(function(_) {
 			
 			var player = new Rectangle(60, 60);
-			player.position.setOrigin(30, 30).setXY(300, 300);
+			player.position.set(300, 300, 30, 30);
 			Kala.world.add(player);
 			
 			var timer = new Timer().addTo(player);

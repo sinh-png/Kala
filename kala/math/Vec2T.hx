@@ -67,4 +67,8 @@ class Vec2T {
 		return this;
 	}
 	
+	public inline function toString():String {
+		return "Vec2T(x: " + x + ", y: " + y + ", ox: " + ox + ", oy: " + oy + ")" ;
+	}
+	
 }
