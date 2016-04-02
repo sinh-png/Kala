@@ -2,7 +2,7 @@ package kala.components.motion;
 
 import kala.components.Component;
 import kala.math.Vec2;
-import kala.math.Vec2V;
+import kala.math.Velocity;
 import kala.objects.Object;
 import kha.FastFloat;
 
@@ -10,8 +10,8 @@ using kala.math.helpers.AngleHelper;
 
 class VelocityMotion extends Component<Object> {
 
-	public var velocity:Vec2V = new Vec2V();
-	public var accel:Vec2V = new Vec2V();
+	public var velocity:Velocity = new Velocity();
+	public var accel:Velocity = new Velocity();
 	public var turnSpeed:FastFloat;
 	
 	override public function reset():Void {

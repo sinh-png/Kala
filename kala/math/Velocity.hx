@@ -4,7 +4,7 @@ import kha.FastFloat;
 
 using kala.math.helpers.AngleHelper;
 
-class Vec2V {
+class Velocity {
 
 	var _x:FastFloat;
 	var _y:FastFloat;
@@ -28,7 +28,7 @@ class Vec2V {
 	}
 	
 	@:extern
-	public inline function set(x:FastFloat = 0, y:FastFloat = 0):Vec2V {
+	public inline function set(x:FastFloat = 0, y:FastFloat = 0):Velocity {
 		this.x = x;
 		this.y = y;
 		
