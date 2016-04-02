@@ -1,8 +1,8 @@
-package kala.math.helpers;
+package kala.math;
 
 import kha.FastFloat;
 
-class AngleHelper {
+class Angle {
 
 	public static var CONST_RAD(default, never):FastFloat = Math.PI / 180; 
 	public static var CONST_DEG(default, never):FastFloat = 180 / Math.PI;

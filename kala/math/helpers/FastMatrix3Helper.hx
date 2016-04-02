@@ -52,7 +52,7 @@ class FastMatrix3Helper {
 			centerY = y + skew.oy;
 			
 			matrix = FastMatrix3.translation(centerX, centerY)
-					.multmat(new FastMatrix3(1, Math.tan(skew.x * AngleHelper.CONST_RAD), 0, Math.tan(skew.y * AngleHelper.CONST_RAD), 1, 0, 0, 0, 1))
+					.multmat(new FastMatrix3(1, Math.tan(skew.x * Angle.CONST_RAD), 0, Math.tan(skew.y * Angle.CONST_RAD), 1, 0, 0, 0, 1))
 					.multmat(FastMatrix3.translation( -centerX, -centerY))
 					.multmat(matrix);
 			

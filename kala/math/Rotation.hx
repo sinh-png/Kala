@@ -1,6 +1,6 @@
 package kala.math;
 
-import kala.math.helpers.AngleHelper;
+import kala.math.Angle;
 import kha.FastFloat;
 
 class Rotation {
@@ -34,24 +34,24 @@ class Rotation {
 	
 	@:extern
 	public inline function setRad(rad:FastFloat):Rotation {
-		angle = rad * AngleHelper.CONST_DEG;
+		angle = rad * Angle.CONST_DEG;
 		return this;
 	}
 	
 	@:extern
 	public inline function rad():FastFloat {
-		return angle * AngleHelper.CONST_RAD;
+		return angle * Angle.CONST_RAD;
 	}
 	
 	@:extern
 	public inline function setDeg(deg:FastFloat):Rotation {
-		angle = deg * AngleHelper.CONST_RAD;
+		angle = deg * Angle.CONST_RAD;
 		return this;
 	}
 	
 	@:extern
 	public inline function deg():FastFloat {
-		return angle * AngleHelper.CONST_DEG;
+		return angle * Angle.CONST_DEG;
 	}
 	
 }

@@ -2,7 +2,7 @@ package kala.math;
 
 import kha.FastFloat;
 
-using kala.math.helpers.AngleHelper;
+using kala.math.Angle;
 
 class Velocity {
 

@@ -3,7 +3,7 @@ package kala.objects;
 import kala.DrawingData;
 import kala.EventHandle;
 import kala.components.Component.IComponent;
-import kala.math.helpers.AngleHelper;
+import kala.math.Angle;
 import kala.math.helpers.FastMatrix3Helper;
 import kala.objects.group.Group;
 import kala.math.Color;
@@ -356,11 +356,11 @@ class Object extends EventHandle {
 	}
 	
 	function get_tWidth():FastFloat {
-		return Math.abs(width * scale.x) + Math.abs(height * scale.y * Math.tan(skew.x * AngleHelper.CONST_RAD));
+		return Math.abs(width * scale.x) + Math.abs(height * scale.y * Math.tan(skew.x * Angle.CONST_RAD));
 	}
 	
 	function get_tHeight():FastFloat {
-		return Math.abs(height * scale.y) + Math.abs(width  * scale.x  * Math.tan(skew.y * AngleHelper.CONST_RAD));
+		return Math.abs(height * scale.y) + Math.abs(width  * scale.x  * Math.tan(skew.y * Angle.CONST_RAD));
 	}
 	
 	function get_group():BasicGroup {

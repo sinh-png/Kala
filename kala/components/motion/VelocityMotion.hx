@@ -6,7 +6,7 @@ import kala.math.Velocity;
 import kala.objects.Object;
 import kha.FastFloat;
 
-using kala.math.helpers.AngleHelper;
+using kala.math.Angle;
 
 class VelocityMotion extends Component<Object> {
 
