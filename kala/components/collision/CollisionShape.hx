@@ -61,6 +61,10 @@ class CollisionShape {
 		matrix = null;
 	}
 	
+	public function put():Void {
+		
+	}
+	
 	public function updateMatrix():CollisionShape {
 		matrix = collider._matrix.multmat(
 			FastMatrix3Helper.getTransformMatrix(position, scale, skew, rotation, flipX, flipY)
@@ -133,6 +137,10 @@ class CollisionCircle extends CollisionShape {
 	override public function reset():Void {
 		super.reset();
 		segments = 0;
+	}
+	
+	override public function put():Void {
+		pool.put(this);
 	}
 	
 	override public function testCircle(circle:CollisionCircle):CollisionResult {
@@ -297,6 +305,10 @@ class CollisionPolygon extends CollisionShape {
 	public function new() {
 		super();
 		isCircle = false;
+	}
+	
+	override public function put():Void {
+		pool.put(this);
 	}
 
 	override public function testCircle(circle:CollisionCircle):CollisionResult {

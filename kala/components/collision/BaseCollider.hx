@@ -48,13 +48,13 @@ class BaseCollider<T:Object> extends Component<T> implements ICollider {
 	override public function reset():Void {
 		super.reset();
 		postDrawUpdate = true;
-		while (_shapes.length > 0) _shapes.pop().destroy();
+		while (_shapes.length > 0) _shapes.pop().put();
 	}
 	
 	override public function destroy():Void {
 		super.destroy();
 		
-		while (_shapes.length > 0) _shapes.pop();
+		while (_shapes.length > 0) _shapes.pop().put();
 		_shapes = null;
 		
 		_matrix = null;
