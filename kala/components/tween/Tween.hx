@@ -78,18 +78,23 @@ class TweenTimeline {
 	public var pos(default, null):Int;
 	public var node(default, null):TweenNode;
 	
-	public var loopsLeft(default, null):UInt;
-	public var loopStartPos(default, null):UInt;
+	public var loopsLeft(default, null):Array<UInt> = new Array<UInt>();
+	public var loopStartPos(default, null):Array<UInt> = new Array<UInt>();
+	
+	public var waitTimeLeft(default, null):Int;
 	
 	public var target(default, null):Dynamic;
 	public var duration(default, null):UInt;
 	public var ease(default, null):EaseFunction;
 	public var tweenUpdateCB(default, null):TweenTask->Void;
 	
-	private var _originTarget:Dynamic;
-	private var _originDuration:UInt;
-	private var _originEase:EaseFunction;
-	private var _originTweenUpdateCB:TweenTask->Void;
+	private var _prvTweenTask:TweenTask;
+	private var _crTweenTask:TweenTask;
+
+	private var _orgnTarget:Dynamic;
+	private var _orgnDuration:UInt;
+	private var _orgnEase:EaseFunction;
+	private var _orgnTweenUpdateCB:TweenTask->Void;
 	
 	private var _manager:Tween;
 	
@@ -103,10 +108,10 @@ class TweenTimeline {
 	):TweenTimeline {
 		_manager = manager;
 		
-		_originTarget = target;
-		_originDuration = duration;
-		_originEase = ease;
-		_originTweenUpdateCB = tweenUpdateCB;
+		_orgnTarget = target;
+		_orgnDuration = duration;
+		_orgnEase = ease;
+		_orgnTweenUpdateCB = tweenUpdateCB;
 		
 		reset();
 		
@@ -115,27 +120,74 @@ class TweenTimeline {
 	
 	public function reset():Void {
 		while (nodes.length > 0) nodes.pop();
+		while (loopsLeft.length > 0) loopsLeft.pop();
+		while (loopStartPos.length > 0) loopStartPos.pop();
 		
 		pos = -1;
 		node = null;
 		
-		loopsLeft = 0;
-		loopStartPos = 0;
+		target = _orgnTarget;
+		duration = _orgnDuration;
+		ease = _orgnEase;
+		tweenUpdateCB = _orgnTweenUpdateCB;
+	}
+	
+	public function destroy():Void {
+		cancel();
 		
-		target = _originTarget;
-		duration = _originDuration;
-		ease = _originEase;
-		tweenUpdateCB = _originTweenUpdateCB;
+		_orgnTarget = null;
+		_orgnEase = null;
+		_orgnTweenUpdateCB = null;
+		
+		target = null;
+		ease = null;
+		tweenUpdateCB = null;
+		
+		node = null;
+		
+		while (nodes.length > 0) nodes.pop();
+		while (loopsLeft.length > 0) loopsLeft.pop();
+		while (loopStartPos.length > 0) loopStartPos.pop();
+		
+		nodes = null;
+		loopsLeft = null;
+		loopStartPos = null;
 	}
 	
 	public function put():Void {
-		_manager = null;
+		cancel();
+		
+		_orgnTarget = null;
+		_orgnEase = null;
+		_orgnTweenUpdateCB = null;
+		
+		target = null;
+		ease = null;
+		tweenUpdateCB = null;
+		
+		node = null;
+		
+		while (nodes.length > 0) nodes.pop();
+		while (loopsLeft.length > 0) loopsLeft.pop();
+		while (loopStartPos.length > 0) loopStartPos.pop();
+		
 		pool.put(this);
+	}
+	
+	public function cancel():Void {
+		if (_manager != null) {
+			_manager._tweens.remove(this);
+			_manager = null;
+		}
 	}
 	
 	public function start(?manager:Tween):Void {
 		if (manager != null) _manager = manager;
+		
+		if (_manager == null) throw "Needs a manager to start.";
+		
 		_manager._tweens.push(this);
+		
 		nextNode();
 	}
 	
@@ -147,8 +199,15 @@ class TweenTimeline {
 		vars:Dynamic, ?duration:UInt = 0, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void, ?target:Dynamic
 	):TweenTimeline {
 		var task = TweenTask.get();
-		task.init(target, vars, duration, ease, onUpdateCB, false);
+		task.init(target, vars, duration, ease, onUpdateCB);
 		nodes.push(TWEEN(task));
+		return this;
+	}
+	
+	public function tweenBack(?duration:UInt = 0, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void):TweenTimeline {
+		var task = TweenTask.get();
+		task.init(null, null, duration, ease, onUpdateCB);
+		nodes.push(BACKWARD_TWEEN(task));
 		return this;
 	}
 	
@@ -157,16 +216,39 @@ class TweenTimeline {
 		return this;
 	}
 	
+	public function call(callback:TweenTimeline->Void):TweenTimeline {
+		nodes.push(CALL(callback));
+		return this;
+	}
+	
+	public function startLoop(times:UInt):TweenTimeline {
+		nodes.push(START_LOOP(times));
+		return this;
+	}
+	
+	public function endLoop():TweenTimeline {
+		nodes.push(END_LOOP);
+		return this;
+	}
+	
 	function update(delta:FastFloat):Void {
-		switch(node) {
+		if (waitTimeLeft > 0) {
+			if (Kala.timingUnit == TimeUnit.FRAME) {
+				waitTimeLeft--;
+			} else {
+				waitTimeLeft -= Std.int(delta * 1000);
+			}
 			
-			case TWEEN(task):
-				if (task.update(delta)) {
+			if (waitTimeLeft <= 0) nextNode();
+			
+		} else {
+			if (_crTweenTask != null) {
+				if (_crTweenTask.update(delta)) {
+					_prvTweenTask = _crTweenTask;
+					_crTweenTask = null;
 					nextNode();
-					return;
 				}
-				
-			default:
+			}
 		}
 	}
 	
@@ -179,7 +261,10 @@ class TweenTimeline {
 		setPos(pos + 1);
 	}
 	
-	function setPos(index:Int):Void {
+	// Found out writing function type like Void->Void break code-completion if its below functions aren't declared
+	// with access modifier. Not sure if it's just my machine or a bug in general. Things suddenly get broken with FD.
+	// Seems like Haxe code-completion doesn't work on my machine anymore...
+	private function setPos(index:Int):Void {
 		if (index > nodes.length - 1) {
 			throw 'Jump index ($index) is out of range (0 - $(node.lenght - 1)).';
 		}
@@ -189,20 +274,65 @@ class TweenTimeline {
 		
 		switch(node) {
 			
-			case TWEEN(task): 
-				task.elapsed = 0;
+			case TWEEN(task):
+				task.target = task._orgnTarget == null ? target : task._orgnTarget;
+				task.duration = task._orgnDuration == 0 ? duration : task._orgnDuration;
+				task.ease = task._orgnEase == null ? ease : task._orgnEase;
+				task.onUpdateCB = task._orgnUpdateCB == null ? tweenUpdateCB : task._orgnUpdateCB;
+		
+				task.initVars(false);
+				_crTweenTask = task;
+					
+			case BACKWARD_TWEEN(task):
+				if (_prvTweenTask == null) {
+					nextNode();
+					return;
+				}
 				
-				if (task.target == null) task.target = target;
-				if (task.duration == 0) task.duration = duration;
-				if (task.ease == null) task.ease = ease;
-				if (task.onUpdateCB == null) task.onUpdateCB = tweenUpdateCB;
+				task.copyBackward(_prvTweenTask);
+				_crTweenTask = task;
 				
-				task.initVars();
+			case WAIT(duration):
+				waitTimeLeft = duration;
+				
+			case CALL(callback):
+				callback(this);
+				nextNode();
+			
+			case START_LOOP(times):
+				loopsLeft.push(times);
+				loopStartPos.push(pos + 1);
+				nextNode();
+				
+			case END_LOOP:
+				var i = loopsLeft.length - 1;
+				loopsLeft[i]--;
+				
+				if (loopsLeft[i] < 1) {
+					loopsLeft.pop();
+					loopStartPos.pop();
+					nextNode();
+					return;
+				}
+				
+				setPos(loopStartPos[i]);
 				
 			default: 
 				
 		}
 	}
+	
+}
+
+enum TweenNode {
+	
+	TWEEN(task:TweenTask);
+	BACKWARD_TWEEN(task:TweenTask);
+	WAIT(duration:Int);
+	CALL(callback:TweenTimeline->Void);
+	START_LOOP(times:UInt);
+	END_LOOP();
+	GOTO(index:UInt);
 	
 }
 
@@ -232,11 +362,14 @@ class TweenTask {
 	
 	public var onUpdateCB:TweenTask->Void;
 	
-	public var backward(default, null):Bool;
-	
 	private var _varNames:Array<String>;
 	private var _varStartValues:Array<FastFloat>;
 	private var _varRanges:Array<FastFloat>;
+	
+	private var _orgnTarget:Dynamic;
+	private var _orgnDuration:UInt;
+	private var _orgnEase:EaseFunction;
+	private var _orgnUpdateCB:TweenTask->Void;
 	
 	public function new() {
 		
@@ -244,17 +377,17 @@ class TweenTask {
 	
 	// Putting parameters to this function breaks code completion of below functions if they don't have acess modifier.
 	function init(
-		target:Dynamic, vars:Dynamic, duration:UInt, ease:EaseFunction, onUpdateCB:TweenTask->Void, backward:Bool
+		target:Dynamic, vars:Dynamic, duration:UInt, ease:EaseFunction, onUpdateCB:TweenTask->Void
 	):Void {
-		this.target = target;
 		this.vars = vars;
-		this.duration = duration;
-		this.ease = ease;
-		this.onUpdateCB = onUpdateCB;
-		this.backward = backward;
+		
+		_orgnTarget = target;
+		_orgnDuration = duration;
+		_orgnEase = ease;
+		_orgnUpdateCB = onUpdateCB;
 	}
 	
-	function initVars() {
+	function initVars(backward:Bool):Void {
 		percent = 0;
 		
 		if (!Reflect.isObject(vars)) {
@@ -296,7 +429,7 @@ class TweenTask {
 			}
 		}
 		
-		return this;
+		elapsed = 0;
 	}
 	
 	// Without "private", code completion will break.
@@ -323,14 +456,25 @@ class TweenTask {
 		return false;
 	}
 	
-}
+	private function copyBackward(task:TweenTask):Void {
+		target = task.target;
+		vars = task.vars;
+		
+		duration = _orgnDuration == 0 ? task.duration : _orgnDuration;
+		ease = _orgnEase == null ? task.ease : _orgnEase;
+		onUpdateCB = _orgnUpdateCB == null ? task.onUpdateCB : _orgnUpdateCB;
+		
+		_varNames = new Array<String>();
+		_varStartValues = new Array<FastFloat>();
+		_varRanges = new Array<FastFloat>();
+		
+		for (i in 0...task._varNames.length) {
+			_varNames.push(task._varNames[i]);
+			_varStartValues.push(task._varStartValues[i] + task._varRanges[i]);
+			_varRanges.push(-task._varRanges[i]);
+		}
 
-enum TweenNode {
-	
-	TWEEN(task:TweenTask);
-	WAIT(duration:UInt);
-	CALL(callback:Void->Void);
-	START_LOOP(times:UInt);
-	END_LOOP();
+		elapsed = 0;
+	}
 	
 }

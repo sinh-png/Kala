@@ -142,7 +142,7 @@ class Text extends BasicText {
 				var words:Array<String>;
 				var tx:FastFloat;
 				var ty:FastFloat = padding.y;
-				var spaceSize:FastFloat ;
+				var spaceSize:FastFloat;
 				
 				for (i in 0..._lines.length) {
 					line = _lines[i];
