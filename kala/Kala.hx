@@ -11,7 +11,6 @@ import kha.Font;
 import kha.Framebuffer;
 import kha.Scheduler;
 import kha.System;
-import kha.arrays.Float32Array;
 
 @:access(kala.objects.Object)
 class Kala {
