@@ -98,17 +98,18 @@ class Group<T:Object> extends Object {
 			g2.opacity = this.opacity * data.opacity;
 		}
 		
+		var drawingData = new DrawingData(
+			data.antialiasing,
+			data.transformation,
+			data.color, this.colorBlendMode,
+			data.opacity
+		);
+		
 		if (_views.length == 0) {
 			for (child in _children) {
 				if (child == null) continue;
 				
 				if (child.alive && child.isVisible()) {
-					var drawingData = new DrawingData(
-						data.antialiasing,
-						data.transformation,
-						data.color, this.colorBlendMode,
-						data.opacity
-					);
 					child.callDraw(this, drawingData, canvas);
 				}
 			}
@@ -117,12 +118,12 @@ class Group<T:Object> extends Object {
 			
 			var buffer:Image;
 			var matrix:FastMatrix3;
-
+			
 			for (view in _views) {
 				if (view == null) continue;
 				
 				buffer = view.buffer;
-				matrix = data.transformation.multmat(
+				drawingData.transformation = data.transformation.multmat(
 					FastMatrix3.translation( -view.viewPos.x + view.viewPos.ox, -view.viewPos.y + view.viewPos.oy)
 				);
 				
@@ -131,12 +132,6 @@ class Group<T:Object> extends Object {
 					if (child == null) continue;
 					
 					if (child.alive && child.isVisible()) {
-						var drawingData = new DrawingData(
-							data.antialiasing,
-							matrix,
-							data.color, this.colorBlendMode,
-							data.opacity
-						);
 						child.callDraw(this, drawingData, buffer);
 					}
 				}
@@ -145,16 +140,12 @@ class Group<T:Object> extends Object {
 			
 			g2.begin(false);
 			
+			drawingData.transformation = data.transformation;
+			
 			for (view in _views) {
 				if (view == null) continue;
 				
 				if (view.alive && view.isVisible()) {
-					var drawingData = new DrawingData(
-						data.antialiasing,
-						data.transformation,
-						data.color, this.colorBlendMode,
-						data.opacity
-					);
 					view.callDraw(this, drawingData, canvas);
 				}
 			}
