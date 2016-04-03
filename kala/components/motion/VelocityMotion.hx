@@ -13,12 +13,14 @@ class VelocityMotion extends Component<Object> {
 	public var velocity:Velocity = new Velocity();
 	public var accel:Velocity = new Velocity();
 	public var turnSpeed:FastFloat;
+	public var turnAccel:FastFloat;
 	
 	override public function reset():Void {
 		super.reset();
 		velocity.set();
 		accel.set();
 		turnSpeed = 0;
+		turnAccel = 0;
 	}
 	
 	override public function destroy():Void {
@@ -47,6 +49,7 @@ class VelocityMotion extends Component<Object> {
 		if (accel.x != 0) velocity.x += accel.x;
 		if (accel.y != 0) velocity.y += accel.y;
 		
+		turnSpeed += turnAccel;
 		if (turnSpeed != 0) velocity.angle += turnSpeed;
 		
 		obj.x += velocity.x;
