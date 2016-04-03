@@ -212,6 +212,11 @@ class TweenTimeline {
 		return this;
 	}
 	
+	public function waitEx(f:TweenTimeline->Int):TweenTimeline {
+		nodes.push(WAIT_EX(f));
+		return this;
+	}
+	
 	public function call(callback:TweenTimeline->Void):TweenTimeline {
 		nodes.push(CALL(callback));
 		return this;
@@ -296,6 +301,9 @@ class TweenTimeline {
 			case WAIT(duration):
 				waitTimeLeft = duration;
 				
+			case WAIT_EX(f):
+				waitTimeLeft = f(this);	
+				
 			case CALL(callback):
 				callback(this);
 				nextNode();
@@ -343,6 +351,7 @@ enum TweenNode {
 	TWEEN(task:TweenTask);
 	BACKWARD_TWEEN(task:TweenTask);
 	WAIT(duration:Int);
+	WAIT_EX(f:TweenTimeline->Int);
 	CALL(callback:TweenTimeline->Void);
 	START_LOOP(times:UInt);
 	END_LOOP();
