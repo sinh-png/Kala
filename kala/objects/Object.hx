@@ -1,17 +1,18 @@
 package kala.objects;
 
+
 import kala.DrawingData;
 import kala.EventHandle;
 import kala.components.Component.IComponent;
-import kala.math.Angle;
 import kala.math.helpers.FastMatrix3Helper;
-import kala.objects.group.Group;
+import kala.math.Angle;
 import kala.math.Color;
 import kala.math.Rect;
 import kala.math.Rotation;
 import kala.math.Vec2T;
 import kala.math.Vec2;
 import kala.pool.ObjectPool;
+import kala.objects.group.Group;
 import kha.Canvas;
 import kha.FastFloat;
 import kha.graphics2.ImageScaleQuality;
