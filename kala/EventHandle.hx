@@ -88,7 +88,7 @@ class CallbackHandle<T> implements ICallbackHandle {
 			i++;
 		}
 		
-		Debug.error('Incorrectly tried to remove a callback of component $component from object $this');
+		throw 'Incorrectly tried to remove a callback of component $component from object $this.';
 	}
 	
 	public function iterator():Iterator<Callback<T>> {
