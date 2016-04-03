@@ -27,12 +27,12 @@ class Object extends EventHandle {
 	//
 	
 	/**
-	 * Shortcut to access position.x
+	 * Shortcut to position.x
 	 */
 	public var x(get, set):FastFloat;
 	
 	/**
-	 * Shortcut to access position.y
+	 * Shortcut to position.y
 	 */
 	public var y(get, set):FastFloat;
 	
@@ -51,6 +51,7 @@ class Object extends EventHandle {
 	public var antialiasing:Bool;
 	
 	//
+	
 	var _width:FastFloat;
 	public var width(get, set):FastFloat;
 	var _height:FastFloat;
@@ -119,7 +120,7 @@ class Object extends EventHandle {
 	/**
 	 * Reset properties to their values when this object was created. 
 	 * This won't remove the object from its groups.
-	 * This won't remove the object components.
+	 * This won't remove added callbacks and components.
 	 * 
 	 * @param	componentsReset		If true will also reset components. 
 	 */
