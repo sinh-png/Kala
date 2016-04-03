@@ -56,5 +56,15 @@ class Collider extends BaseCollider<Object> {
 		return [polygon];
 	}
 	
+	public inline function addShape(shape:CollisionShape):CollisionShape {
+		_shapes.push(shape);
+		return shape;
+	}
+	
+	public inline function removeShape(shape:CollisionShape):CollisionShape {
+		if (_shapes.remove(shape)) return shape;
+		return null;
+	}
+	
 }
 
