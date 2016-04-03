@@ -191,10 +191,6 @@ class TweenTimeline {
 		nextNode();
 	}
 	
-	public function stop():Void {
-		_manager._tweens.remove(this);
-	}
-
 	public function tween(
 		vars:Dynamic, ?duration:UInt = 0, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void, ?target:Dynamic
 	):TweenTimeline {
@@ -231,6 +227,11 @@ class TweenTimeline {
 		return this;
 	}
 	
+	public function jump(routingFunc:TweenTimeline->Int):TweenTimeline {
+		nodes.push(JUMP(routingFunc));
+		return this;
+	}
+	
 	function update(delta:FastFloat):Void {
 		if (waitTimeLeft > 0) {
 			if (Kala.timingUnit == TimeUnit.FRAME) {
@@ -254,7 +255,7 @@ class TweenTimeline {
 	
 	function nextNode():Void {
 		if (pos == nodes.length - 1) {
-			stop();
+			cancel();
 			return;
 		}
 		
@@ -305,20 +306,33 @@ class TweenTimeline {
 				nextNode();
 				
 			case END_LOOP:
-				var i = loopsLeft.length - 1;
-				loopsLeft[i]--;
+				if (loopsLeft.length == 0) {
+					throw 'End loop declared without a start at ($pos).';
+				}
 				
-				if (loopsLeft[i] < 1) {
-					loopsLeft.pop();
-					loopStartPos.pop();
+				var i = loopsLeft.length - 1;
+				if (loopsLeft[i] > 0) {
+					if (loopsLeft[i] == 1) {
+						loopsLeft.pop();
+						loopStartPos.pop();
+						nextNode();
+						return;
+					}
+					
+					loopsLeft[i]--;
+				}
+	
+				setPos(loopStartPos[i]);
+				
+			case JUMP(routingFunc):
+				var index = routingFunc(this);
+				
+				if (index < 0 || index >= nodes.length) {
 					nextNode();
 					return;
 				}
 				
-				setPos(loopStartPos[i]);
-				
-			default: 
-				
+				setPos(index);
 		}
 	}
 	
@@ -332,7 +346,7 @@ enum TweenNode {
 	CALL(callback:TweenTimeline->Void);
 	START_LOOP(times:UInt);
 	END_LOOP();
-	GOTO(index:UInt);
+	JUMP(routingFunc:TweenTimeline->Int);
 	
 }
 
