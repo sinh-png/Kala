@@ -15,8 +15,11 @@ class Timer extends Component<Object> {
 	private var _coolingDownFunctions:Array<Pair<Void->Void, Int>> = new Array<Pair<Void->Void, Int>>();
 	
 	private var _loopTasks:Array<LoopTask> = new Array<LoopTask>();
+<<<<<<< HEAD
 	
 	private var _timelines:Array<Timeline> = new Array<Timeline>();
+=======
+>>>>>>> ff179c5f9e50a0989b9758ea14248865d3e1c90f
 	
 	override public function reset():Void {
 		super.reset();
