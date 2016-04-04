@@ -1,7 +1,7 @@
 package;
 
 import kala.Kala;
-import kala.components.Timer;
+import kala.components.timer.Timer;
 import kala.input.Keyboard;
 import kala.objects.shapes.Circle;
 import kala.objects.shapes.Rectangle;

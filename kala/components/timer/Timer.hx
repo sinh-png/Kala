@@ -1,14 +1,14 @@
-package kala.components;
+package kala.components.timer;
 
-import kala.components.tween.Tween.Timeline;
 import kala.Kala.TimeUnit;
 import kala.components.Component;
 import kala.objects.Object;
 import kala.util.types.Pair;
 import kha.FastFloat;
 
-// TODO: Timeline
-
+/**
+ * For timeline, use Tween instead.
+ */
 class Timer extends Component<Object> {
 	
 	private var _coolingDownIDs:Array<Pair<Int, Int>> = new Array<Pair<Int, Int>>();
@@ -125,7 +125,7 @@ class Timer extends Component<Object> {
 	
 }
 
-@:allow(kala.components.Timer)
+@:allow(kala.components.timer.Timer)
 class LoopTask {
 
 	public var onExecCB(default, null):LoopTask->Void;
