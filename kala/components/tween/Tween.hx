@@ -232,8 +232,8 @@ class TweenTimeline {
 		return this;
 	}
 	
-	public function jump(routingFunc:TweenTimeline->Int):TweenTimeline {
-		nodes.push(JUMP(routingFunc));
+	public function jump(f:TweenTimeline->Int):TweenTimeline {
+		nodes.push(JUMP(f));
 		return this;
 	}
 	
@@ -266,11 +266,8 @@ class TweenTimeline {
 		
 		setPos(pos + 1);
 	}
-	
-	// Found out writing function type like Void->Void break code-completion if its below functions aren't declared
-	// with access modifier. Not sure if it's just my machine or a bug in general. Things suddenly get broken with FD.
-	// Seems like Haxe code-completion doesn't work on my machine anymore...
-	private function setPos(index:Int):Void {
+
+	function setPos(index:Int):Void {
 		if (index > nodes.length - 1) {
 			throw 'Jump index ($index) is out of range (0 - $(node.lenght - 1)).';
 		}
@@ -332,8 +329,8 @@ class TweenTimeline {
 	
 				setPos(loopStartPos[i]);
 				
-			case JUMP(routingFunc):
-				var index = routingFunc(this);
+			case JUMP(f):
+				var index = f(this);
 				
 				if (index < 0 || index >= nodes.length) {
 					nextNode();
@@ -355,7 +352,7 @@ enum TweenNode {
 	CALL(callback:TweenTimeline->Void);
 	START_LOOP(times:UInt);
 	END_LOOP();
-	JUMP(routingFunc:TweenTimeline->Int);
+	JUMP(f:TweenTimeline->Int);
 	
 }
 
@@ -398,7 +395,6 @@ class TweenTask {
 		
 	}
 	
-	// Putting parameters to this function breaks code completion of below functions if they don't have acess modifier.
 	function init(
 		target:Dynamic, vars:Dynamic, duration:UInt, ease:EaseFunction, onUpdateCB:TweenTask->Void
 	):Void {
@@ -455,8 +451,7 @@ class TweenTask {
 		elapsed = 0;
 	}
 	
-	// Without "private", code completion will break.
-	private function update(delta:FastFloat):Bool {
+	function update(delta:FastFloat):Bool {
 		if (Kala.timingUnit == TimeUnit.FRAME) {
 			elapsed++;
 		} else {
@@ -479,7 +474,7 @@ class TweenTask {
 		return false;
 	}
 	
-	private function copyBackward(task:TweenTask):Void {
+	function copyBackward(task:TweenTask):Void {
 		target = task.target;
 		vars = task.vars;
 		
