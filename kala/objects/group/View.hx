@@ -6,9 +6,9 @@ import kala.objects.Object;
 import kala.math.Color;
 import kala.math.Rect;
 import kha.Canvas;
-import kha.DepthStencilFormat;
 import kha.FastFloat;
 import kha.Image;
+import kha.graphics4.DepthStencilFormat;
 import kha.math.FastMatrix3;
 
 @:access(kala.objects.group.Group)
