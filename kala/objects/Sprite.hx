@@ -4,6 +4,7 @@ import kala.DrawingData;
 import kala.components.SpriteAnimation;
 import kala.math.Color;
 import kala.math.Rect;
+import kala.objects.Sprite.SpriteData;
 import kha.Canvas;
 import kha.FastFloat;
 import kha.Image;
@@ -60,6 +61,23 @@ class Sprite extends Object {
 		return this;
 	}
 	
+	public function loadSpriteData(data:SpriteData, ?image:Image, ?animKey:String, ?animDelay:UInt = 0):Sprite {
+		if (image == null) data.image;
+		
+		if (data.frames.length == 1) {
+			var frame = data.frames[0];
+			return loadImage(image, frame.x, frame.y, frame.width, frame.height);
+		}
+		
+		if (animation == null) new SpriteAnimation().addTo(this);
+
+		if (animKey == null) animKey = data.key;
+
+		animation.addAnimFromSpriteData(animKey, image, data, animDelay);
+		
+		return this;
+	}
+	
 	override function get_width():FastFloat {
 		return frameRect.width;
 	}
@@ -70,4 +88,24 @@ class Sprite extends Object {
 	
 }
 
+class SpriteData {
+	
+	public var key(default, null):String;
+	public var image:Image;
+	public var frames:Array<RectI>;
+	public var animDelay:UInt;
+	//public var shapes;
 
+	public inline function new(key:String, image:Image, frames:Array<RectI>, animDelay:UInt) {
+		this.key = key;
+		this.image = image;
+		this.frames = frames;
+		this.animDelay = animDelay;
+	}
+	
+	@:extern
+	public inline function clone():SpriteData {
+		return new SpriteData(key, image, frames, animDelay);
+	}
+
+}

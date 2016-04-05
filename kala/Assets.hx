@@ -1,7 +1,9 @@
 package kala;
 
+import haxe.ds.StringMap;
 import kala.components.SpriteAnimation;
 import kala.math.Rect.RectI;
+import kala.objects.Sprite.SpriteData;
 import kha.Assets.BlobList;
 import kha.Assets.FontList;
 import kha.Assets.ImageList;
@@ -13,16 +15,60 @@ import kha.Image;
 import kha.Sound;
 import kha.Video;
 
+@:build(kala.internal.AssetsBuilder.buildSheets())
+class SheetList {
+	
+	public function new() {
+		
+	}
+	
+}
+
+class SheetData {
+	
+	private var _frames:StringMap<SpriteData> = new StringMap<SpriteData>();
+	
+	public function new(framesData:Array<Dynamic>) {
+		var frame:SpriteData;
+		for (data in framesData) {
+			frame = new SpriteData(data.filename, null, [new RectI(data.frame.x, data.frame.y, data.frame.w, data.frame.h)], 0);
+			_frames.set(data.filename, frame);
+		}
+	}
+	
+	public function get(key:String, ?image:Image):SpriteData {
+		if (key.charAt(key.length - 1) == '/' || key.charAt(key.length - 1) == '\\') {
+			var spriteData = new SpriteData(key, image, new Array<RectI>(), 0);
+			
+			var frameKeys = [for (key in _frames.keys()) key];
+			frameKeys.sort(function(a, b) {
+				    a = a.toLowerCase();
+					b = b.toLowerCase();
+					
+					if (a < b) return -1;
+					if (a > b) return 1;
+					
+					return 0;
+			});
+		
+			for (frameKey in frameKeys) {
+				if (frameKey.indexOf(key) == 0) {
+					spriteData.frames.push(_frames.get(frameKey).frames[0]);
+				}
+			}
+			
+			return spriteData;
+		}
+		
+		return _frames.get(key).clone();
+	}
+	
+}
+
 class Assets {
 	
-	public static function getFrameRect(key:String, data:String):RectI {
-		return null;
-	}
+	public static var sheets(default, never):SheetList = new SheetList();
 	
-	public static function getFrameRects(key:String, data:String, subFramesIncluded:Bool = false):Array<RectI> {
-		return null;
-	}
-
 	// Below are wrappers for kha.Asset.
 	
 	public static var images(get, never):ImageList;

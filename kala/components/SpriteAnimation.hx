@@ -1,6 +1,7 @@
 package kala.components;
 
 import haxe.ds.StringMap;
+import kala.components.SpriteAnimation.SpriteAnimationData;
 import kala.EventHandle.CallbackHandle;
 import kala.Kala.TimeUnit;
 import kala.math.Rect.RectI;
@@ -154,6 +155,31 @@ class SpriteAnimation extends Component<Sprite> {
 		return this;
 	}
 	
+	public function addAnimFromSpriteData(?key:String, ?image:Image, data:SpriteData, delay:UInt):SpriteAnimation {
+		if (key == null) key = data.key;
+		
+		if (image == null) {
+			if (data.image == null) {
+				image = object.image;
+			} else {
+				image = data.image;
+			}
+		}
+			
+		object.image = image;
+		
+		var anim = new SpriteAnimationData(key, image, delay);
+		
+		for (frame in data.frames) {
+			anim.addFrameRect(frame);
+		}
+		
+		_animations.set(key, anim);
+		_lastAddedKey = key;
+		
+		return this;
+	}
+	
 	public function removeAnim(key:String):SpriteAnimation {
 		_animations.remove(key);
 		if (_lastAddedKey == key) _lastAddedKey = null;
@@ -210,21 +236,32 @@ class SpriteAnimationData {
 	
 	public var key(default, null):String;
 	public var image:Image;
-	public var frames:Array<RectI> = new Array<RectI>();
+	public var frames:Array<RectI>;
 	public var delay:Int;
-	public var reversed:Bool = false;
+	public var reversed:Bool;
 	
-	public function new(key:String, image:Image, delay:UInt) {
+	public inline function new(key:String, image:Image, delay:UInt) {
 		this.key = key;
 		this.image = image;
 		this.delay = delay;
+		
+		frames = new Array<RectI>();
+		reversed = false;
 	}
 
+	@:extern
 	public inline function addFrame(x:UInt, y:UInt, width:UInt, height:UInt):SpriteAnimationData {
 		frames.push(new RectI(x, y, width, height));
 		return this;
 	}
 	
+	@:extern
+	public inline function addFrameRect(rect:RectI):SpriteAnimationData {
+		frames.push(rect.clone());
+		return this;
+	}
+	
+	@:extern
 	public inline function removeFrame(index:Int):SpriteAnimationData {
 		frames.splice(index, 1);
 		return this;
