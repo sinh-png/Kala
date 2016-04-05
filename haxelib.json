@@ -4,7 +4,7 @@
 	"license": "MIT",
 	"tags": ["kha", "game", "cross", "2d"],
 	"description": "Kala is a 2D game engine powered by Kha.",
-	"version": "0.2",
+	"version": "0.3",
 	"releasenote": "",
 	"contributors": ["hazame"],
 	"dependencies": { "kha": "" }
