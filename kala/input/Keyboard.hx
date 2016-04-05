@@ -1,7 +1,6 @@
 package kala.input;
 
 @:access(kala.input.KeyStateHandle)
-@:allow(kala.Kala)
 class Keyboard {
 	
 	public static var justPressed:KeyStateHandle = new KeyStateHandle();

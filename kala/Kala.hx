@@ -1,11 +1,11 @@
 package kala;
 
+import kala.Assets;
 import kala.input.Keyboard;
 import kala.input.Mouse;
 import kala.math.Color;
 import kala.objects.Object;
 import kala.objects.group.Group;
-import kha.Assets;
 import kha.FastFloat;
 import kha.Font;
 import kha.Framebuffer;
@@ -13,8 +13,10 @@ import kha.Scheduler;
 import kha.System;
 
 @:access(kala.objects.Object)
+@:access(kala.input.Keyboard)
+@:access(kala.input.Mouse)
 class Kala {
-
+	
 	/**
 	 * Root group.
 	 */

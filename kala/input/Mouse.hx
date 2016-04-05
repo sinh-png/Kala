@@ -1,7 +1,6 @@
 package kala.input;
 
 @:access(kala.input.MouseStateHandle)
-@:allow(kala.Kala)
 class Mouse {
 	
 	public static var x(default, null):Int = 0;
