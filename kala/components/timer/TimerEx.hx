@@ -34,9 +34,9 @@ class TimerEx extends Timer {
 	}
 	
 	public function timeline(
-		?target:Dynamic, duration:UInt, ?ease:EaseFunction, ?onTweenUpdateCB:TweenTask->Void
+		?target:Dynamic, ?ease:EaseFunction, ?onTweenUpdateCB:TweenTask->Void
 	):TweenTimeline {
-		return _tween.get(target, duration, ease, onTweenUpdateCB);
+		return _tween.get(target, ease, onTweenUpdateCB);
 	}
 	
 }

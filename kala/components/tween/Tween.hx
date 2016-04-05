@@ -42,12 +42,11 @@ class Tween extends Component<Object> {
 		super.remove();
 	}
 	
-	public function get(?target:Dynamic, duration:UInt, ?ease:EaseFunction, ?onTweenUpdateCB:TweenTask->Void):TweenTimeline {
+	public function get(?target:Dynamic, ?ease:EaseFunction, ?onTweenUpdateCB:TweenTask->Void):TweenTimeline {
 		if (target == null) target = object;
 		if (ease == null) ease = Ease.none;
-		if (duration == 0) throw 'Tweening duration has to be greater than 0.';
 		
-		return TweenTimeline.get().init(this, target, duration, ease, onTweenUpdateCB);
+		return TweenTimeline.get().init(this, target, ease, onTweenUpdateCB);
 	}
 	
 	function update(obj:Object, delta:FastFloat):Void {
@@ -84,7 +83,6 @@ class TweenTimeline {
 	public var waitTimeLeft(default, null):Int;
 	
 	public var target(default, null):Dynamic;
-	public var duration(default, null):UInt;
 	public var ease(default, null):EaseFunction;
 	public var tweenUpdateCB(default, null):TweenTask->Void;
 	
@@ -92,7 +90,6 @@ class TweenTimeline {
 	private var _crTweenTask:TweenTask;
 
 	private var _orgnTarget:Dynamic;
-	private var _orgnDuration:UInt;
 	private var _orgnEase:EaseFunction;
 	private var _orgnTweenUpdateCB:TweenTask->Void;
 	
@@ -104,12 +101,11 @@ class TweenTimeline {
 	
 	public function init(
 		manager:Tween, 
-		target:Dynamic, duration:UInt, ease:EaseFunction, tweenUpdateCB:TweenTask->Void
+		target:Dynamic, ease:EaseFunction, tweenUpdateCB:TweenTask->Void
 	):TweenTimeline {
 		_manager = manager;
 		
 		_orgnTarget = target;
-		_orgnDuration = duration;
 		_orgnEase = ease;
 		_orgnTweenUpdateCB = tweenUpdateCB;
 		
@@ -127,7 +123,6 @@ class TweenTimeline {
 		node = null;
 		
 		target = _orgnTarget;
-		duration = _orgnDuration;
 		ease = _orgnEase;
 		tweenUpdateCB = _orgnTweenUpdateCB;
 	}
@@ -192,7 +187,7 @@ class TweenTimeline {
 	}
 	
 	public function tween(
-		vars:Dynamic, ?duration:UInt = 0, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void, ?target:Dynamic
+		vars:Dynamic, duration:UInt, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void, ?target:Dynamic
 	):TweenTimeline {
 		var task = TweenTask.get();
 		task.init(target, vars, duration, ease, onUpdateCB);
@@ -204,6 +199,21 @@ class TweenTimeline {
 		var task = TweenTask.get();
 		task.init(null, null, duration, ease, onUpdateCB);
 		nodes.push(BACKWARD_TWEEN(task));
+		return this;
+	}
+	
+	public function tweenPos(
+		?x:FastFloat, ?y:FastFloat, duration:UInt, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void, ?target:Dynamic
+	):TweenTimeline {
+		var task = TweenTask.get();
+		
+		var vars:Dynamic = { };
+		if (x != null) vars.x = x;
+		if (y != null) vars.y = y;
+		
+		task.init(target, vars, duration, ease, onUpdateCB);
+		nodes.push(TWEEN(task));
+		
 		return this;
 	}
 	
@@ -234,6 +244,11 @@ class TweenTimeline {
 	
 	public function jump(f:TweenTimeline->Int):TweenTimeline {
 		nodes.push(JUMP(f));
+		return this;
+	}
+	
+	public function set(target:Dynamic, ease:EaseFunction):TweenTimeline {
+		nodes.push(SET(target, ease));
 		return this;
 	}
 	
@@ -279,7 +294,6 @@ class TweenTimeline {
 			
 			case TWEEN(task):
 				task.target = task._orgnTarget == null ? target : task._orgnTarget;
-				task.duration = task._orgnDuration == 0 ? duration : task._orgnDuration;
 				task.ease = task._orgnEase == null ? ease : task._orgnEase;
 				task.onUpdateCB = task._orgnUpdateCB == null ? tweenUpdateCB : task._orgnUpdateCB;
 		
@@ -338,6 +352,13 @@ class TweenTimeline {
 				}
 				
 				setPos(index);
+				
+			case SET(target, ease):
+				if (target != null) this.target = target;
+				if (ease != null) this.ease = ease;
+				
+				nextNode();
+				
 		}
 	}
 	
@@ -352,7 +373,8 @@ enum TweenNode {
 	CALL(callback:TweenTimeline->Void);
 	START_LOOP(times:UInt);
 	END_LOOP();
-	JUMP(f:TweenTimeline->Int);
+	JUMP(f:TweenTimeline-> Int);
+	SET(target:Dynamic, ease:EaseFunction);
 	
 }
 
@@ -387,7 +409,6 @@ class TweenTask {
 	private var _varRanges:Array<FastFloat>;
 	
 	private var _orgnTarget:Dynamic;
-	private var _orgnDuration:UInt;
 	private var _orgnEase:EaseFunction;
 	private var _orgnUpdateCB:TweenTask->Void;
 	
@@ -399,9 +420,9 @@ class TweenTask {
 		target:Dynamic, vars:Dynamic, duration:UInt, ease:EaseFunction, onUpdateCB:TweenTask->Void
 	):Void {
 		this.vars = vars;
+		this.duration = duration;
 		
 		_orgnTarget = target;
-		_orgnDuration = duration;
 		_orgnEase = ease;
 		_orgnUpdateCB = onUpdateCB;
 	}
@@ -478,7 +499,8 @@ class TweenTask {
 		target = task.target;
 		vars = task.vars;
 		
-		duration = _orgnDuration == 0 ? task.duration : _orgnDuration;
+		if (duration == 0) duration = task.duration;
+		
 		ease = _orgnEase == null ? task.ease : _orgnEase;
 		onUpdateCB = _orgnUpdateCB == null ? task.onUpdateCB : _orgnUpdateCB;
 		
