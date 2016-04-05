@@ -35,6 +35,11 @@ class Velocity {
 		return this;
 	}
 	
+	@:extern
+	public inline function clone():Velocity {
+		return new Velocity(x, y);
+	}
+	
 	inline function get_x():FastFloat {
 		return _x;
 	}

@@ -41,6 +41,11 @@ class Vec2T {
 	}
 	
 	@:extern
+	public inline function clone():Vec2T {
+		return new Vec2T(x, y, ox, oy);
+	}
+	
+	@:extern
 	public inline function setXY(x:FastFloat = 0, y:FastFloat = 0):Vec2T {
 		this.x = x;
 		this.y = y;

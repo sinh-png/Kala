@@ -36,6 +36,11 @@ class Rect {
 		return this;
 	}
 	
+	@:extern
+	public inline function clone():Rect {
+		return new Rect(x, y, width, height);
+	}
+	
 	public inline function toString():String {
 		return "Rect(x: " + x + ", y: " + y + ", w: " + width + ", h: " + height + ")";
 	}
@@ -74,6 +79,11 @@ class RectI {
 		height = rect.height;
 		
 		return this;
+	}
+	
+	@:extern
+	public inline function clone():RectI {
+		return new RectI(x, y, width, height);
 	}
 	
 	public inline function toString():String {

@@ -25,6 +25,11 @@ class Rotation {
 	}
 	
 	@:extern
+	public inline function clone():Rotation {
+		return new Rotation(angle, px, py);
+	}
+	
+	@:extern
 	public inline function setPivot(pivotX:FastFloat = 0, pivotY:FastFloat = 0):Rotation {
 		this.px = pivotX;
 		this.py = pivotY;
