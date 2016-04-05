@@ -1,6 +1,7 @@
 package kala.objects.group;
 
 import kala.DrawingData;
+import kala.objects.group.View;
 import kala.objects.Object;
 import kala.math.Color;
 import kala.math.Color.ColorBlendMode;
