@@ -73,7 +73,7 @@ class Sprite extends Object {
 
 		if (animKey == null) animKey = data.key;
 
-		animation.addAnimFromSpriteData(animKey, image, data, animDelay);
+		animation.addAnimFromSpriteData(animKey, image, data, animDelay).play();
 		
 		return this;
 	}
