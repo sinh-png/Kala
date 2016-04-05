@@ -36,6 +36,10 @@ class Rect {
 		return this;
 	}
 	
+	public inline function toString():String {
+		return "Rect(x: " + x + ", y: " + y + ", w: " + width + ", h: " + height + ")";
+	}
+	
 }
 
 class RectI {
@@ -70,6 +74,10 @@ class RectI {
 		height = rect.height;
 		
 		return this;
+	}
+	
+	public inline function toString():String {
+		return "RectI(x: " + x + ", y: " + y + ", w: " + width + ", h: " + height + ")";
 	}
 	
 }
