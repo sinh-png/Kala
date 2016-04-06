@@ -53,6 +53,7 @@ class Blender extends Component<Object> {
 	override public function destroy():Void {
 		super.destroy();
 		pipeline = null;
+		_graphics = null;
 	}
 	
 	//
