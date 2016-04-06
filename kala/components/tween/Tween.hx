@@ -29,14 +29,14 @@ class Tween extends Component<Object> {
 	override public function addTo(object:Object):Tween {
 		super.addTo(object);
 		
-		object.onPreUpdate.addComponentCB(this, update);
+		object.onPostUpdate.addComponentCB(this, update);
 		
 		return this;
 	}
 	
 	override public function remove():Void {
 		if (object != null) {
-			object.onPreUpdate.removeComponentCB(this, update);
+			object.onPostUpdate.removeComponentCB(this, update);
 		}
 		
 		super.remove();

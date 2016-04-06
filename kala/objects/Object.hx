@@ -75,10 +75,10 @@ class Object extends EventHandle {
 	public var onDestroy:CallbackHandle<Object->Bool->Void>;
 	public var onReset:CallbackHandle<Object->Bool->Void>;
 	
-	public var onPreUpdate:CallbackHandle<Object->FastFloat->Void>;
+	public var onPreUpdate:CallbackHandle<Object->FastFloat->Bool>;
 	public var onPostUpdate:CallbackHandle<Object->FastFloat->Void>;
 	
-	public var onPreDraw:CallbackHandle<Object->DrawingData->Canvas->Void>;
+	public var onPreDraw:CallbackHandle<Object->DrawingData->Canvas->Bool>;
 	public var onPostDraw:CallbackHandle<Object->DrawingData->Canvas->Void>;
 	
 	public var onFirstFrame:CallbackHandle<Object->Void>;
@@ -102,10 +102,10 @@ class Object extends EventHandle {
 		onDestroy = addCBHandle(new CallbackHandle<Object->Bool->Void>());
 		onReset = addCBHandle(new CallbackHandle<Object->Bool->Void>());
 		
-		onPreUpdate = addCBHandle(new CallbackHandle<Object->FastFloat->Void>());
+		onPreUpdate = addCBHandle(new CallbackHandle<Object->FastFloat->Bool>());
 		onPostUpdate = addCBHandle(new CallbackHandle<Object->FastFloat->Void>());
 		
-		onPreDraw = addCBHandle(new CallbackHandle<Object->DrawingData->Canvas->Void>());
+		onPreDraw = addCBHandle(new CallbackHandle<Object->DrawingData->Canvas->Bool>());
 		onPostDraw = addCBHandle(new CallbackHandle<Object->DrawingData->Canvas->Void>());
 		
 		onFirstFrame = addCBHandle(new CallbackHandle<Object->Void>());
@@ -172,8 +172,10 @@ class Object extends EventHandle {
 		
 		onDestroy = null;
 		onReset = null;
-		onPreUpdate = onPostUpdate = null;
-		onPreDraw = onPostDraw = null;
+		onPreUpdate = null;
+		onPostUpdate = null;
+		onPreDraw = null;
+		onPostDraw = null;
 		onFirstFrame = null;
 		
 		//
@@ -304,8 +306,12 @@ class Object extends EventHandle {
 		_crGroup = caller;
 		
 		execFirstFrame();
-		for (callback in onPreUpdate) callback.cbFunction(this, delta);
-		update(delta);
+		
+		var updatePrevented = false;
+		for (callback in onPreUpdate) if (callback.cbFunction(this, delta)) updatePrevented = true;
+		
+		if (!updatePrevented) update(delta);
+		
 		for (callback in onPostUpdate) callback.cbFunction(this, delta);
 	}
 	
@@ -313,8 +319,12 @@ class Object extends EventHandle {
 		_crGroup = caller;
 		
 		execFirstFrame();
-		for (callback in onPreDraw) callback.cbFunction(this, data, canvas);
-		draw(data, canvas);
+		
+		var drawPrevented = false;
+		for (callback in onPreDraw) if (callback.cbFunction(this, data, canvas)) drawPrevented = true;
+		
+		if (!drawPrevented) draw(data, canvas);
+		
 		for (callback in onPostDraw) callback.cbFunction(this, data, canvas);
 	}
 	
