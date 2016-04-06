@@ -2,6 +2,7 @@ package kala.math;
 
 import kha.FastFloat;
 import kha.math.FastMatrix3;
+import kha.math.FastVector2;
 import kha.math.Vector2;
 
 class Vec2 {
@@ -35,6 +36,11 @@ class Vec2 {
 	@:extern
 	public inline function toVector2():Vector2 {
 		return new Vector2(x, y);
+	}
+	
+	@:extern
+	public inline function toFastVector2():FastVector2 {
+		return new FastVector2(x, y);
 	}
 	
 	@:extern 
