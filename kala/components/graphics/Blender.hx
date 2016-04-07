@@ -58,13 +58,13 @@ class Blender extends Component<Object> {
 	
 	//
 	
-	public function applyPipeline():Void {
-		_graphics.setPipeline(pipeline);
+	public function applyPipeline(canvas:Canvas):Void {
+		canvas.g2.pipeline = pipeline;
 	}
 	
 	public function preDraw(obj:Object, data:DrawingData, canvas:Canvas):Bool {
 		_graphics = canvas.g4;
-		if (pipeline != null && canvas.g2.pipeline != pipeline) applyPipeline();
+		if (pipeline != null && canvas.g2.pipeline != pipeline) applyPipeline(canvas);
 		return false;
 	}
 	
