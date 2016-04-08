@@ -58,13 +58,13 @@ class Timer extends Component<Object> {
 	}
 	
 	public function delay(delayTime:Int, func:LoopTask->Void):LoopTask {
-		var task = new LoopTask(delayTime, 1, func, null);
+		var task = new LoopTask(this, delayTime, 1, func, null);
 		_loopTasks.push(task);
 		return task;
 	}
 	
 	public function loop(duration:Int, execTimes:Int, ?execFirst:Bool = false, onExecute:LoopTask->Void, ?onComplete:LoopTask->Void):LoopTask {
-		var task = new LoopTask(duration, execTimes, onExecute, onComplete);
+		var task = new LoopTask(this, duration, execTimes, onExecute, onComplete);
 		_loopTasks.push(task);
 		
 		if (execFirst) {
@@ -75,32 +75,22 @@ class Timer extends Component<Object> {
 		return task;
 	}
 	
-	public function cancelLoop(task:LoopTask):Timer {
-		_loopTasks.remove(task);
-		return this;
-	}
-	
 	function update(obj:Object, delta:FastFloat):Void {
 		var elapsed  = 1;
 		if (Kala.timingUnit == TimeUnit.MILLISECOND) {
 			elapsed  = Std.int(delta * 1000);
 		}
-		
-		var i = 0;
-		for (cdID in _coolingDownIDs) {
+
+		for (cdID in _coolingDownIDs.copy()) {
 			cdID.b -= elapsed ;
-			if (cdID.b <= 0) _coolingDownIDs.splice(i, 1);
-			i++;
+			if (cdID.b <= 0) _coolingDownIDs.remove(cdID);
 		}
 		
-		i = 0;
-		for (cdFunc in _coolingDownFunctions) {
+		for (cdFunc in _coolingDownFunctions.copy()) {
 			cdFunc.b -= elapsed;
-			if (cdFunc.b <= 0) _coolingDownFunctions.splice(i, 1);
-			i++;
+			if (cdFunc.b <= 0) _coolingDownFunctions.remove(cdFunc);
 		}
 		
-		i = 0;	
 		for (task in _loopTasks.copy()) {
 			task.elapsedTime += elapsed;
 			
@@ -111,18 +101,17 @@ class Timer extends Component<Object> {
 				task.onExecCB(task);
 				
 				if (task.totalExecutions > 0 && (task.elapsedExecutions == task.totalExecutions)) {
-					_loopTasks.splice(i, 1);
 					if (task.onCompleteCB != null) task.onCompleteCB(task);
+					task.cancel();
 				}
 			}
-			
-			i++;
 		}
 	}
 	
 }
 
 @:allow(kala.components.timer.Timer)
+@:access(kala.components.timer.Timer)
 class LoopTask {
 
 	public var onExecCB(default, null):LoopTask->Void;
@@ -134,7 +123,11 @@ class LoopTask {
 	public var totalExecutions:UInt;
 	public var elapsedExecutions(default, null):UInt;
 	
-	public inline function new(duration:Int, totalExecutions:UInt, onExecCB:LoopTask->Void, onCompleteCB:LoopTask->Void) {
+	private var _manager:Timer;
+	
+	private inline function new(manager:Timer, duration:Int, totalExecutions:UInt, onExecCB:LoopTask->Void, onCompleteCB:LoopTask->Void) {
+		this._manager = manager;
+		
 		this.duration = duration;
 		this.totalExecutions = totalExecutions;
 		this.onExecCB = onExecCB;
@@ -142,6 +135,12 @@ class LoopTask {
 		
 		elapsedTime = 0;
 		elapsedExecutions = 0;
+	}
+	
+	@:extern
+	public inline function cancel():Void {
+		_manager._loopTasks.remove(this);
+		_manager = null;
 	}
 
 }
