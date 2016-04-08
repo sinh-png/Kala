@@ -6,9 +6,6 @@ import kala.objects.Object;
 import kala.util.types.Pair;
 import kha.FastFloat;
 
-/**
- * For timeline, use Tween instead.
- */
 class Timer extends Component<Object> {
 	
 	private var _coolingDownIDs:Array<Pair<Int, Int>> = new Array<Pair<Int, Int>>();
