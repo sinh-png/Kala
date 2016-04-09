@@ -26,7 +26,6 @@ class Collider extends BaseCollider<Object> {
 	
 	public function addRect(x:FastFloat, y:FastFloat, width:FastFloat, height:FastFloat):CollisionPolygon {
 		var rect = CollisionPolygon.get();
-		
 		rect.collider = this;
 		rect.position.set(x, y);
 		rect.vertices = [
