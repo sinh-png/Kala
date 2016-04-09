@@ -46,6 +46,8 @@ class Text extends BasicText {
 	
 	public var colorBlendMode:ColorBlendMode;
 	
+	public var _dirtyText(default, set):Bool;
+	
 	private var _lines:Array<LineData> = new Array<LineData>();
 	
 	public function new(?text:String, ?font:Font, ?size:UInt = 24, ?width:UInt = 0, ?align:TextAlign) {
@@ -97,9 +99,11 @@ class Text extends BasicText {
 	}
 		
 	override public function draw(data:DrawingData, canvas:Canvas):Void {
-		if (dirty) {
-			refresh();
-			dirty = false;
+		if (_dirtyText) {
+			if (_htmlText == null) refreshText();
+			else refreshHTMLText();
+			
+			_dirtyText = false;
 		}
 
 		var color = data.color;
@@ -223,11 +227,6 @@ class Text extends BasicText {
 		
 	}
 	
-	override public function refresh():Void {
-		if (_htmlText == null) refreshText();
-		else refreshHTMLText();
-	}
-	
 	function refreshText():Void {
 		while (_lines.length > 0) _lines.pop();
 		
@@ -278,18 +277,13 @@ class Text extends BasicText {
 	override function get_width():FastFloat {
 		return _width;
 	}
-	
-	override function set_width(value:FastFloat):FastFloat {
-		dirty = true;
-		return _width = value;
-	}
-	
+
 	override function get_height():FastFloat {
 		return _height + lineSpacing * (_lines.length - 1) + padding.y * 2;
 	}
 	
 	override function set_text(value:String):String {
-		dirty = true;
+		_dirtyText = true;
 		_htmlText = null;
 		_text = value;
 		
@@ -299,7 +293,7 @@ class Text extends BasicText {
 	}
 	
 	override function set_font(value:Font):Font {
-		dirty = true;
+		_dirtyText = true;
 		
 		super.set_font(value);
 		refreshLineSpacing();
@@ -308,7 +302,7 @@ class Text extends BasicText {
 	}
 	
 	override function set_size(value:UInt):UInt {
-		dirty = true;
+		_dirtyText = true;
 		
 		size = value;
 		refreshLineSpacing();
@@ -317,7 +311,7 @@ class Text extends BasicText {
 	}
 	
 	override function set_bold(value:Bool):Bool {
-		dirty = true;
+		_dirtyText = true;
 		return bold = value;
 	}
 	
@@ -326,12 +320,12 @@ class Text extends BasicText {
 	}
 	
 	function set_eolSymbol(value:String):String {
-		dirty = true;
+		_dirtyText = true;
 		return eolSymbol = value;
 	}
 	
 	function set_wrapByWord(value:Bool):Bool {
-		dirty = true;
+		_dirtyText = true;
 		return wrapByWord = value;
 	}
 	
@@ -340,8 +334,13 @@ class Text extends BasicText {
 	}
 	
 	function set_htmlText(value:String):String {
-		dirty = true;
+		_dirtyText = true;
 		return _htmlText = value;
+	}
+	
+	inline function set_dirtyText(value:Bool):Bool {
+		if (value) dirty = value;
+		return _dirtyText = value;
 	}
 	
 }

@@ -117,26 +117,26 @@ class Group<T:Object> extends Object {
 		} else {
 			g2.end();
 			
-			var buffer:Image;
+			var viewBuffer:Image;
 			var matrix:FastMatrix3;
 			
 			for (view in _views) {
 				if (view == null) continue;
 				
-				buffer = view.buffer;
+				viewBuffer = view.viewBuffer;
 				drawingData.transformation = data.transformation.multmat(
 					FastMatrix3.translation( -view.viewPos.x + view.viewPos.ox, -view.viewPos.y + view.viewPos.oy)
 				);
 				
-				buffer.g2.begin(true, view.transparent ? 0 : (255 << 24 | view.bgColor));
+				viewBuffer.g2.begin(true, view.transparent ? 0 : (255 << 24 | view.bgColor));
 				for (child in _children) {
 					if (child == null) continue;
 					
 					if (child.alive && child.isVisible()) {
-						child.callDraw(this, drawingData, buffer);
+						child.callDraw(this, drawingData, viewBuffer);
 					}
 				}
-				buffer.g2.end();
+				viewBuffer.g2.end();
 			}
 			
 			g2.begin(false);

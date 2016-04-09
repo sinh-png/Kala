@@ -4,6 +4,7 @@ package kala.objects;
 import kala.DrawingData;
 import kala.EventHandle;
 import kala.components.Component.IComponent;
+import kala.graphics.Shader;
 import kala.math.helpers.FastMatrix3Helper;
 import kala.math.Angle;
 import kala.math.Color;
@@ -16,6 +17,8 @@ import kala.objects.group.Group;
 import kha.Canvas;
 import kha.FastFloat;
 import kha.graphics2.ImageScaleQuality;
+import kha.graphics4.DepthStencilFormat;
+import kha.Image;
 import kha.math.FastMatrix3;
 
 @:allow(kala.components.Component)
@@ -62,8 +65,14 @@ class Object extends EventHandle {
 	public var tHeight(get, never):FastFloat;
 	
 	//
+
+		
+	public var buffer:Image;
+	public var bufferRect:RectI;
+	public var bufferDrawingOffset:Vec2 = new Vec2();
+	public var bufferRefreshed:Bool;
 	
-	public var dirty:Bool;
+	public var shaders:Array<Shader> = new Array<Shader>();
 	
 	//
 	
@@ -95,7 +104,7 @@ class Object extends EventHandle {
 	//
 	
 	private var _cachedDrawingMatrix:FastMatrix3;
-	
+
 	public function new() {
 		super();
 		
@@ -140,10 +149,15 @@ class Object extends EventHandle {
 		opacity = 1;
 		
 		antialiasing = false;
-		
-		dirty = false;
-
+	
 		_firstFrameExecuted = false;
+		
+		unloadBuffer();
+		bufferRect = null;
+		bufferDrawingOffset.set();
+		bufferRefreshed = false;
+		
+		while (shaders.length > 0) shaders.pop();
 		
 		for (callback in onReset) callback.cbFunction(this, componentsReset);
 
@@ -158,6 +172,15 @@ class Object extends EventHandle {
 		rotation = null;
 		
 		color = null;
+		
+		//
+		
+		unloadBuffer();
+		bufferRect = null;
+		bufferDrawingOffset = null;
+		
+		while (shaders.length > 0) shaders.pop();
+		shaders = null;
 		
 		//
 		
@@ -199,8 +222,9 @@ class Object extends EventHandle {
 
 	}
 	
-	public function refresh():Void {
-		
+	public function drawBuffer(data:DrawingData, canvas:Canvas):Void {
+		applyDrawingData(data, canvas);
+		canvas.g2.drawImage(buffer, bufferDrawingOffset.x, bufferDrawingOffset.y);
 	}
 	
 	public function isVisible():Bool {
@@ -320,18 +344,36 @@ class Object extends EventHandle {
 		
 		execFirstFrame();
 		
+		if (shaders.length > 0) {
+			canvas.g2.end();
+			refreshBuffer();
+			
+			for (shader in shaders) {
+				shader.setBuffer(buffer);
+				shader.update();
+			}
+			
+			buffer.g2.end();
+			canvas.g2.begin(false);
+		}
+
 		var drawPrevented = false;
 		for (callback in onPreDraw) if (callback.cbFunction(this, data, canvas)) drawPrevented = true;
 		
-		if (!drawPrevented) draw(data, canvas);
+		if (!drawPrevented) {
+			if (bufferRefreshed) drawBuffer(data, canvas);
+			else draw(data, canvas);
+		}
 		
 		for (callback in onPostDraw) callback.cbFunction(this, data, canvas);
+		
+		bufferRefreshed = false;
 	}
 	
 	function applyDrawingData(data:DrawingData, canvas:Canvas):Void {
 		var g2 = canvas.g2;
 		
-		if (this.antialiasing || data.antialiasing) {
+		if (antialiasing || data.antialiasing) {
 			if (g2.imageScaleQuality != ImageScaleQuality.High) {
 				g2.imageScaleQuality = ImageScaleQuality.High;
 			}
@@ -343,12 +385,62 @@ class Object extends EventHandle {
 		else g2.transformation = _cachedDrawingMatrix = data.transformation.multmat(getMatrix());
 		
 		if (data.color == null) {
-			g2.color = this.color.argb();
+			g2.color = color.argb();
 		} else {
-			g2.color = new Color().setOverlay(Color.blendColors(this.color, data.color, data.colorBlendMode)).argb();
+			g2.color = new Color().setOverlay(Color.blendColors(color, data.color, data.colorBlendMode)).argb();
 		}
 		
-		g2.opacity = this.opacity * data.opacity;
+		g2.opacity = opacity * data.opacity;
+	}
+	
+	function unloadBuffer():Void {
+		if (buffer != null) {
+			buffer.unload();
+			buffer = null;
+		}
+	}
+
+	function refreshBuffer():Void {
+		var rect = bufferRect;
+		
+		if (rect == null) {
+			rect = new RectI(0, 0, Std.int(width), Std.int(height));
+		}
+		
+		if (buffer == null) {
+			buffer = Image.createRenderTarget(rect.width, rect.height, null, DepthStencilFormat.NoDepthAndStencil, 1);
+		} else {
+			if (buffer.width != rect.width || buffer.height != rect.height) {		
+				buffer.unload();
+				buffer = Image.createRenderTarget(rect.width, rect.height, null, DepthStencilFormat.NoDepthAndStencil, 1);
+			}
+		}
+		
+		var tp = position.clone();
+		var ts = scale.clone();
+		var tr =  rotation.clone();
+		var tc = color.clone();
+		var to = opacity;
+		
+		position.set();
+		scale.setXY(1, 1);
+		rotation.angle = 0;
+		color.set();
+		opacity = 1;
+		
+		buffer.g2.begin(true, 0x0);
+		
+		draw(new DrawingData(), buffer);
+		
+		position = tp;
+		scale = ts;
+		rotation = tr;
+		color = tc;
+		opacity = to;
+		
+		bufferRefreshed = true;
+		
+		bufferDrawingOffset.set();
 	}
 		
 	function get_width():FastFloat {

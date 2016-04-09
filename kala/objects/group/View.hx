@@ -14,7 +14,7 @@ import kha.math.FastMatrix3;
 @:access(kala.objects.group.Group)
 class View extends Object {
 
-	public var buffer(default, null):Image;
+	public var viewBuffer(default, null):Image;
 	
 	public var viewPos:Vec2T;
 	
@@ -42,7 +42,7 @@ class View extends Object {
 	) {
 		super();
 		if (antiAliasingSamples == null) antiAliasingSamples = Kala.antiAliasingSamples;
-		buffer = Image.createRenderTarget(
+		viewBuffer = Image.createRenderTarget(
 			Std.int(viewWidth), Std.int(viewHeight), null, 
 			DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples
 		);
@@ -61,8 +61,8 @@ class View extends Object {
 	override public function destroy(componentsDestroy:Bool = true):Void {
 		super.destroy(componentsDestroy);
 		
-		buffer.unload();
-		buffer = null;
+		viewBuffer.unload();
+		viewBuffer = null;
 		
 		viewPos = null;
 	}
@@ -71,8 +71,8 @@ class View extends Object {
 		var cw = canvas.width;
 		var ch = canvas.height;
 		
-		var w:FastFloat = buffer.width;
-		var h:FastFloat = buffer.height;
+		var w:FastFloat = viewBuffer.width;
+		var h:FastFloat = viewBuffer.height;
 		
 		if (scaleMode != null) {
 			switch(scaleMode) {
@@ -120,7 +120,7 @@ class View extends Object {
 		}
 		
 		applyDrawingData(data, canvas);
-		canvas.g2.drawImage(buffer, 0, 0);
+		canvas.g2.drawImage(viewBuffer, 0, 0);
 	}
 	
 	public function setAlignScaleMode(halign:FastFloat, valign:FastFloat, scaleMode:ScaleMode):View {
@@ -140,19 +140,43 @@ class View extends Object {
 		return this;
 	}
 	
+	override function refreshBuffer():Void {
+		var rect = bufferRect;
+		
+		if (rect == null) {
+			rect = new RectI(0, 0, Std.int(width), Std.int(height));
+		}
+		
+		if (buffer == null) {
+			buffer = Image.createRenderTarget(rect.width, rect.height, null, DepthStencilFormat.NoDepthAndStencil, 1);
+		} else {
+			if (buffer.width != rect.width || buffer.height != rect.height) {		
+				buffer.unload();
+				buffer = Image.createRenderTarget(rect.width, rect.height, null, DepthStencilFormat.NoDepthAndStencil, 1);
+			}
+		}
+		
+		buffer.g2.begin(false);
+		buffer.g2.drawImage(viewBuffer, 0, 0);
+		
+		bufferRefreshed = true;
+	}
+	
 	override function get_width():FastFloat {
-		return buffer.width;
+		return viewBuffer.width;
 	}
 	
 	override function get_height():FastFloat {
-		return buffer.height;
+		return viewBuffer.height;
 	}
 	
 }
 
 enum ScaleMode {
+	
 	EXACT;
 	RATIO;
 	RATIO_FILL;
 	FIXED(hpercent:FastFloat, vpercent:FastFloat);
+	
 }
