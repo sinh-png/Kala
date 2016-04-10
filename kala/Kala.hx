@@ -47,6 +47,8 @@ class Kala {
 	
 	public static var defaultFont(default, set):Font;
 	
+	public static var framebufer(default, null):Framebuffer;
+	
 	//
 	
 	private static var _updateTaskID:Null<Int>;
@@ -96,6 +98,8 @@ class Kala {
 	}
 	
 	static function renderWorld(framebuffer:Framebuffer):Void {
+		Kala.framebufer = framebufer;
+		
 		framebuffer.g2.begin(true, bgColor.argb());
 		world.callDraw(new DrawingData(), framebuffer);
 		framebuffer.g2.end();
