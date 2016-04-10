@@ -46,7 +46,7 @@ class Text extends BasicText {
 	
 	public var colorBlendMode:ColorBlendMode;
 	
-	public var _dirtyText(default, set):Bool;
+	private var _dirty(default, set):Bool;
 	
 	private var _lines:Array<LineData> = new Array<LineData>();
 	
@@ -99,11 +99,11 @@ class Text extends BasicText {
 	}
 		
 	override public function draw(data:DrawingData, canvas:Canvas):Void {
-		if (_dirtyText) {
+		if (_dirty) {
 			if (_htmlText == null) refreshText();
 			else refreshHTMLText();
 			
-			_dirtyText = false;
+			_dirty = false;
 		}
 
 		var color = data.color;
@@ -283,7 +283,7 @@ class Text extends BasicText {
 	}
 	
 	override function set_text(value:String):String {
-		_dirtyText = true;
+		_dirty = true;
 		_htmlText = null;
 		_text = value;
 		
@@ -293,7 +293,7 @@ class Text extends BasicText {
 	}
 	
 	override function set_font(value:Font):Font {
-		_dirtyText = true;
+		_dirty = true;
 		
 		super.set_font(value);
 		refreshLineSpacing();
@@ -302,7 +302,7 @@ class Text extends BasicText {
 	}
 	
 	override function set_size(value:UInt):UInt {
-		_dirtyText = true;
+		_dirty = true;
 		
 		size = value;
 		refreshLineSpacing();
@@ -311,7 +311,7 @@ class Text extends BasicText {
 	}
 	
 	override function set_bold(value:Bool):Bool {
-		_dirtyText = true;
+		_dirty = true;
 		return bold = value;
 	}
 	
@@ -320,12 +320,12 @@ class Text extends BasicText {
 	}
 	
 	function set_eolSymbol(value:String):String {
-		_dirtyText = true;
+		_dirty = true;
 		return eolSymbol = value;
 	}
 	
 	function set_wrapByWord(value:Bool):Bool {
-		_dirtyText = true;
+		_dirty = true;
 		return wrapByWord = value;
 	}
 	
@@ -334,13 +334,13 @@ class Text extends BasicText {
 	}
 	
 	function set_htmlText(value:String):String {
-		_dirtyText = true;
+		_dirty = true;
 		return _htmlText = value;
 	}
 	
 	inline function set_dirtyText(value:Bool):Bool {
 		if (value) dirty = value;
-		return _dirtyText = value;
+		return _dirty = value;
 	}
 	
 }
