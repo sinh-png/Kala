@@ -17,7 +17,7 @@ import kala.objects.group.Group;
 import kha.Canvas;
 import kha.FastFloat;
 import kha.graphics2.ImageScaleQuality;
-import kha.graphics4.DepthStencilFormat;
+import kha.graphics4.Usage;
 import kha.Image;
 import kha.math.FastMatrix3;
 
@@ -65,7 +65,6 @@ class Object extends EventHandle {
 	public var tHeight(get, never):FastFloat;
 	
 	//
-
 		
 	public var buffer:Image;
 	public var bufferRect:RectI;
@@ -223,8 +222,17 @@ class Object extends EventHandle {
 	}
 	
 	public function drawBuffer(data:DrawingData, canvas:Canvas):Void {
+		var tx = position.ox;
+		var ty = position.oy;
+		
+		position.ox -= bufferDrawingOffset.x;
+		position.oy -= bufferDrawingOffset.y;
+		
 		applyDrawingData(data, canvas);
-		canvas.g2.drawImage(buffer, bufferDrawingOffset.x, bufferDrawingOffset.y);
+		canvas.g2.drawImage(buffer, 0, 0);
+		
+		position.ox = tx;
+		position.oy = ty;
 	}
 	
 	public function isVisible():Bool {
@@ -339,21 +347,23 @@ class Object extends EventHandle {
 		for (callback in onPostUpdate) callback.cbFunction(this, delta);
 	}
 	
-	inline function callDraw(?caller:Object, data:DrawingData, canvas:Canvas):Void {
+	function callDraw(?caller:Object, data:DrawingData, canvas:Canvas):Void {
 		_crGroup = caller;
 		
 		execFirstFrame();
 		
 		if (shaders.length > 0) {
 			canvas.g2.end();
+			
 			refreshBuffer();
 			
 			for (shader in shaders) {
+				buffer.g2.pipeline = shader.pipeline;
+				
 				shader.setBuffer(buffer);
 				shader.update();
 			}
 			
-			buffer.g2.end();
 			canvas.g2.begin(false);
 		}
 
@@ -408,17 +418,17 @@ class Object extends EventHandle {
 		}
 		
 		if (buffer == null) {
-			buffer = Image.createRenderTarget(rect.width, rect.height, null, DepthStencilFormat.NoDepthAndStencil, 1);
+			buffer = Image.createRenderTarget(rect.width, rect.height);
 		} else {
-			if (buffer.width != rect.width || buffer.height != rect.height) {		
+			if (buffer.width != rect.width || buffer.height != rect.height) {
 				buffer.unload();
-				buffer = Image.createRenderTarget(rect.width, rect.height, null, DepthStencilFormat.NoDepthAndStencil, 1);
+				buffer = Image.createRenderTarget(rect.width, rect.height);
 			}
 		}
 		
 		var tp = position.clone();
 		var ts = scale.clone();
-		var tr =  rotation.clone();
+		var tr = rotation.clone();
 		var tc = color.clone();
 		var to = opacity;
 		
@@ -427,10 +437,10 @@ class Object extends EventHandle {
 		rotation.angle = 0;
 		color.set();
 		opacity = 1;
-		
+	
 		buffer.g2.begin(true, 0x0);
-		
 		draw(new DrawingData(), buffer);
+		buffer.g2.end();
 		
 		position = tp;
 		scale = ts;
@@ -439,8 +449,6 @@ class Object extends EventHandle {
 		opacity = to;
 		
 		bufferRefreshed = true;
-		
-		bufferDrawingOffset.set();
 	}
 		
 	function get_width():FastFloat {

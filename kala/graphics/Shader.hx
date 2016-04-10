@@ -57,14 +57,14 @@ class Shader {
 		pipeline = new PipelineState();
 		pipeline.inputLayout = [structure];
 		
-		pipeline.vertexShader = (vertexShader == null) ? Shaders.painter_colored_vert : vertexShader;
-		pipeline.fragmentShader = (fragmentShader == null) ? Shaders.painter_colored_frag : fragmentShader;
+		pipeline.vertexShader = (vertexShader == null) ? Shaders.painter_image_vert : vertexShader;
+		pipeline.fragmentShader = (fragmentShader == null) ? Shaders.painter_image_frag : fragmentShader;
 		
 		pipeline.compile();
 	}
 	
 	function update():Void {
-		g2.pipeline = pipeline;
+
 	}
 	
 	function setBuffer(buffer:Image):Void {
