@@ -15,7 +15,7 @@ import kha.Image;
 import kha.Sound;
 import kha.Video;
 
-@:build(kala.internal.AssetsBuilder.buildSheets())
+@:build(kala.internal.AssetsBuilder.build("sheet"))
 class SheetList { public function new() {} }
 
 class SheetData {
