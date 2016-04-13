@@ -17,7 +17,6 @@ import kala.objects.group.Group;
 import kha.Canvas;
 import kha.FastFloat;
 import kha.graphics2.ImageScaleQuality;
-import kha.graphics4.Usage;
 import kha.Image;
 import kha.math.FastMatrix3;
 
@@ -65,15 +64,6 @@ class Object extends EventHandle {
 	public var tHeight(get, never):FastFloat;
 	
 	//
-		
-	public var buffer:Image;
-	public var bufferRect:RectI;
-	public var bufferDrawingOffset:Vec2 = new Vec2();
-	public var bufferRefreshed:Bool;
-	
-	public var shaders:Array<Shader> = new Array<Shader>();
-	
-	//
 	
 	public var group(get, never):BasicGroup;
 	public var pool:ObjectPool<Object>;
@@ -90,15 +80,23 @@ class Object extends EventHandle {
 	public var onPostDraw:CallbackHandle<Object->DrawingData->Canvas->Void>;
 	
 	public var onFirstFrame:CallbackHandle<Object->Void>;
-					
-	private var _firstFrameExecuted:Bool;
-	
+		
 	//
+
+	private var _firstFrameExecuted:Bool;
 	
 	private var _crGroup:Object;
 	private var _groups:Array<Object> = [];
 	
 	private var _components:Array<IComponent> = new Array<IComponent>();
+	
+	//
+	
+	private var _texture:Image;
+	private var _buffer:Image;
+	private var _bufferSize:UInt;
+
+	private var _shaders:Array<Shader> = new Array<Shader>();
 	
 	//
 	
@@ -151,12 +149,8 @@ class Object extends EventHandle {
 	
 		_firstFrameExecuted = false;
 		
-		unloadBuffer();
-		bufferRect = null;
-		bufferDrawingOffset.set();
-		bufferRefreshed = false;
-		
-		while (shaders.length > 0) shaders.pop();
+		unloadGraphics();
+		while (_shaders.length > 0) _shaders.pop();
 		
 		for (callback in onReset) callback.cbFunction(this, componentsReset);
 
@@ -174,12 +168,9 @@ class Object extends EventHandle {
 		
 		//
 		
-		unloadBuffer();
-		bufferRect = null;
-		bufferDrawingOffset = null;
-		
-		while (shaders.length > 0) shaders.pop();
-		shaders = null;
+		unloadGraphics();
+		while (_shaders.length > 0) _shaders.pop();
+		_shaders = null;
 		
 		//
 		
@@ -225,11 +216,11 @@ class Object extends EventHandle {
 		var tx = position.ox;
 		var ty = position.oy;
 		
-		position.ox -= bufferDrawingOffset.x;
-		position.oy -= bufferDrawingOffset.y;
+		//position.ox -= bufferDrawingOffset.x;
+		//position.oy -= bufferDrawingOffset.y;
 		
 		applyDrawingData(data, canvas);
-		canvas.g2.drawImage(buffer, 0, 0);
+		canvas.g2.drawImage(_buffer, 0, 0);
 		
 		position.ox = tx;
 		position.oy = ty;
@@ -238,6 +229,35 @@ class Object extends EventHandle {
 	public function isVisible():Bool {
 		//alive && visible && tWidth != 0 && tHeight != 0 && opacity > 0
 		return visible && scale.x != 0 && scale.y != 0 && opacity > 0;
+	}
+	
+	public function addShader(shader:Shader):Void {
+		_shaders.push(shader);
+		if (shader.size > _bufferSize) _bufferSize = shader.size;
+	}
+	
+	public inline function addShaders(shaders:Array<Shader>):Void {
+		for (shader in shaders) addShader(shader);
+	}
+	
+	public function removeShader(shader:Shader):Shader {
+		var index = _shaders.indexOf(shader);
+		if (index < 0) return null;
+		
+		_shaders.splice(index, 1);
+		
+		if (shader.size == _bufferSize) {
+			var maxSize = 0;
+			
+			for (s in _shaders) {
+				if (s.size == shader.size) return shader;
+				if (s.size > maxSize) maxSize = s.size;
+			}
+			
+			_bufferSize = maxSize;
+		}
+		
+		return shader;
 	}
 	
 	public inline function setOrigin(x:FastFloat, y:FastFloat):Object {
@@ -352,16 +372,22 @@ class Object extends EventHandle {
 		
 		execFirstFrame();
 		
-		if (shaders.length > 0) {
+		if (_shaders.length > 0) {
 			canvas.g2.end();
 			
-			refreshBuffer();
+			refreshTexture();
 			
-			for (shader in shaders) {
-				buffer.g2.pipeline = shader.pipeline;
-				
-				shader.setBuffer(buffer);
-				shader.update();
+			var temp:Image;
+			
+			for (shader in _shaders) {
+				_buffer.g2.pipeline = shader.pipeline;
+				_buffer.g2.begin(true);
+				shader.update(_texture, _buffer);
+				_buffer.g2.drawImage(_texture, 0, 0);
+				_buffer.g2.end();
+				temp = _texture;
+				_texture = _buffer;
+				_buffer = temp;
 			}
 			
 			canvas.g2.begin(false);
@@ -371,13 +397,11 @@ class Object extends EventHandle {
 		for (callback in onPreDraw) if (callback.cbFunction(this, data, canvas)) drawPrevented = true;
 		
 		if (!drawPrevented) {
-			if (bufferRefreshed) drawBuffer(data, canvas);
+			if (_shaders.length > 0) drawBuffer(data, canvas);
 			else draw(data, canvas);
 		}
 		
 		for (callback in onPostDraw) callback.cbFunction(this, data, canvas);
-		
-		bufferRefreshed = false;
 	}
 	
 	function applyDrawingData(data:DrawingData, canvas:Canvas):Void {
@@ -403,26 +427,29 @@ class Object extends EventHandle {
 		g2.opacity = opacity * data.opacity;
 	}
 	
-	function unloadBuffer():Void {
-		if (buffer != null) {
-			buffer.unload();
-			buffer = null;
+	function unloadGraphics():Void {
+		if (_texture != null) {
+			_texture.unload();
+			_buffer.unload();
+			_texture = null;
+			_buffer = null;
 		}
 	}
 
-	function refreshBuffer():Void {
-		var rect = bufferRect;
+	function refreshTexture():Void {
+		var w = Std.int(width + _bufferSize);
+		var h = Std.int(height + _bufferSize);
 		
-		if (rect == null) {
-			rect = new RectI(0, 0, Std.int(width), Std.int(height));
-		}
-		
-		if (buffer == null) {
-			buffer = Image.createRenderTarget(rect.width, rect.height);
+		if (_texture == null) {
+			_texture = Image.createRenderTarget(w, h);
+			_buffer = Image.createRenderTarget(w, h);
 		} else {
-			if (buffer.width != rect.width || buffer.height != rect.height) {
-				buffer.unload();
-				buffer = Image.createRenderTarget(rect.width, rect.height);
+			if (_texture.width != _texture.width || _texture.height != _texture.height) {
+				_texture.unload();
+				_buffer.unload();
+				
+				_texture = Image.createRenderTarget(w, h);
+				_buffer = Image.createRenderTarget(w, h);
 			}
 		}
 		
@@ -438,17 +465,15 @@ class Object extends EventHandle {
 		color.set();
 		opacity = 1;
 	
-		buffer.g2.begin(true, 0x0);
-		draw(new DrawingData(), buffer);
-		buffer.g2.end();
+		_texture.g2.begin(true, 0x0);
+		draw(new DrawingData(), _texture);
+		_texture.g2.end();
 		
 		position = tp;
 		scale = ts;
 		rotation = tr;
 		color = tc;
 		opacity = to;
-		
-		bufferRefreshed = true;
 	}
 		
 	function get_width():FastFloat {

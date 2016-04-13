@@ -140,28 +140,6 @@ class View extends Object {
 		return this;
 	}
 	
-	override function refreshBuffer():Void {
-		var rect = bufferRect;
-		
-		if (rect == null) {
-			rect = new RectI(0, 0, Std.int(width), Std.int(height));
-		}
-		
-		if (buffer == null) {
-			buffer = Image.createRenderTarget(rect.width, rect.height, null, DepthStencilFormat.NoDepthAndStencil, 1);
-		} else {
-			if (buffer.width != rect.width || buffer.height != rect.height) {		
-				buffer.unload();
-				buffer = Image.createRenderTarget(rect.width, rect.height, null, DepthStencilFormat.NoDepthAndStencil, 1);
-			}
-		}
-		
-		buffer.g2.begin(false);
-		buffer.g2.drawImage(viewBuffer, 0, 0);
-		
-		bufferRefreshed = true;
-	}
-	
 	override function get_width():FastFloat {
 		return viewBuffer.width;
 	}
