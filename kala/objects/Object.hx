@@ -1,6 +1,5 @@
 package kala.objects;
 
-
 import kala.DrawingData;
 import kala.EventHandle;
 import kala.components.Component.IComponent;
@@ -213,17 +212,41 @@ class Object extends EventHandle {
 	}
 	
 	public function drawBuffer(data:DrawingData, canvas:Canvas):Void {
-		var tx = position.ox;
-		var ty = position.oy;
+		var offsetX = (_buffer.width - width) / 2;
+		var offsetY = (_buffer.height - height) / 2;
 		
-		//position.ox -= bufferDrawingOffset.x;
-		//position.oy -= bufferDrawingOffset.y;
+		//
+		
+		position.ox += offsetX;
+		position.oy += offsetY;
+		
+		scale.ox += offsetX;
+		scale.oy += offsetY;
+		
+		skew.ox += offsetX;
+		skew.oy += offsetY;
+		
+		rotation.px += offsetX;
+		rotation.py += offsetY;
+		
+		//
 		
 		applyDrawingData(data, canvas);
 		canvas.g2.drawImage(_buffer, 0, 0);
 		
-		position.ox = tx;
-		position.oy = ty;
+		//
+		
+		position.ox -= offsetX;
+		position.oy -= offsetY;
+		
+		scale.ox -= offsetX;
+		scale.oy -= offsetY;
+		
+		skew.ox -= offsetX;
+		skew.oy -= offsetY;
+		
+		rotation.px -= offsetX;
+		rotation.py -= offsetY;
 	}
 	
 	public function isVisible():Bool {
@@ -380,11 +403,12 @@ class Object extends EventHandle {
 			var temp:Image;
 			
 			for (shader in _shaders) {
+				_buffer.g2.begin();
 				_buffer.g2.pipeline = shader.pipeline;
-				_buffer.g2.begin(true);
 				shader.update(_texture, _buffer);
 				_buffer.g2.drawImage(_texture, 0, 0);
 				_buffer.g2.end();
+				
 				temp = _texture;
 				_texture = _buffer;
 				_buffer = temp;
@@ -453,27 +477,30 @@ class Object extends EventHandle {
 			}
 		}
 		
-		var tp = position.clone();
-		var ts = scale.clone();
-		var tr = rotation.clone();
-		var tc = color.clone();
-		var to = opacity;
+		var tempPos = position.clone();
+		var tempScale = scale.clone();
+		var tempSkew = skew.clone();
+		var tempRot = rotation.clone();
+		var tempColor = color.clone();
+		var tempOpacity = opacity;
 		
 		position.set();
 		scale.setXY(1, 1);
+		skew.setXY();
 		rotation.angle = 0;
 		color.set();
 		opacity = 1;
 	
-		_texture.g2.begin(true, 0x0);
+		_texture.g2.begin();
 		draw(new DrawingData(), _texture);
 		_texture.g2.end();
 		
-		position = tp;
-		scale = ts;
-		rotation = tr;
-		color = tc;
-		opacity = to;
+		position = tempPos;
+		scale = tempScale;
+		skew = tempSkew;
+		rotation = tempRot;
+		color = tempColor;
+		opacity = tempOpacity;
 	}
 		
 	function get_width():FastFloat {
