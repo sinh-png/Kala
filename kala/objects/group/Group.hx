@@ -157,11 +157,14 @@ class Group<T:Object> extends Object {
 		return _children.copy();
 	}
 	
-	public function add(obj:T):T {
+	public function add(obj:T):Void {
 		if (_children.indexOf(obj) != -1) return null;
 		_children.push(obj);
 		obj._groups.push(this);
-		return obj;
+	}
+	
+	public inline function addObjects(objects:Array<T>):Void {
+		for (obj in objects) add(obj);
 	}
 	
 	public function remove(obj:T, splice:Bool = false):T {
@@ -177,14 +180,17 @@ class Group<T:Object> extends Object {
 		return obj;
 	}
 	
-	public inline function addView(view:View):View {
+	public function addView(view:View):Void {
 		if (_views.indexOf(view) != -1) return null;
 		_views.push(view);
 		view._groups.push(this);
-		return view;
 	}
 	
-	public inline function removeView(view:View, splice:Bool = false):View {
+	public inline function addViews(views:Array<View>):Void {
+		for (view in views) addView(view);
+	}
+	
+	public function removeView(view:View, splice:Bool = false):View {
 		var index = _views.indexOf(view);
 		
 		if (index == -1) return null;
