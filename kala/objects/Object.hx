@@ -96,7 +96,7 @@ class Object extends EventHandle {
 	//
 	
 	private var _texture:Image;
-	private var _bufferSize:UInt;
+	private var _shaderSize:UInt;
 
 	private var _shaders:Array<Shader> = new Array<Shader>();
 	
@@ -241,7 +241,7 @@ class Object extends EventHandle {
 	
 	public function addShader(shader:Shader):Void {
 		_shaders.push(shader);
-		if (shader.size > _bufferSize) _bufferSize = shader.size;
+		if (shader.size > _shaderSize) _shaderSize = shader.size;
 	}
 	
 	public inline function addShaders(shaders:Array<Shader>):Void {
@@ -254,7 +254,7 @@ class Object extends EventHandle {
 		
 		_shaders.splice(index, 1);
 		
-		if (shader.size == _bufferSize) {
+		if (shader.size == _shaderSize) {
 			var maxSize = 0;
 			
 			for (s in _shaders) {
@@ -262,7 +262,7 @@ class Object extends EventHandle {
 				if (s.size > maxSize) maxSize = s.size;
 			}
 			
-			_bufferSize = maxSize;
+			_shaderSize = maxSize;
 		}
 		
 		return shader;
@@ -445,8 +445,8 @@ class Object extends EventHandle {
 	}
 
 	function refreshTexture():Void {
-		var w = Std.int(width + _bufferSize);
-		var h = Std.int(height + _bufferSize);
+		var w = Std.int(width + _shaderSize);
+		var h = Std.int(height + _shaderSize);
 		
 		if (_texture == null) {
 			_texture = Image.createRenderTarget(w, h);
