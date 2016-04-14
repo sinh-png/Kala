@@ -2,6 +2,7 @@ package kala.math;
 
 import kha.FastFloat;
 
+// TODO: Rewrite thic class to an abstract of kha.Color or UInt.
 class Color {
 	
 	@:extern
