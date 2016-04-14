@@ -318,9 +318,8 @@ class Object extends EventHandle {
 		return _crGroup.getDrawingMatrix().multmat(getMatrix());
 	}
 	
-	public inline function put():Object {	
+	public inline function put():Void {	
 		pool.put(this);
-		return this;
 	}
 	
 	public inline function getGroups():Array<Group<Object>> {
