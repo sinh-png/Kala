@@ -70,6 +70,14 @@ class Vec2 {
 		
 		return this;
 	}
+
+	@:extern 
+	public inline function move(x:FastFloat, y:FastFloat):Vec2 {
+		this.x += x;
+		this.y += y;
+		
+		return this;
+	}
 	
 	@:extern
 	public inline function invert():Vec2 {

@@ -72,6 +72,33 @@ class Vec2T {
 		return this;
 	}
 	
+	@:extern
+	public inline function move(x:FastFloat, y:FastFloat, ox:FastFloat, oy:FastFloat):Vec2T {
+		this.x += x;
+		this.y += y;
+		
+		this.ox += ox;
+		this.oy += oy;
+		
+		return this;
+	}
+	
+	@:extern
+	public inline function moveXY(x:FastFloat, y:FastFloat):Vec2T {
+		this.x += x;
+		this.y += y;
+		
+		return this;
+	}
+	
+	@:extern
+	public inline function moveOrigin(ox:FastFloat, oy:FastFloat):Vec2T {
+		this.ox += ox;
+		this.oy += oy;
+		
+		return this;
+	}
+	
 	public inline function toString():String {
 		return "Vec2T(x: " + x + ", y: " + y + ", ox: " + ox + ", oy: " + oy + ")" ;
 	}

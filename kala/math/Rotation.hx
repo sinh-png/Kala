@@ -59,4 +59,12 @@ class Rotation {
 		return angle * Angle.CONST_DEG;
 	}
 	
+	@:extern
+	public inline function movePivot(px:FastFloat, py:FastFloat):Rotation {
+		this.px += px;
+		this.py += py;
+		
+		return this;
+	}
+	
 }
