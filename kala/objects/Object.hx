@@ -64,6 +64,10 @@ class Object extends EventHandle {
 	
 	//
 	
+	public var buffer(default, null):Image;
+	
+	//
+	
 	public var group(get, never):BasicGroup;
 	public var pool:ObjectPool<Object>;
 	
@@ -92,7 +96,6 @@ class Object extends EventHandle {
 	//
 	
 	private var _texture:Image;
-	private var _buffer:Image;
 	private var _bufferSize:UInt;
 
 	private var _shaders:Array<Shader> = new Array<Shader>();
@@ -212,8 +215,8 @@ class Object extends EventHandle {
 	}
 	
 	public function drawBuffer(data:DrawingData, canvas:Canvas):Void {
-		var offsetX = (_buffer.width - width) / 2;
-		var offsetY = (_buffer.height - height) / 2;
+		var offsetX = (buffer.width - width) / 2;
+		var offsetY = (buffer.height - height) / 2;
 		
 		position.moveOrigin(offsetX, offsetY);
 		scale.moveOrigin(offsetX, offsetY);
@@ -221,7 +224,7 @@ class Object extends EventHandle {
 		rotation.movePivot(offsetX, offsetY);
 	
 		applyDrawingData(data, canvas);
-		canvas.g2.drawImage(_buffer, 0, 0);
+		canvas.g2.drawImage(buffer, 0, 0);
 
 		offsetX = -offsetX;
 		offsetY = -offsetY;
@@ -233,7 +236,6 @@ class Object extends EventHandle {
 	}
 	
 	public function isVisible():Bool {
-		//alive && visible && tWidth != 0 && tHeight != 0 && opacity > 0
 		return visible && scale.x != 0 && scale.y != 0 && opacity > 0;
 	}
 	
@@ -386,15 +388,15 @@ class Object extends EventHandle {
 			var temp:Image;
 			
 			for (shader in _shaders) {
-				_buffer.g2.begin();
-				_buffer.g2.pipeline = shader.pipeline;
-				shader.update(_texture, _buffer);
-				_buffer.g2.drawImage(_texture, 0, 0);
-				_buffer.g2.end();
+				buffer.g2.begin();
+				buffer.g2.pipeline = shader.pipeline;
+				shader.update(_texture, buffer);
+				buffer.g2.drawImage(_texture, 0, 0);
+				buffer.g2.end();
 				
 				temp = _texture;
-				_texture = _buffer;
-				_buffer = temp;
+				_texture = buffer;
+				buffer = temp;
 			}
 			
 			canvas.g2.begin(false);
@@ -437,9 +439,9 @@ class Object extends EventHandle {
 	function unloadGraphics():Void {
 		if (_texture != null) {
 			_texture.unload();
-			_buffer.unload();
+			buffer.unload();
 			_texture = null;
-			_buffer = null;
+			buffer = null;
 		}
 	}
 
@@ -449,14 +451,14 @@ class Object extends EventHandle {
 		
 		if (_texture == null) {
 			_texture = Image.createRenderTarget(w, h);
-			_buffer = Image.createRenderTarget(w, h);
+			buffer = Image.createRenderTarget(w, h);
 		} else {
 			if (_texture.width != _texture.width || _texture.height != _texture.height) {
 				_texture.unload();
-				_buffer.unload();
+				buffer.unload();
 				
 				_texture = Image.createRenderTarget(w, h);
-				_buffer = Image.createRenderTarget(w, h);
+				buffer = Image.createRenderTarget(w, h);
 			}
 		}
 		
