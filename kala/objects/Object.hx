@@ -215,38 +215,21 @@ class Object extends EventHandle {
 		var offsetX = (_buffer.width - width) / 2;
 		var offsetY = (_buffer.height - height) / 2;
 		
-		//
-		
-		position.ox += offsetX;
-		position.oy += offsetY;
-		
-		scale.ox += offsetX;
-		scale.oy += offsetY;
-		
-		skew.ox += offsetX;
-		skew.oy += offsetY;
-		
-		rotation.px += offsetX;
-		rotation.py += offsetY;
-		
-		//
-		
+		position.moveOrigin(offsetX, offsetY);
+		scale.moveOrigin(offsetX, offsetY);
+		skew.moveOrigin(offsetX, offsetY);
+		rotation.movePivot(offsetX, offsetY);
+	
 		applyDrawingData(data, canvas);
 		canvas.g2.drawImage(_buffer, 0, 0);
+
+		offsetX = -offsetX;
+		offsetY = -offsetY;
 		
-		//
-		
-		position.ox -= offsetX;
-		position.oy -= offsetY;
-		
-		scale.ox -= offsetX;
-		scale.oy -= offsetY;
-		
-		skew.ox -= offsetX;
-		skew.oy -= offsetY;
-		
-		rotation.px -= offsetX;
-		rotation.py -= offsetY;
+		position.moveOrigin(offsetX, offsetY);
+		scale.moveOrigin(offsetX, offsetY);
+		skew.moveOrigin(offsetX, offsetY);
+		rotation.movePivot(offsetX, offsetY);
 	}
 	
 	public function isVisible():Bool {
