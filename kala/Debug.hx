@@ -7,9 +7,9 @@ import kha.Canvas;
 class Debug {
 	
 	#if (debug || kala_debug)
-	private static var _drawLayers(default, null):Array<Array<DebugDrawCall>> = new Array<Array<DebugDrawCall>>();
-	
 	public static var collisionDebug:Bool = false;
+	
+	private static var _layers(default, null):Array<Array<DebugDrawCall>> = new Array<Array<DebugDrawCall>>();
 	#end
 
 	public static function error(message:String):Void {
@@ -19,14 +19,14 @@ class Debug {
 	#if (debug || kala_debug)
 	public static function addDrawLayer():Array<DebugDrawCall> {
 		var layer = new Array<DebugDrawCall>();
-		_drawLayers.push(layer);
+		_layers.push(layer);
 		return layer;
 	}
 	
 	static inline function draw():Void {
 		var previewCanvas:Canvas = null;
 		
-		for (layer in _drawLayers) {
+		for (layer in _layers) {
 			for (call in layer.copy()) {
 				layer.remove(call);
 				
