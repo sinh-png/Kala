@@ -8,6 +8,8 @@ class Debug {
 	
 	#if (debug || kala_debug)
 	private static var _drawLayers(default, null):Array<Array<DebugDrawCall>> = new Array<Array<DebugDrawCall>>();
+	
+	public static var collisionDebug:Bool = false;
 	#end
 
 	public static function error(message:String):Void {

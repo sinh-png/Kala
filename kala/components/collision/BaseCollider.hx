@@ -180,14 +180,16 @@ class BaseCollider<T:Object> extends Component<T> implements ICollider {
 		_matrix = obj._cachedDrawingMatrix;
 		
 		#if (debug || kala_debug)
-		_debugDrawCalls.push(
-			new DebugDrawCall(
-				canvas,
-				function(canvas) {
-					drawDebug(debugColor, debugFill, debugLineStrenght, canvas);
-				}
-			)
-		);
+		if (Debug.collisionDebug) {
+			_debugDrawCalls.push(
+				new DebugDrawCall(
+					canvas,
+					function(canvas) {
+						drawDebug(debugColor, debugFill, debugLineStrenght, canvas);
+					}
+				)
+			);
+		}
 		#end
 	}
 	
