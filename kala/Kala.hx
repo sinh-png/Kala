@@ -101,7 +101,13 @@ class Kala {
 		Kala.framebufer = framebufer;
 		
 		framebuffer.g2.begin(true, bgColor.argb());
+		
 		world.callDraw(new DrawingData(), framebuffer);
+		
+		#if (debug || kala_debug)
+		Debug.draw();
+		#end
+		
 		framebuffer.g2.end();
 	}
 	

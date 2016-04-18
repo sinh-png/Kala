@@ -1,9 +1,9 @@
 package kala.components.collision;
 
+import kala.Debug.DebugDrawCall;
 import kala.DrawingData;
 import kala.components.Component;
 import kala.components.collision.CollisionShape;
-import kala.math.Color;
 import kala.math.Vec2;
 import kala.objects.Object;
 import kha.Canvas;
@@ -28,6 +28,14 @@ interface ICollider extends IComponent {
 @:access(kala.objects.Object)
 @:allow(kala.components.collision.CollisionShape)
 class BaseCollider<T:Object> extends Component<T> implements ICollider {
+	
+	#if (debug || kala_debug)
+	static var _debugDrawCalls:Array<DebugDrawCall> = Debug.addDrawLayer();
+	
+	public var debugColor:UInt = 0xffff0000;
+	public var debugLineStrenght:UInt = 2;
+	public var debugFill:Bool = false;
+	#end
 
 	/**
 	 * If true, update transformation on object post draw using the object already calculated drawing matrix.
@@ -141,7 +149,7 @@ class BaseCollider<T:Object> extends Component<T> implements ICollider {
 		return result;
 	}
 	
-	public function drawDebug(color:UInt, ?lineStrenght:FastFloat = 1, canvas:Canvas):Void {
+	public function drawDebug(color:UInt, ?fill:Bool = false, ?lineStrenght:FastFloat = 1, canvas:Canvas):Void {
 		if (object == null) return;
 		
 		if (!postDrawUpdate) update();
@@ -152,16 +160,35 @@ class BaseCollider<T:Object> extends Component<T> implements ICollider {
 		
 		for (shape in _shapes) {
 			g2.transformation = shape.updateMatrix().matrix;
-			g2.drawPolygon(
-				0, 0,
-				Vec2.toVector2Array(shape.getVertices()), 
-				lineStrenght
-			);
+			
+			if (fill) {
+				g2.fillPolygon(
+					0, 0,
+					Vec2.toVector2Array(shape.getVertices())
+				);
+			} else {
+				g2.drawPolygon(
+					0, 0,
+					Vec2.toVector2Array(shape.getVertices()), 
+					lineStrenght
+				);
+			}
 		}
 	}
 	
 	function postDrawCB(obj:Object, data:DrawingData, canvas:Canvas):Void {
-		_matrix = obj._drawingMatrixCache;
+		_matrix = obj._cachedDrawingMatrix;
+		
+		#if (debug || kala_debug)
+		_debugDrawCalls.push(
+			new DebugDrawCall(
+				canvas,
+				function(canvas) {
+					drawDebug(debugColor, debugFill, debugLineStrenght, canvas);
+				}
+			)
+		);
+		#end
 	}
 	
 	function update():Void {
