@@ -4,7 +4,6 @@ import kala.DrawingData;
 import kala.objects.group.View;
 import kala.objects.Object;
 import kala.math.Color;
-import kala.math.Color.ColorBlendMode;
 import kha.Canvas;
 import kha.FastFloat;
 import kha.Image;
@@ -13,11 +12,13 @@ import kha.math.FastMatrix3;
 
 typedef BasicGroup = Group<Object>;
 
+@:access(kala.math.Color)
 class Group<T:Object> extends Object {
 	
 	public var transformEnable:Bool;
 	
-	public var colorBlendMode:ColorBlendMode;
+	public var colorBlendMode:BlendMode = BlendMode.ADD;
+	public var colorAlphaBlendMode:BlendMode = null;
 
 	private var _children:Array<T> = new Array<T>();
 	private var _views:Array<View> = new Array<View>();
@@ -29,8 +30,9 @@ class Group<T:Object> extends Object {
 	
 	override public function reset(componentsReset:Bool = false):Void {
 		super.reset(componentsReset);
-		color.set(0);
-		colorBlendMode = ColorBlendMode.NORMAL;
+		color = 0x00000000;
+		colorBlendMode = BlendMode.ADD;
+		colorAlphaBlendMode = null;
 	}
 	
 	override public function destroy(componentsDestroy:Bool = true):Void {
@@ -85,15 +87,15 @@ class Group<T:Object> extends Object {
 		var g2 = canvas.g2;
 		
 		if (transformEnable) {
-			data.antialiasing = this.antialiasing || data.antialiasing;
+			data.antialiasing = antialiasing || data.antialiasing;
 			
 			if (data.transformation == null) data.transformation = _cachedDrawingMatrix = getMatrix();
 			else data.transformation = _cachedDrawingMatrix = data.transformation.multmat(getMatrix());
 		
 			if (data.color == null) {
-				data.color = this.color;
+				data.color = color;
 			} else {
-				data.color = Color.blendColors(this.color, data.color, data.colorBlendMode);
+				data.color = Color.getBlendColor(color, data.color, data.colorBlendMode, data.colorAlphaBlendMode);
 			}
 			
 			g2.opacity = this.opacity * data.opacity;
@@ -102,7 +104,7 @@ class Group<T:Object> extends Object {
 		var drawingData = new DrawingData(
 			data.antialiasing,
 			data.transformation,
-			data.color, this.colorBlendMode,
+			data.color, colorBlendMode, colorAlphaBlendMode,
 			data.opacity
 		);
 		

@@ -3,7 +3,6 @@ package kala.objects.shapes;
 import kala.DrawingData;
 import kha.Canvas;
 import kha.FastFloat;
-import kala.math.Color.ColorBlendMode;
 import kala.math.Color;
 import kha.math.FastMatrix3;
 

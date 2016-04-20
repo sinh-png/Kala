@@ -7,19 +7,21 @@ import kha.Canvas;
 import kha.FastFloat;
 import kha.math.FastMatrix3;
 
+@:access(kala.math.Color)
 class Shape extends Object {
 
 	// To avoid using Std.is().
 	public var type(default, null):ShapeType;
 	
 	public var lineStrenght:UInt;
-	public var lineColor:Color = new Color();
+	public var lineColor:Color = 0xffffffff;
 	public var lineOpacity:FastFloat;
 
-	public var fillColor:Color = new Color();
+	public var fillColor:Color = 0xffffffff;
 	public var fillOpacity:FastFloat;
 	
-	public var colorBlendMode:ColorBlendMode;
+	public var colorBlendMode:BlendMode = BlendMode.ADD;
+	public var colorAlphaBlendMode:BlendMode = null;
 	
 	//
 	
@@ -37,14 +39,14 @@ class Shape extends Object {
 	override public function reset(componentsReset:Bool = false):Void {
 		super.reset(componentsReset);
 	
-		color.set(0);
+		color = 0x00000000;
 		
 		lineStrenght = 1;
-		lineColor.set();
+		lineColor = 0xffffffff;
 		
-		fillColor.set();
+		fillColor = 0xffffffff;
 
-		colorBlendMode = ColorBlendMode.NORMAL;
+		colorBlendMode = BlendMode.ADD;
 	}
 	
 	override public function destroy(componentsDestroy:Bool = true):Void {
@@ -59,12 +61,7 @@ class Shape extends Object {
 	override function applyDrawingData(data:DrawingData, canvas:Canvas):Void {
 		super.applyDrawingData(data, canvas);
 		
-		if (color == null) {
-			_color = this.color;
-		} else {
-			_color = Color.blendColors(this.color, data.color, data.colorBlendMode);
-		}
-				
+		_color = canvas.g2.color;
 		_opacity = canvas.g2.opacity;
 	
 		_canvas = canvas;
@@ -72,12 +69,12 @@ class Shape extends Object {
 	}
 	
 	inline function applyFillDrawingData():Void {
-		_canvas.g2.color = new Color().setOverlay(Color.blendColors(fillColor, _color, this.colorBlendMode)).argb();
+		_canvas.g2.color = Color.getBlendColor(fillColor, _color, colorBlendMode, colorAlphaBlendMode);
 		_canvas.g2.opacity = _opacity * fillOpacity;
 	}
 	
 	inline function applyLineDrawingData():Void {
-		_canvas.g2.color = new Color().setOverlay(Color.blendColors(lineColor, _color, this.colorBlendMode)).argb();
+		_canvas.g2.color = Color.getBlendColor(lineColor, _color, colorBlendMode, colorAlphaBlendMode);
 		_canvas.g2.opacity = _opacity * lineOpacity;
 	}
 	

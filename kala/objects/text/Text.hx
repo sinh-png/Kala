@@ -16,6 +16,7 @@ using kala.math.helpers.FastMatrix3Helper;
 using kala.util.StringHelper;
 using StringTools;
 
+@:access(kala.math.Color)
 class Text extends BasicText {
 	
 	var _htmlText:String;
@@ -35,18 +36,19 @@ class Text extends BasicText {
 	public var padding:Vec2 = new Vec2();
 	
 	public var borderSize:UInt;
-	public var borderColor:Color = new Color();
+	public var borderColor:Color = 0xffffffff;
 	public var borderOpacity:FastFloat;
 	
-	public var bgColor:Color = new Color();
+	public var bgColor:Color = 0xffffffff;
 	public var bgOpacity:FastFloat;
 	
-	public var textColor:Color = new Color();
+	public var textColor:Color = 0xffffffff;
 	public var textOpacity:FastFloat;
 	
-	public var colorBlendMode:ColorBlendMode;
+	public var colorBlendMode:BlendMode = BlendMode.ADD;
+	public var colorAlphaBlendMode:BlendMode = null;
 	
-	private var _dirty(default, set):Bool;
+	private var _dirty:Bool;
 	
 	private var _lines:Array<LineData> = new Array<LineData>();
 	
@@ -72,18 +74,19 @@ class Text extends BasicText {
 		padding.set();
 		
 		borderSize = 1;
-		borderColor.set();
+		borderColor = 0xffffffff;
 		borderOpacity = 0;
 		
-		bgColor.set();
+		bgColor = 0xffffffff;
 		bgOpacity = 0;
 		
-		textColor.set();
+		textColor = 0xffffffff;
 		textOpacity = 1;
 		
-		color.set(0);
+		color = 0x00000000;
 		
-		colorBlendMode = ColorBlendMode.NORMAL;
+		colorBlendMode = BlendMode.ADD;
+		colorAlphaBlendMode = null;
 	}
 	
 	override public function destroy(componentsDestroy:Bool = true):Void {
@@ -106,36 +109,26 @@ class Text extends BasicText {
 			_dirty = false;
 		}
 
-		var color = data.color;
-		var colorBlendMode = data.colorBlendMode;
-		
 		data.color = null;
-		
 		applyDrawingData(data, canvas);
 		
-		if (color == null) {
-			color = this.color;
-		} else {
-			color = Color.blendColors(this.color, color, colorBlendMode);
-		}
-		
 		var g2 = canvas.g2;
-		
+		var color:Color = g2.color;
 		opacity = g2.opacity;
 		
 		if (bgOpacity > 0) {
-			g2.color = new Color().setOverlay(Color.blendColors(bgColor, color, this.colorBlendMode)).argb();
+			g2.color = Color.getBlendColor(bgColor, color, colorBlendMode, colorAlphaBlendMode);
 			g2.opacity = opacity * bgOpacity;
 			g2.fillRect(0, 0, width, height);
 		}
 		
 		if (borderOpacity > 0 || borderSize > 0) {
-			g2.color = new Color().setOverlay(Color.blendColors(borderColor, color, this.colorBlendMode)).argb();
+			g2.color = Color.getBlendColor(borderColor, color, colorBlendMode, colorAlphaBlendMode);
 			g2.opacity = opacity * borderOpacity;
 			g2.drawRect(0, 0, width, height, borderSize);
 		}
 
-		var defaultTextColor = new Color().setOverlay(Color.blendColors(textColor, color, this.colorBlendMode)).argb();
+		var defaultTextColor = Color.getBlendColor(textColor, color, colorBlendMode, colorAlphaBlendMode);
 		g2.opacity = opacity * textOpacity;
 		
 		switch(align) {
@@ -163,7 +156,7 @@ class Text extends BasicText {
 						for (textData in line) {
 							g2.font = textData.font;
 							g2.fontSize = textData.size;
-							g2.color = textData.color == null ? defaultTextColor : new Color().setOverlay(Color.blendColors(textData.color, color, this.colorBlendMode)).argb();
+							g2.color = textData.color == null ? defaultTextColor : Color.getBlendColor(textData.color, color, colorBlendMode, colorAlphaBlendMode);
 							g2.drawString(textData.text, tx, ty);
 							
 							tx += textData.getWidth();
@@ -185,7 +178,7 @@ class Text extends BasicText {
 								for (word in textData.text.words(eolSymbol, false, false)) {
 									g2.font = textData.font;
 									g2.fontSize = textData.size;
-									g2.color = textData.color == null ? defaultTextColor : new Color().setOverlay(Color.blendColors(textData.color, color, this.colorBlendMode)).argb();
+									g2.color = textData.color == null ? defaultTextColor : Color.getBlendColor(textData.color, color, colorBlendMode, colorAlphaBlendMode);
 									
 									tx += textData.font.getWidth(word, textData.size, textData.bold) + spaceSize;
 								}
@@ -215,7 +208,7 @@ class Text extends BasicText {
 					for (textData in line) {
 						g2.font = textData.font;
 						g2.fontSize = textData.size;
-						g2.color = textData.color == null ? defaultTextColor : new Color().setOverlay(Color.blendColors(textData.color, color, this.colorBlendMode)).argb();
+						g2.color = textData.color == null ? defaultTextColor : Color.getBlendColor(textData.color, color, colorBlendMode, colorAlphaBlendMode);
 						g2.drawString(textData.text, tx, ty);
 						
 						tx += textData.getWidth();
@@ -336,11 +329,6 @@ class Text extends BasicText {
 	function set_htmlText(value:String):String {
 		_dirty = true;
 		return _htmlText = value;
-	}
-	
-	inline function set_dirtyText(value:Bool):Bool {
-		if (value) dirty = value;
-		return _dirty = value;
 	}
 	
 }

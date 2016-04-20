@@ -43,7 +43,7 @@ class Kala {
 	
 	public static var antiAliasingSamples(default, null):UInt;
 	
-	public static var bgColor(default, null):Color = new Color(1, 0x000000);
+	public static var bgColor(default, null):Color = 0xff000000;
 	
 	public static var defaultFont(default, set):Font;
 	
@@ -100,7 +100,7 @@ class Kala {
 	static function renderWorld(framebuffer:Framebuffer):Void {
 		Kala.framebufer = framebufer;
 		
-		framebuffer.g2.begin(true, bgColor.argb());
+		framebuffer.g2.begin(true, bgColor);
 		
 		world.callDraw(new DrawingData(), framebuffer);
 		

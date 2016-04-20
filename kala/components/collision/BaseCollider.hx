@@ -4,6 +4,7 @@ import kala.Debug.DebugDrawCall;
 import kala.DrawingData;
 import kala.components.Component;
 import kala.components.collision.CollisionShape;
+import kala.math.Color;
 import kala.math.Vec2;
 import kala.objects.Object;
 import kha.Canvas;
@@ -30,9 +31,9 @@ interface ICollider extends IComponent {
 class BaseCollider<T:Object> extends Component<T> implements ICollider {
 	
 	#if (debug || kala_debug)
-	static var _debugDrawCalls:Array<DebugDrawCall> = Debug.addDrawLayer();
+	private static var _debugDrawCalls:Array<DebugDrawCall> = Debug.addDrawLayer();
 	
-	public var debugColor:UInt = 0xffff0000;
+	public var debugColor:Color = 0xffff0000;
 	public var debugLineStrenght:UInt = 2;
 	public var debugFill:Bool = false;
 	#end

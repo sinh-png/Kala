@@ -20,6 +20,7 @@ import kha.Image;
 import kha.math.FastMatrix3;
 
 @:allow(kala.components.Component)
+@:access(kala.math.Color)
 class Object extends EventHandle {
 	
 	public var alive:Bool;
@@ -47,7 +48,7 @@ class Object extends EventHandle {
 	public var skew:Vec2T = new Vec2T();
 	public var rotation:Rotation = new Rotation();
 	
-	public var color:Color = new Color();
+	public var color:Color = 0xffffffff;
 	public var opacity:FastFloat;
 	
 	public var antialiasing:Bool;
@@ -144,7 +145,8 @@ class Object extends EventHandle {
 		skew.set(0, 0, 0, 0);
 		rotation.set(0, 0, 0);
 		
-		color.set(1, 0xffffff);
+		color = 0xffffffff;
+		
 		opacity = 1;
 		
 		antialiasing = false;
@@ -165,8 +167,6 @@ class Object extends EventHandle {
 		scale = null;
 		skew = null;
 		rotation = null;
-		
-		color = null;
 		
 		//
 		
@@ -427,9 +427,9 @@ class Object extends EventHandle {
 		else g2.transformation = _cachedDrawingMatrix = data.transformation.multmat(getMatrix());
 		
 		if (data.color == null) {
-			g2.color = color.argb();
+			g2.color = color;
 		} else {
-			g2.color = new Color().setOverlay(Color.blendColors(color, data.color, data.colorBlendMode)).argb();
+			g2.color = Color.getBlendColor(color, data.color, data.colorBlendMode, data.colorAlphaBlendMode);
 		}
 		
 		g2.opacity = opacity * data.opacity;
@@ -465,14 +465,14 @@ class Object extends EventHandle {
 		var tempScale = scale.clone();
 		var tempSkew = skew.clone();
 		var tempRot = rotation.clone();
-		var tempColor = color.clone();
+		var tempColor = color;
 		var tempOpacity = opacity;
 		
 		position.set();
 		scale.setXY(1, 1);
 		skew.setXY();
 		rotation.angle = 0;
-		color.set();
+		color = 0xffffffff;
 		opacity = 1;
 	
 		_texture.g2.begin();

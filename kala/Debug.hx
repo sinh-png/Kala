@@ -1,4 +1,3 @@
-
 package kala;
 
 import kha.Canvas;
@@ -61,6 +60,22 @@ class DebugDrawCall {
 	@:extern
 	public inline function exec():Void {
 		callback(canvas);
+	}
+	
+}
+
+class DebugConsole {
+	
+	public function new() {
+		
+	}
+	
+	public function draw():Void {
+		
+	}
+	
+	public function update():Void {
+		
 	}
 	
 }

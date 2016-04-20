@@ -91,7 +91,7 @@ class Blender extends Component<Object> {
 	}
 	
 	public inline function clear(?color:Color, ?depth:Float, ?stencil:Int):Void {
-		return _graphics.clear(color.argb(), depth, stencil);
+		return _graphics.clear(color, depth, stencil);
 	}
 
 	public inline function viewport(x:Int, y:Int, width:Int, height:Int):Void {
