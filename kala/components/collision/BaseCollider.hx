@@ -1,6 +1,5 @@
 package kala.components.collision;
 
-import kala.Debug.DebugDrawCall;
 import kala.DrawingData;
 import kala.components.Component;
 import kala.components.collision.CollisionShape;
@@ -10,6 +9,10 @@ import kala.objects.Object;
 import kha.Canvas;
 import kha.FastFloat;
 import kha.math.FastMatrix3;
+
+#if (debug || kala_debug)
+import kala.Debug.DebugDrawCall;
+#end
 
 using kha.graphics2.GraphicsExtension;
 using kala.math.helpers.FastMatrix3Helper;
