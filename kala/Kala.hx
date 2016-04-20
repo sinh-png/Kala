@@ -43,7 +43,7 @@ class Kala {
 	
 	public static var antiAliasingSamples(default, null):UInt;
 	
-	public static var bgColor(default, null):Color = 0xff000000;
+	public static var bgColor:Color = 0xff000000;
 	
 	public static var defaultFont(default, set):Font;
 	
