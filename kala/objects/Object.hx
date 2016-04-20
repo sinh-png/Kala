@@ -48,7 +48,7 @@ class Object extends EventHandle {
 	public var skew:Vec2T = new Vec2T();
 	public var rotation:Rotation = new Rotation();
 	
-	public var color:Color = 0xffffffff;
+	public var color:Color;
 	public var opacity:FastFloat;
 	
 	public var antialiasing:Bool;
