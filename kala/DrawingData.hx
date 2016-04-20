@@ -9,7 +9,7 @@ class DrawingData {
 	public var antialiasing:Bool;
 	public var transformation:FastMatrix3;
 	
-	public var color:Color;
+	public var color:Null<Color>;
 	public var colorBlendMode:BlendMode = BlendMode.ADD;
 	public var colorAlphaBlendMode:BlendMode = null;
 	

@@ -255,7 +255,7 @@ class Object extends EventHandle {
 		_shaders.splice(index, 1);
 		
 		if (shader.size == _shaderSize) {
-			var maxSize = 0;
+			var maxSize:UInt = 0;
 			
 			for (s in _shaders) {
 				if (s.size == shader.size) return shader;

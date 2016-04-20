@@ -51,7 +51,6 @@ class Shape extends Object {
 	
 	override public function destroy(componentsDestroy:Bool = true):Void {
 		super.destroy(componentsDestroy);
-		lineColor = fillColor = null;
 	}
 	
 	override public function isVisible():Bool {
