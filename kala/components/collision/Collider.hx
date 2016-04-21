@@ -14,7 +14,6 @@ class Collider extends BaseCollider<Object> {
 	
 	public function addCircle(x:FastFloat, y:FastFloat, radius:FastFloat):CollisionCircle {
 		var circle = CollisionCircle.get();
-		
 		circle.collider = this;
 		circle.position.set(x, y);
 		circle.radius = radius;
@@ -53,6 +52,10 @@ class Collider extends BaseCollider<Object> {
 		_shapes.push(polygon);
 		
 		return [polygon];
+	}
+	
+	public inline function addObjectRect():CollisionPolygon {
+		return addRect(0, 0, object.width, object.height);
 	}
 	
 	public inline function addShape(shape:CollisionShape):CollisionShape {
