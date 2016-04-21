@@ -114,9 +114,10 @@ class Kala {
 		
 		#if (debug || kala_debug)
 		Debug.draw();
-		#end
-		
+		#else
 		framebuffer.g2.end();
+		#end
+
 	}
 	
 	static function updateWorld():Void {
