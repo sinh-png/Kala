@@ -1,8 +1,9 @@
 package kala.objects.text;
 
+import kala.math.color.BlendMode;
 import kala.math.Vec2;
 import kala.objects.Object;
-import kala.math.Color;
+import kala.math.color.Color;
 import kala.objects.text.Text.LineData;
 import kha.Assets;
 import kha.Canvas;
@@ -16,7 +17,7 @@ using kala.math.helpers.FastMatrix3Helper;
 using kala.util.StringHelper;
 using StringTools;
 
-@:access(kala.math.Color)
+@:access(kala.math.color.Color)
 class Text extends BasicText {
 	
 	var _htmlText:String;
@@ -93,9 +94,6 @@ class Text extends BasicText {
 		super.destroy(componentsDestroy);
 		
 		padding = null;
-		borderColor = null;
-		bgColor = null;
-		textColor = null;
 		
 		while (_lines.length > 0) _lines.pop();
 		_lines = null;
@@ -342,13 +340,13 @@ class TextData {
 	public var bold:Bool;
 	public var italic:Bool;
 	public var underlined:Bool;
-	public var color:Color;
+	public var color:Null<Color>;
 	
 	public var url:String;
 	
 	public inline function new(
 		text:String, 
-		font:Font, size:UInt, bold:Bool, italic:Bool, underlined:Bool, color:Color, 
+		font:Font, size:UInt, bold:Bool, italic:Bool, underlined:Bool, ?color:Color, 
 		?url:String
 	) {
 		this.text = text;

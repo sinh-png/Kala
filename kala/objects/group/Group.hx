@@ -1,9 +1,10 @@
 package kala.objects.group;
 
 import kala.DrawingData;
+import kala.math.color.BlendMode;
 import kala.objects.group.View;
 import kala.objects.Object;
-import kala.math.Color;
+import kala.math.color.Color;
 import kha.Canvas;
 import kha.FastFloat;
 import kha.Image;
@@ -26,7 +27,7 @@ interface IGroup extends IObject {
 	
 }
 
-@:access(kala.math.Color)
+@:access(kala.math.color.Color)
 class Group<T:Object> extends Object implements IGroup {
 	
 	public var transformEnable:Bool;

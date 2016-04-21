@@ -6,7 +6,7 @@ import kala.components.Component.IComponent;
 import kala.graphics.Shader;
 import kala.math.helpers.FastMatrix3Helper;
 import kala.math.Angle;
-import kala.math.Color;
+import kala.math.color.Color;
 import kala.math.Rect;
 import kala.math.Rotation;
 import kala.math.Vec2T;
@@ -113,7 +113,7 @@ interface IObject {
 
 @:allow(kala.components.Component)
 @:access(kala.objects.group.IGroup)
-@:access(kala.math.Color)
+@:access(kala.math.color.Color)
 class Object extends EventHandle implements IObject {
 	
 	public var alive:Bool;

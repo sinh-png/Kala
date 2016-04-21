@@ -3,7 +3,7 @@ package kala.objects.shapes;
 import kala.DrawingData;
 import kha.Canvas;
 import kha.FastFloat;
-import kala.math.Color;
+import kala.math.color.Color;
 import kha.math.FastMatrix3;
 
 class Rectangle extends Shape {

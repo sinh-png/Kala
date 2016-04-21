@@ -3,7 +3,7 @@ package kala.objects.group;
 import kala.DrawingData;
 import kala.math.Vec2T;
 import kala.objects.Object;
-import kala.math.Color;
+import kala.math.color.Color;
 import kala.math.Rect;
 import kha.Canvas;
 import kha.FastFloat;

@@ -1,9 +1,10 @@
 package;
+import kala.math.color.Color;
 
 import kala.Kala;
 import kala.input.Keyboard;
 import kala.input.Mouse;
-import kala.math.Color.ColorBlendMode;
+import kala.math.color.Color.ColorBlendMode;
 import kala.math.Vec2;
 import kala.objects.group.Group.BasicGroup;
 import kala.objects.shapes.Circle;

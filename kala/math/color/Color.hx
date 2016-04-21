@@ -1,5 +1,7 @@
-package kala.math;
+package kala.math.color;
 
+import kala.math.color.BlendMode.BlendFactor;
+import kala.math.color.BlendMode.BlendOpt;
 import kala.util.types.Trio;
 import kha.FastFloat;
 
@@ -525,51 +527,5 @@ abstract Color(UInt) from UInt to UInt from kha.Color to kha.Color {
 		setBytes(alpha, red, green, Std.int(Math.abs(value * 255)));
 		return value;
 	}
-	
-}
-
-enum BlendOpt {
-	
-	ADD;
-	SUB;
-	REVERSE_SUB;
-	MAX;
-	MIN;
-	
-}
-
-enum BlendFactor {
-	
-	ZERO;
-	ONE;
-	
-	SRC_ALPHA;
-	INV_SRC_ALPHA;
-	
-	SRC_COLOR;
-	INV_SRC_COLOR;
-
-	DEST_ALPHA;
-	INV_DEST_ALPHA;
-	
-	DEST_COLOR;
-	INV_DEST_COLOR;
-	
-	SRC_ALPHA_SATURATION;
-	DEST_ALPHA_SATURATION;
-	
-	SET(a:FastFloat, r:FastFloat, g:FastFloat, b:FastFloat);
-	
-}
-
-enum BlendMode {
-	
-	ALPHA;
-	ADD;
-	SUB;
-	REVERSE_SUB;
-	MULTI;
-	MULTI_2X;
-	SET(src:BlendFactor, dest:BlendFactor, opt:BlendOpt);
 	
 }

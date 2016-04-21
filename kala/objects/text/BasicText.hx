@@ -2,7 +2,7 @@ package kala.objects.text;
 
 import kala.DrawingData;
 import kala.EventHandle.CallbackHandle;
-import kala.math.Color;
+import kala.math.color.Color;
 import kala.objects.Object;
 import kha.Canvas;
 import kha.FastFloat;

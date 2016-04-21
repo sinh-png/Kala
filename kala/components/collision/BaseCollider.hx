@@ -3,7 +3,7 @@ package kala.components.collision;
 import kala.DrawingData;
 import kala.components.Component;
 import kala.components.collision.CollisionShape;
-import kala.math.Color;
+import kala.math.color.Color;
 import kala.math.Vec2;
 import kala.objects.Object;
 import kha.Canvas;

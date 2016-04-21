@@ -1,7 +1,7 @@
 package kala.objects.shapes;
 
 import kala.DrawingData;
-import kala.math.Color;
+import kala.math.color.Color;
 import kala.math.Vec2;
 import kha.Canvas;
 import kha.FastFloat;

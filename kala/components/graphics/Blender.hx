@@ -2,7 +2,7 @@ package kala.components.graphics;
 
 import haxe.ds.Vector;
 import kala.components.Component;
-import kala.math.Color;
+import kala.math.color.Color;
 import kala.math.Vec2;
 import kala.objects.Object;
 import kha.Canvas;

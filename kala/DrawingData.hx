@@ -1,6 +1,7 @@
 package kala;
 
-import kala.math.Color;
+import kala.math.color.BlendMode;
+import kala.math.color.Color;
 import kha.FastFloat;
 import kha.math.FastMatrix3;
 

@@ -2,7 +2,7 @@ package kala.objects;
 
 import kala.DrawingData;
 import kala.components.SpriteAnimation;
-import kala.math.Color;
+import kala.math.color.Color;
 import kala.math.Rect;
 import kala.objects.Sprite.SpriteData;
 import kha.Canvas;

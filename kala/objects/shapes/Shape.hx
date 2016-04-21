@@ -1,13 +1,14 @@
 package kala.objects.shapes;
 
 import kala.DrawingData;
-import kala.math.Color;
+import kala.math.color.BlendMode;
+import kala.math.color.Color;
 import kala.objects.Object;
 import kha.Canvas;
 import kha.FastFloat;
 import kha.math.FastMatrix3;
 
-@:access(kala.math.Color)
+@:access(kala.math.color.Color)
 class Shape extends Object {
 
 	// To avoid using Std.is().

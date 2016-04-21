@@ -3,7 +3,7 @@ package kala;
 import kala.Assets;
 import kala.input.Keyboard;
 import kala.input.Mouse;
-import kala.math.Color;
+import kala.math.color.Color;
 import kala.objects.Object;
 import kala.objects.group.Group;
 import kha.FastFloat;
