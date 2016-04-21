@@ -35,12 +35,12 @@ class Main {
 		// onFirstFrame is a handle for callbacks that will be executed right before the first update / draw of an object. 
 		Kala.world.onFirstFrame.add(function(_) {
 			
-			// We set a default font that will be used for text rendering.
+			// We set a default font that will be used for all text rendering.
 			Kala.defaultFont = Assets.fonts.ClearSans_Regular;
 			
 			var text = new BasicText("HELLO WORLD", 40);
 			text.position.set(400, 300, text.width / 2, text.height / 2); // Center the text on screen.
-			text.color.rgb = 0x00ffff; // Make it aqua blue because I like the color.  
+			text.color = 0xff00ffff; // Make it aqua blue because I like the color.  
 			Kala.world.add(text); // Add it into the root group.
 			
 		});
@@ -87,6 +87,7 @@ class Main {
 			animation.addAnim("normal", null, -1, -1, 0, 0, 3, 3, 6).play();
 			
 			Kala.world.add(animatedSprite);
+			
 		});
 		
 		Kala.start();
@@ -98,8 +99,6 @@ class Main {
 
 
 #####SHAPES
-
-*The internal of shape classes are currently only placeholders and going to be rewritten for better performance and functionality.*
 
 ```haxe
 package;
@@ -117,12 +116,12 @@ class Main {
 		Kala.world.onFirstFrame.add(function(_) {
 			
 			var circle = new Circle(80);
-			circle.position.setXYBetween(0, 0, 800, 600, 20);
+			circle.position.setXYBetween(0, 0, 800, 600, 20, 50);
 			Kala.world.add(circle);
 			
 			var rect = new Rectangle(200, 160, true, true);
-			rect.position.setOrigin(100, 80).setXY(400, 300);
-			rect.lineColor.rgb = 0xff0000;
+			rect.position.set(400, 300, 100, 80);
+			rect.lineColor = 0xffff0000;
 			rect.lineStrenght = 4;
 			Kala.world.add(rect);
 			
@@ -131,7 +130,7 @@ class Main {
 				new Vec2(160, 160),
 				new Vec2(160, 0)
 			], false);
-			polygon.position.setOrigin(80, 80).setXYBetween(0, 0, 800, 600, 80);
+			polygon.position.setOrigin(80, 80).setXYBetween(0, 0, 800, 600, 80, 50);
 			polygon.lineOpacity = 1;
 			polygon.lineStrenght = 2;
 			Kala.world.add(polygon);
@@ -175,7 +174,7 @@ class Main {
 			
 			Kala.world.add(rect);
 
-			rect.onPreUpdate.add(function(_, _) {
+			rect.onPostUpdate.add(function(_, _) {
 				
 				// x & y are shortcuts for position.x & position.y
 				rect.x = Mouse.x; 
@@ -189,8 +188,7 @@ class Main {
 					rect.scale.x = rect.scale.y -= 0.01;
 				}
 				
-				// Currently Mouse.wheel works incorrectly on HTML5 target.
-				//rect.skew.y += Mouse.wheel;
+				rect.skew.y += Mouse.wheel;
 		
 				if (Keyboard.justPressed.ANY) {
 					rect.rotation.angle += 36;
@@ -214,10 +212,10 @@ Objects can be grouped together and they will inherit their groups settings and 
 ```haxe
 package;
 
-import kala.Kala;
 import kala.input.Keyboard;
 import kala.input.Mouse;
-import kala.math.Color.ColorBlendMode;
+import kala.Kala;
+import kala.math.color.BlendMode;
 import kala.math.Vec2;
 import kala.objects.group.Group.BasicGroup;
 import kala.objects.shapes.Circle;
@@ -230,24 +228,22 @@ class Main {
 		
 		Kala.world.onFirstFrame.add(function(_) {
 			
-			// BasicGroup is just a typedef of Group<Object>
+			// BasicGroup is a typedef of Group<Object>
 			var group = new BasicGroup(true);
 			group.antialiasing = true;
-			group.color.alpha = 1;
-			group.colorBlendMode = ColorBlendMode.NORMAL; // How the group color will be blended with its children colors.
+			group.colorBlendMode = BlendMode.SUB; // How the group color will be blended with its children colors.
 			Kala.world.add(group);
 			
 			group.onPostUpdate.add(function(_, _) {
 				group.x = Mouse.x;
 				group.y = Mouse.y;
 				
-				if (Mouse.pressed.LEFT) group.skew.x += 1;
-				if (Mouse.pressed.RIGHT) group.scale.y += 0.01;
+				if (Mouse.pressed.LEFT) 	group.skew.x += 1;
+				if (Mouse.pressed.RIGHT) 	group.scale.y += 0.01;
 				
 				if (Keyboard.pressed.SPACE) group.rotation.angle += 5;
 				
-				if (Keyboard.pressed.CTRL)
-					group.color.setRGBComponents(0, group.color.green() - 5, 0);
+				if (Keyboard.pressed.CTRL) 	group.color.red = group.color.red - 5;
 			});
 			
 			var circle = new Circle(80);
@@ -276,17 +272,17 @@ class Main {
 
 #####GROUP VIEW
 
-View is a special kind of object. It can be used as camera or to make effects like shadow, mirror, etc.
+View is a special kind of object. It can be used as a backbuffer, camera or to apply graphic effects (shader) to many objects at once, etc.
 
 ```haxe
 package;
 
+import kala.Assets;
 import kala.Kala;
 import kala.input.Mouse;
 import kala.objects.Sprite;
 import kala.objects.group.Group;
 import kala.objects.group.View;
-import kha.Assets;
 
 class Main {
 	
@@ -297,17 +293,19 @@ class Main {
 			var group = new BasicGroup();
 			Kala.world.add(group);
 			
-			var view = new View(0, 0, 200, 200);
-			view.position.set(400, 300, 100, 100);
-			view.rotation.setPivot(100, 100);
-			view.skew.setOrigin(100, 100);
-			view.viewPos.setOrigin(100, 100);
+			var view = new View(0, 0, 300, 300);
+			view.halign = view.valign = 0.5; // Always center this view on its render target.
+			view.setTransformationOrigin(150, 150);
 			group.addView(view);
 			
 			var background = new Sprite(Assets.images.background);
 			group.add(background);
 			
-			group.onPreUpdate.add(function(_, _) {
+			group.onPostUpdate.add(function(_, _) {
+				// Scale background to fit framebuffer.
+				background.scale.x = Kala.width / background.width;
+				background.scale.y = Kala.height / background.height;
+	
 				view.viewPos.x = Mouse.x;
 				view.viewPos.y = Mouse.y;
 				
@@ -352,7 +350,7 @@ class Main {
 			// And we have Text for fancy stuffs.
 			var fancyText = new Text(null, null, 30, 700, TextAlign.JUSTIFY);
 			fancyText.text = "TO CHANGE ALIGNMENT MODE PRESS:\n[1] LEFT\n[2] CENTER\n[3] RIGHT\n[4] JUSTIFY\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-			fancyText.bgColor.rgb = 0x00ffff;
+			fancyText.bgColor = 0xff00ffff;
 			fancyText.bgOpacity = 0.2;
 			fancyText.borderOpacity = 1;
 			fancyText.borderSize = 2;
@@ -389,9 +387,11 @@ You can also use `kala.math.Collision` directly without the component for better
 ```haxe
 package;
 
-import kala.Kala;
 import kala.components.collision.Collider;
+import kala.Debug;
 import kala.input.Mouse;
+import kala.Kala;
+import kala.math.color.BlendMode;
 import kala.math.Vec2;
 import kala.objects.group.Group.BasicGroup;
 import kala.objects.shapes.Circle;
@@ -413,7 +413,7 @@ class Main {
 			var colRect = collider1.addRect(0, 0, 200, 100);
 
 			var group = new BasicGroup(true);
-			group.color.alpha = 1;
+
 			Kala.world.add(group);
 			
 			var circle = new Circle(80, false, true);
@@ -436,15 +436,22 @@ class Main {
 			polygon.lineStrenght = 2;
 			group.add(polygon);
 			
-			var collider2 = new Collider().addTo(group);
+			circle.colorBlendMode = rect2.colorBlendMode = polygon.colorBlendMode = BlendMode.SUB;
 			
-			collider2.addCircle(0, 0, circle.radius).scale.y = circle.scale.y;
+			var collider2 = new Collider().addTo(group);
+	
+			collider2.addCircle(0, 0, circle.radius).scale = circle.scale;
 			
 			collider2.addRect(rect2.x, 0, rect2.width, rect2.height)
 			.position.setOrigin(rect2.position.ox, rect2.position.oy);
 			
 			collider2.addPolygon(polygon.x, 0, vertices)[0]
 			.position.setOrigin(polygon.position.ox, polygon.position.oy);
+			
+			#if (debug || kala_debug)
+			Debug.collisionDebug = true;
+			collider1.debugColor = collider2.debugColor = 0xff0000ff;
+			#end
 			
 			group.onPostUpdate.add(function(_, _) {
 				group.x = Mouse.x;
@@ -453,11 +460,11 @@ class Main {
 				group.rotation.angle += 2;
 		
 				if (collider1.test(collider2) != null) {
-					rect1.lineColor.rgb = 0xff0000;
-					group.color.rgb = 0xff0000;
+					rect1.lineColor = 0xffff0000;
+					group.color = 0x0000ffff;
 				} else {
-					rect1.lineColor.rgb = 0xffffff;
-					group.color.rgb = 0xffffff;
+					rect1.lineColor = 0xffffffff;
+					group.color = 0x00000000;
 				}
 			});
 
@@ -475,12 +482,12 @@ class Main {
 ```haxe
 package;
 
-import kala.Kala;
 import kala.components.Timer;
+import kala.components.tween.Ease;
+import kala.Kala;
 import kala.input.Keyboard;
 import kala.objects.shapes.Circle;
 import kala.objects.shapes.Rectangle;
-
 
 class Main {
 	
@@ -489,12 +496,12 @@ class Main {
 		Kala.world.onFirstFrame.add(function(_) {
 			
 			var player = new Rectangle(60, 60);
-			player.position.set(300, 300, 30, 30);
+			player.position.setOrigin(30, 30).setXY(300, 300);
 			Kala.world.add(player);
 			
-			var timer = new Timer().addTo(player);
+			var timer = new TimerEx().addTo(player);
 			
-			player.onPreUpdate.add(function(_, _) {
+			player.onPostUpdate.add(function(_, _) {
 				if (Keyboard.pressed.LEFT) player.x -= 4;
 				if (Keyboard.pressed.RIGHT) player.x += 4;
 				if (Keyboard.pressed.UP) player.y -= 4;
@@ -526,6 +533,15 @@ class Main {
 			timer.loop(60, 0, true, function(loopTask) {
 				circle.rotation.angle = 36 * loopTask.elapsedExecutions;
 			});
+			
+			timer.timeline(circle, Ease.sineInOut)
+				.startLoop()
+				.tweenPos(null, 100, 60)
+				.wait(10)
+				.tweenPos(null, 500, 60)
+				.endLoop()
+			.start();
+			
 		});
 		
 		Kala.start(); 
