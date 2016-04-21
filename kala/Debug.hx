@@ -5,9 +5,9 @@ import kha.Canvas;
 @:allow(kala.Kala)
 class Debug {
 	
-	#if (debug || kala_debug)
 	public static var collisionDebug:Bool = false;
 	
+	#if (debug || kala_debug)
 	private static var _layers(default, null):Array<Array<DebugDrawCall>> = new Array<Array<DebugDrawCall>>();
 	#end
 
