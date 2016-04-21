@@ -26,8 +26,8 @@ class Main {
 			
 			group.onPostUpdate.add(function(_, _) {
 				// Scale background to fit framebuffer.
-				background.scale.x = Kala.width / background.width;
-				background.scale.y = Kala.height / background.height;
+				background.scale.x = Kala.screenWidth / background.width;
+				background.scale.y = Kala.screenHeight / background.height;
 	
 				view.viewPos.x = Mouse.x;
 				view.viewPos.y = Mouse.y;
