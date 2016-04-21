@@ -1,5 +1,7 @@
-package kala.components.timer;
+package kala.components;
 
+import kala.components.tween.Ease.EaseFunction;
+import kala.components.tween.Tween;
 import kala.Kala.TimeUnit;
 import kala.components.Component;
 import kala.objects.Object;
@@ -110,8 +112,8 @@ class Timer extends Component<Object> {
 	
 }
 
-@:allow(kala.components.timer.Timer)
-@:access(kala.components.timer.Timer)
+@:allow(kala.components.Timer)
+@:access(kala.components.Timer)
 class LoopTask {
 
 	public var onExecCB(default, null):LoopTask->Void;
@@ -143,4 +145,41 @@ class LoopTask {
 		_manager = null;
 	}
 
+}
+
+//
+
+@:access(kala.components.tween.Tween)
+class TimerEx extends Timer {
+
+	public var _tween:Tween;
+	
+	public function new() {
+		super();
+		
+		_tween = new Tween();
+	}
+	
+	override public function addTo(object:Object):TimerEx {
+		super.addTo(object);
+		_tween.object = object;
+		return this;
+	}
+	
+	override public function remove():Void {
+		super.remove();
+		_tween.object = null;
+	}
+	
+	override function update(obj:Object, delta:FastFloat):Void {
+		super.update(obj, delta);
+		_tween.update(obj, delta);
+	}
+	
+	public function timeline(
+		?target:Dynamic, ?ease:EaseFunction, ?onTweenUpdateCB:TweenTask->Void
+	):TweenTimeline {
+		return _tween.get(target, ease, onTweenUpdateCB);
+	}
+	
 }
