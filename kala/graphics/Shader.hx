@@ -24,13 +24,16 @@ class Shader {
 	
 	//
 	
-	function createPipeline(?vertexShader:VertexShader, ?fragmentShader:FragmentShader):Void {
-		var structure = new VertexStructure();
-		structure.add("vertexPosition", VertexData.Float3);
-        structure.add("texPosition", VertexData.Float2);
-        structure.add("vertexColor", VertexData.Float4);
-		
+	function createPipeline(?structure:VertexStructure, ?vertexShader:VertexShader, ?fragmentShader:FragmentShader):Void {
 		pipeline = new PipelineState();
+		
+		if (structure == null) {
+			structure = new VertexStructure();
+			structure.add("vertexPosition", VertexData.Float3);
+			structure.add("texPosition", VertexData.Float2);
+			structure.add("vertexColor", VertexData.Float4);
+		}
+		
 		pipeline.inputLayout = [structure];
 		
 		pipeline.vertexShader = (vertexShader == null) ? Shaders.painter_image_vert : vertexShader;
