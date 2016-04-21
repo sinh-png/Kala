@@ -17,18 +17,21 @@ class AssetsBuilder {
 		var content = Json.parse(File.getContent(path + "files.json"));
 		var files:Iterable<Dynamic> = content.files;
 		
+		path = path.substr(0, path.length - 11) + '/';
+		
 		for (file in files) {
 			var name:String = file.name;
 			
 			switch(type) {
 				
 				case "sheet":
-					if (file.type != "blob" || name.lastIndexOf("_sheet", name.length - 6) == -1) continue;
+					var ext = "_ssd";
 					
-					name = name.substr(0, name.length - 6);
-					path = path.substr(0, path.length - 11) + '/';
+					if (file.type != "blob" || name.lastIndexOf(ext, name.length - ext.length) == -1) continue;
+					
+					name = name.substr(0, name.length - ext.length);
 					content = Json.parse(File.getContent(path + file.files[0]));
-
+					
 					fields.push({
 						name: name,
 						doc: null,
@@ -39,7 +42,6 @@ class AssetsBuilder {
 					});
 					
 			}
-			
 		}
 
 		return fields;
