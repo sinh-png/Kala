@@ -232,7 +232,7 @@ class TweenTimeline {
 		return this;
 	}
 	
-	public function startLoop(times:UInt):TweenTimeline {
+	public function startLoop(times:UInt = 0):TweenTimeline {
 		nodes.push(START_LOOP(times));
 		return this;
 	}
