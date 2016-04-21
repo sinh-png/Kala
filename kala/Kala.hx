@@ -41,6 +41,9 @@ class Kala {
 	 */
 	public static var timingUnit:TimeUnit = TimeUnit.FRAME;
 	
+	public static var width(default, null):Int = 0;
+	public static var height(default, null):Int = 0;
+	
 	public static var screenWidth(default, null):Int = 0;
 	public static var screenHeight(default, null):Int = 0;
 	
@@ -66,18 +69,21 @@ class Kala {
 	 */
 	public static function start(
 		?title:String = "Hello!",
-		?screenWidth:UInt = 800, ?screenHeight:UInt = 600,
+		?windowWidth:UInt = 800, ?windowHeight:UInt = 600,
 		?antiAliasingSamples:UInt = 1,
 		?updateRate:UInt = 60,
 		?loadAllAssets:Bool = true
 	):Void {
 		Kala.antiAliasingSamples = antiAliasingSamples;
 		
+		width = windowWidth;
+		height = windowHeight;
+		
 		System.init(
 			{ 
 				title: title, 
-				width: screenWidth,
-				height: screenHeight,
+				width: width,
+				height: height,
 				samplesPerPixel: antiAliasingSamples
 			},
 			function() {			
