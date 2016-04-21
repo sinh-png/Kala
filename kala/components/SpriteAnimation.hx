@@ -14,7 +14,7 @@ import kha.Image;
 class SpriteAnimation extends Component<Sprite> {
 
 	public var crAnim(default, null):SpriteAnimationData;
-	public var crFrame(default, null):Int;
+	public var crFrame(default, set):Int;
 	
 	public var onAnimComplete:CallbackHandle<SpriteAnimation->Void>;
 	
@@ -32,7 +32,6 @@ class SpriteAnimation extends Component<Sprite> {
 	override public function reset():Void {
 		super.reset();
 		crAnim = null;
-		crFrame = 0;
 		removeAllAnimations();
 	}
 	
@@ -227,8 +226,13 @@ class SpriteAnimation extends Component<Sprite> {
 
 			}
 			
-			object.frameRect.copy(crAnim.frames[crFrame]);
+			
 		}
+	}
+	
+	inline function set_crFrame(value:Int):Int {
+		object.frameRect.copy(crAnim.frames[crFrame = value]);
+		return value;
 	}
 
 }
