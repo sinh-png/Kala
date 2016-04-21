@@ -19,9 +19,102 @@ import kha.graphics2.ImageScaleQuality;
 import kha.Image;
 import kha.math.FastMatrix3;
 
+interface IObject {
+	
+	public var alive:Bool;
+	public var active:Bool;
+	public var visible:Bool;
+	
+	//
+	
+	public var x(get, set):FastFloat;
+	public var y(get, set):FastFloat;
+	
+	public var position:Vec2T;
+	
+	public var flipX:Bool;
+	public var flipY:Bool;
+	
+	public var scale:Vec2T;
+	public var skew:Vec2T;
+	public var rotation:Rotation;
+	
+	public var color:Color;
+	public var opacity:FastFloat;
+	
+	public var antialiasing:Bool;
+	
+	//
+	
+	private var _width:FastFloat;
+	public var width(get, set):FastFloat;
+	private var _height:FastFloat;
+	public var height(get, set):FastFloat;
+	
+	public var tWidth(get, never):FastFloat;
+	public var tHeight(get, never):FastFloat;
+	
+	//
+	
+	public var buffer(default, null):Image;
+	
+	//
+	
+	public var group(get, never):BasicGroup;
+	public var pool:ObjectPool<Object>;
+	
+	//
+	
+	public var onDestroy:CallbackHandle<Object->Bool->Void>;
+	public var onReset:CallbackHandle<Object->Bool->Void>;
+	
+	public var onPreUpdate:CallbackHandle<Object->FastFloat->Bool>;
+	public var onPostUpdate:CallbackHandle<Object->FastFloat->Void>;
+	
+	public var onPreDraw:CallbackHandle<Object->DrawingData->Canvas->Bool>;
+	public var onPostDraw:CallbackHandle<Object->DrawingData->Canvas->Void>;
+	
+	public var onFirstFrame:CallbackHandle<Object->Void>;
+		
+	//
+
+	private var _firstFrameExecuted:Bool;
+	
+	private var _crGroup:Object;
+	private var _groups:Array<Object>;
+	
+	private var _components:Array<IComponent>;
+	
+	//
+	
+	private var _texture:Image;
+	private var _shaderSize:UInt;
+
+	private var _shaders:Array<Shader>;
+	
+	//
+	
+	private var _cachedDrawingMatrix:FastMatrix3;
+	
+	//
+	
+	public function reset(componentsReset:Bool = false):Void;
+	public function destroy(componentsDestroy:Bool = true):Void;
+	public function deepReset(componentsDeepReset:Bool = true):Void;
+	public function update(delta:FastFloat):Void;
+	public function draw(data:DrawingData, canvas:Canvas):Void;
+	public function drawBuffer(data:DrawingData, canvas:Canvas):Void;
+	public function isVisible():Bool;
+	public function addShader(shader:Shader):Void;
+	public function removeShader(shader:Shader):Shader;
+	public function getDrawingMatrix():FastMatrix3;
+	
+}
+
 @:allow(kala.components.Component)
+@:access(kala.objects.group.IGroup)
 @:access(kala.math.Color)
-class Object extends EventHandle {
+class Object extends EventHandle implements IObject {
 	
 	public var alive:Bool;
 	public var active:Bool;
@@ -313,12 +406,21 @@ class Object extends EventHandle {
 		return FastMatrix3Helper.getTransformMatrix(position, scale, skew, rotation, flipX, flipY);
 	}
 	
-	public inline function getDrawingMatrix():FastMatrix3 {
-		if (_crGroup == null) return getMatrix();
-		return _crGroup.getDrawingMatrix().multmat(getMatrix());
+	public function getDrawingMatrix():FastMatrix3 {
+		var group:IGroup = cast _crGroup;
+		
+		while (true) {
+			if (group == null) {
+				return getMatrix();
+			} else if (!group.transformEnable) {
+				return group.getDrawingMatrix().multmat(getMatrix());
+			}
+			
+			group = cast group._crGroup;
+		}
 	}
 	
-	public inline function put():Void {	
+	public inline function put():Void {
 		pool.put(this);
 	}
 	
@@ -429,6 +531,7 @@ class Object extends EventHandle {
 		if (data.color == null) {
 			g2.color = color;
 		} else {
+			g2.color = Color.getBlendColor(color, data.color, data.colorBlendMode, data.colorAlphaBlendMode);
 			g2.color = Color.getBlendColor(color, data.color, data.colorBlendMode, data.colorAlphaBlendMode);
 		}
 		

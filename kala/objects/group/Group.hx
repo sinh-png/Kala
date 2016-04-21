@@ -12,8 +12,22 @@ import kha.math.FastMatrix3;
 
 typedef BasicGroup = Group<Object>;
 
+interface IGroup extends IObject {
+	
+	public var transformEnable:Bool;
+	
+	public var colorBlendMode:BlendMode;
+	public var colorAlphaBlendMode:BlendMode;
+	
+	private var _views:Array<View>;
+	
+	public function addView(view:View):Void;
+	public function removeView(view:View, splice:Bool = false):View;
+	
+}
+
 @:access(kala.math.Color)
-class Group<T:Object> extends Object {
+class Group<T:Object> extends Object implements IGroup {
 	
 	public var transformEnable:Bool;
 	
