@@ -112,10 +112,12 @@ class View extends Object {
 		}
 		
 		if (halign != null) {
+			if (data.transformation == null) data.transformation = FastMatrix3.translation(0, 0);
 			data.transformation._20 += (cw - w) * halign;
 		}
 		
 		if (valign != null) {
+			if (data.transformation == null) data.transformation = FastMatrix3.translation(0, 0);
 			data.transformation._21 += (ch - h) * valign;
 		}
 		

@@ -141,10 +141,18 @@ class Group<T:Object> extends Object implements IGroup {
 				if (view == null) continue;
 				
 				viewBuffer = view.viewBuffer;
-				drawingData.transformation = data.transformation.multmat(
-					FastMatrix3.translation( -view.viewPos.x + view.viewPos.ox, -view.viewPos.y + view.viewPos.oy)
-				);
 				
+				if (data.transformation == null) {
+					drawingData.transformation = FastMatrix3.translation(
+						-view.viewPos.x + view.viewPos.ox,
+						-view.viewPos.y + view.viewPos.oy
+					);
+				} else {
+					drawingData.transformation = data.transformation.multmat(
+						FastMatrix3.translation( -view.viewPos.x + view.viewPos.ox, -view.viewPos.y + view.viewPos.oy)
+					);
+				}
+
 				viewBuffer.g2.begin(true, view.transparent ? 0 : (255 << 24 | view.bgColor));
 				for (child in _children) {
 					if (child == null) continue;
