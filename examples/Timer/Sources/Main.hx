@@ -1,11 +1,11 @@
 package;
 
+import kala.components.Timer;
+import kala.components.tween.Ease;
 import kala.Kala;
-import kala.components.timer.Timer;
 import kala.input.Keyboard;
 import kala.objects.shapes.Circle;
 import kala.objects.shapes.Rectangle;
-
 
 class Main {
 	
@@ -14,12 +14,12 @@ class Main {
 		Kala.world.onFirstFrame.add(function(_) {
 			
 			var player = new Rectangle(60, 60);
-			player.position.set(300, 300, 30, 30);
+			player.position.setOrigin(30, 30).setXY(300, 300);
 			Kala.world.add(player);
 			
-			var timer = new Timer().addTo(player);
+			var timer = new TimerEx().addTo(player);
 			
-			player.onPreUpdate.add(function(_, _) {
+			player.onPostUpdate.add(function(_, _) {
 				if (Keyboard.pressed.LEFT) player.x -= 4;
 				if (Keyboard.pressed.RIGHT) player.x += 4;
 				if (Keyboard.pressed.UP) player.y -= 4;
@@ -51,6 +51,15 @@ class Main {
 			timer.loop(60, 0, true, function(loopTask) {
 				circle.rotation.angle = 36 * loopTask.elapsedExecutions;
 			});
+			
+			timer.timeline(circle, Ease.sineInOut)
+				.startLoop()
+				.tweenPos(null, 100, 60)
+				.wait(10)
+				.tweenPos(null, 500, 60)
+				.endLoop()
+			.start();
+			
 		});
 		
 		Kala.start(); 

@@ -26,6 +26,7 @@ class Main {
 			animation.addAnim("normal", null, -1, -1, 0, 0, 3, 3, 6).play();
 			
 			Kala.world.add(animatedSprite);
+			
 		});
 		
 		Kala.start();

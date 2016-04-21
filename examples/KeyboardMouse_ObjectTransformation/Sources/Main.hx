@@ -22,7 +22,7 @@ class Main {
 			
 			Kala.world.add(rect);
 
-			rect.onPreUpdate.add(function(_, _) {
+			rect.onPostUpdate.add(function(_, _) {
 				
 				// x & y are shortcuts for position.x & position.y
 				rect.x = Mouse.x; 
@@ -36,8 +36,7 @@ class Main {
 					rect.scale.x = rect.scale.y -= 0.01;
 				}
 				
-				// Currently Mouse.wheel works incorrectly on HTML5 target.
-				//rect.skew.y += Mouse.wheel;
+				rect.skew.y += Mouse.wheel;
 		
 				if (Keyboard.justPressed.ANY) {
 					rect.rotation.angle += 36;

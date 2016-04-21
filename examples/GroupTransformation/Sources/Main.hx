@@ -1,10 +1,9 @@
 package;
-import kala.math.color.Color;
 
-import kala.Kala;
 import kala.input.Keyboard;
 import kala.input.Mouse;
-import kala.math.color.Color.ColorBlendMode;
+import kala.Kala;
+import kala.math.color.BlendMode;
 import kala.math.Vec2;
 import kala.objects.group.Group.BasicGroup;
 import kala.objects.shapes.Circle;
@@ -17,24 +16,22 @@ class Main {
 		
 		Kala.world.onFirstFrame.add(function(_) {
 			
-			// BasicGroup is just a typedef of Group<Object>
+			// BasicGroup is a typedef of Group<Object>
 			var group = new BasicGroup(true);
 			group.antialiasing = true;
-			group.color.alpha = 1;
-			group.colorBlendMode = ColorBlendMode.NORMAL; // How the group color will be blended with its children colors.
+			group.colorBlendMode = BlendMode.SUB; // How the group color will be blended with its children colors.
 			Kala.world.add(group);
 			
 			group.onPostUpdate.add(function(_, _) {
 				group.x = Mouse.x;
 				group.y = Mouse.y;
 				
-				if (Mouse.pressed.LEFT) group.skew.x += 1;
-				if (Mouse.pressed.RIGHT) group.scale.y += 0.01;
+				if (Mouse.pressed.LEFT) 	group.skew.x += 1;
+				if (Mouse.pressed.RIGHT) 	group.scale.y += 0.01;
 				
 				if (Keyboard.pressed.SPACE) group.rotation.angle += 5;
 				
-				if (Keyboard.pressed.CTRL)
-					group.color.setRGBComponents(0, group.color.green() - 5, 0);
+				if (Keyboard.pressed.CTRL) 	group.color.red = group.color.red - 5;
 			});
 			
 			var circle = new Circle(80);

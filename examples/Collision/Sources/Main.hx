@@ -1,8 +1,10 @@
 package;
 
-import kala.Kala;
 import kala.components.collision.Collider;
+import kala.Debug;
 import kala.input.Mouse;
+import kala.Kala;
+import kala.math.color.BlendMode;
 import kala.math.Vec2;
 import kala.objects.group.Group.BasicGroup;
 import kala.objects.shapes.Circle;
@@ -24,7 +26,7 @@ class Main {
 			var colRect = collider1.addRect(0, 0, 200, 100);
 
 			var group = new BasicGroup(true);
-			group.color.alpha = 1;
+
 			Kala.world.add(group);
 			
 			var circle = new Circle(80, false, true);
@@ -47,15 +49,22 @@ class Main {
 			polygon.lineStrenght = 2;
 			group.add(polygon);
 			
-			var collider2 = new Collider().addTo(group);
+			circle.colorBlendMode = rect2.colorBlendMode = polygon.colorBlendMode = BlendMode.SUB;
 			
-			collider2.addCircle(0, 0, circle.radius).scale.y = circle.scale.y;
+			var collider2 = new Collider().addTo(group);
+	
+			collider2.addCircle(0, 0, circle.radius).scale = circle.scale;
 			
 			collider2.addRect(rect2.x, 0, rect2.width, rect2.height)
 			.position.setOrigin(rect2.position.ox, rect2.position.oy);
 			
 			collider2.addPolygon(polygon.x, 0, vertices)[0]
 			.position.setOrigin(polygon.position.ox, polygon.position.oy);
+			
+			#if (debug || kala_debug)
+			Debug.collisionDebug = true;
+			collider1.debugColor = collider2.debugColor = 0xff0000ff;
+			#end
 			
 			group.onPostUpdate.add(function(_, _) {
 				group.x = Mouse.x;
@@ -64,11 +73,11 @@ class Main {
 				group.rotation.angle += 2;
 		
 				if (collider1.test(collider2) != null) {
-					rect1.lineColor.rgb = 0xff0000;
-					group.color.rgb = 0xff0000;
+					rect1.lineColor = 0xffff0000;
+					group.color = 0x0000ffff;
 				} else {
-					rect1.lineColor.rgb = 0xffffff;
-					group.color.rgb = 0xffffff;
+					rect1.lineColor = 0xffffffff;
+					group.color = 0x00000000;
 				}
 			});
 
