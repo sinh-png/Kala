@@ -205,6 +205,14 @@ class Group<T:Object> extends Object implements IGroup {
 		return obj;
 	}
 	
+	public function removeAll():Void {
+		var obj:Object;
+		while (_children.length > 0) {
+			obj = _children.pop();
+			obj._groups.remove(this);
+		}
+	}
+	
 	public function addView(view:View):Void {
 		if (_views.indexOf(view) != -1) return null;
 		_views.push(view);
@@ -226,6 +234,14 @@ class Group<T:Object> extends Object implements IGroup {
 		view._groups.remove(this);
 		
 		return view;
+	}
+	
+	public function removeAllViews():Void {
+		var view:View;
+		while (_views.length > 0) {
+			view = _views.pop();
+			view._groups.remove(this);
+		}
 	}
 	
 	public inline function iterator():Iterator<T> {
