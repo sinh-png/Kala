@@ -155,7 +155,7 @@ class SpriteAnimation extends Component<Sprite> {
 		return this;
 	}
 	
-	public function addAnimFromSpriteData(?key:String, ?image:Image, data:SpriteData, delay:UInt):SpriteAnimation {
+	public function addAnimFromSpriteData(?key:String, ?image:Image, data:SpriteData, delay:Int):SpriteAnimation {
 		if (key == null) key = data.key;
 		
 		if (image == null) {
@@ -167,6 +167,7 @@ class SpriteAnimation extends Component<Sprite> {
 		}
 			
 		object.image = image;
+		object.frameRect.copy(data.frames[0]);
 		
 		var anim = new SpriteAnimationData(key, image, delay);
 		
