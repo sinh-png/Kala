@@ -1,5 +1,6 @@
 package kala.math;
 
+import kala.util.types.Trio;
 import kha.FastFloat;
 
 abstract Color(UInt) from UInt to UInt from kha.Color to kha.Color {
@@ -64,41 +65,12 @@ abstract Color(UInt) from UInt to UInt from kha.Color to kha.Color {
 		var destGreen = dest.fgreen;
 		var destBlue = dest.fblue;
 		
-		var srcFactor:BlendFactor;
-		var destFactor:BlendFactor;
-		
-		var opt:BlendOpt;
+		var factorsOpt = getBlendFactorsOpt(mode);
+		var srcFactor = factorsOpt.a;
+		var destFactor = factorsOpt.b;
+		var opt = factorsOpt.c;
 		
 		var result:Color;
-
-		switch(mode) {
-		
-			case ALPHA:
-				srcFactor = BlendFactor.SRC_ALPHA;
-				destFactor = BlendFactor.INV_SRC_ALPHA;
-				opt = BlendOpt.ADD;
-				
-			case ADD:
-				srcFactor = BlendFactor.ONE;
-				destFactor = BlendFactor.ONE;
-				opt = BlendOpt.ADD;
-				
-			case MULTI:
-				srcFactor = BlendFactor.ZERO;
-				destFactor = BlendFactor.SRC_COLOR;
-				opt = BlendOpt.ADD;
-				
-			case MULTI_2X:
-				srcFactor = BlendFactor.DEST_COLOR;
-				destFactor = BlendFactor.SRC_COLOR;
-				opt = BlendOpt.ADD;
-			
-			case SET(s, d, o):
-				srcFactor = s;
-				destFactor = d;
-				opt = o;
-				
-		}
 		
 		switch(srcFactor) {
 	
@@ -290,45 +262,16 @@ abstract Color(UInt) from UInt to UInt from kha.Color to kha.Color {
 		return result;
 	}
 	
-	public function blendEx(dest:Color, rgbMode:BlendMode, alphaMode:BlendMode):Color {
-		var result = blend(dest, rgbMode);
+	public function blendEx(dest:Color, rgbBlendMode:BlendMode, alphaBlendMode:BlendMode):Color {
+		var result = blend(dest, rgbBlendMode);
 		
 		var srcAlpha = falpha;
 		var destAlpha = dest.falpha;
 
-		var srcFactor:BlendFactor;
-		var destFactor:BlendFactor;
-		
-		var opt:BlendOpt;
-
-		switch(alphaMode) {
-		
-			case ALPHA:
-				srcFactor = BlendFactor.SRC_ALPHA;
-				destFactor = BlendFactor.INV_SRC_ALPHA;
-				opt = BlendOpt.ADD;
-				
-			case ADD:
-				srcFactor = BlendFactor.ONE;
-				destFactor = BlendFactor.ONE;
-				opt = BlendOpt.ADD;
-				
-			case MULTI:
-				srcFactor = BlendFactor.ZERO;
-				destFactor = BlendFactor.SRC_COLOR;
-				opt = BlendOpt.ADD;
-				
-			case MULTI_2X:
-				srcFactor = BlendFactor.DEST_COLOR;
-				destFactor = BlendFactor.SRC_COLOR;
-				opt = BlendOpt.ADD;
-			
-			case SET(s, d, o):
-				srcFactor = s;
-				destFactor = d;
-				opt = o;
-				
-		}
+		var factorsOpt = getBlendFactorsOpt(alphaBlendMode);
+		var srcFactor = factorsOpt.a;
+		var destFactor = factorsOpt.b;
+		var opt = factorsOpt.c;
 		
 		switch(srcFactor) {
 	
@@ -452,6 +395,61 @@ abstract Color(UInt) from UInt to UInt from kha.Color to kha.Color {
 		return this = blendEx(dest, rgbMode, alphaMode);
 	}
 	
+	function getBlendFactorsOpt(mode:BlendMode):Trio<BlendFactor, BlendFactor, BlendOpt> {
+		switch(mode) {
+		
+			case ALPHA:
+				return new Trio<BlendFactor, BlendFactor, BlendOpt>(
+					BlendFactor.SRC_ALPHA,
+					BlendFactor.INV_SRC_ALPHA,
+					BlendOpt.ADD
+				);
+
+			case ADD:
+				return new Trio<BlendFactor, BlendFactor, BlendOpt>(
+					BlendFactor.ONE,
+					BlendFactor.ONE,
+					BlendOpt.ADD
+				);
+				
+			case SUB:
+				return new Trio<BlendFactor, BlendFactor, BlendOpt>(
+					BlendFactor.ONE,
+					BlendFactor.ONE,
+					BlendOpt.SUB
+				);
+
+			case REVERSE_SUB:
+				return new Trio<BlendFactor, BlendFactor, BlendOpt>(
+					BlendFactor.ONE,
+					BlendFactor.ONE,
+					BlendOpt.REVERSE_SUB
+				);
+				
+			case MULTI:
+				return new Trio<BlendFactor, BlendFactor, BlendOpt>(
+					BlendFactor.ZERO,
+					BlendFactor.SRC_COLOR,
+					BlendOpt.ADD
+				);
+
+			case MULTI_2X:
+				return new Trio<BlendFactor, BlendFactor, BlendOpt>(
+					BlendFactor.DEST_COLOR,
+					BlendFactor.SRC_COLOR,
+					BlendOpt.ADD
+				);
+
+			case SET(s, d, o):
+				return new Trio<BlendFactor, BlendFactor, BlendOpt>(
+					s,
+					d,
+					o
+				);
+				
+		}
+	}
+	
 	//
 	
 	inline function get_alpha():UInt {
@@ -568,6 +566,8 @@ enum BlendMode {
 	
 	ALPHA;
 	ADD;
+	SUB;
+	REVERSE_SUB;
 	MULTI;
 	MULTI_2X;
 	SET(src:BlendFactor, dest:BlendFactor, opt:BlendOpt);
