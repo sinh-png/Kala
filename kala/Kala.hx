@@ -41,13 +41,14 @@ class Kala {
 	 */
 	public static var timingUnit:TimeUnit = TimeUnit.FRAME;
 	
+	public static var width:Int = 0;
+	public static var height:Int = 0;
+	
 	public static var antiAliasingSamples(default, null):UInt;
 	
 	public static var bgColor:Color = 0xff000000;
 	
 	public static var defaultFont(default, set):Font;
-	
-	public static var framebufer(default, null):Framebuffer;
 	
 	//
 	
@@ -98,7 +99,8 @@ class Kala {
 	}
 	
 	static function renderWorld(framebuffer:Framebuffer):Void {
-		Kala.framebufer = framebufer;
+		width = framebuffer.width;
+		height = framebuffer.height;
 		
 		framebuffer.g2.begin(true, bgColor);
 		
