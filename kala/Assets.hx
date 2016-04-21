@@ -34,7 +34,7 @@ class SheetData {
 		var spriteData:SpriteData;
 		
 		if (key.charAt(key.length - 1) == '/' || key.charAt(key.length - 1) == '\\') {
-			spriteData = new SpriteData(key, image, new Array<RectI>(), 0);
+			spriteData = new SpriteData(key, image, new Array<RectI>(), -1);
 			
 			var frameKeys = [for (key in _frames.keys()) key];
 			frameKeys.sort(function(a, b) {
