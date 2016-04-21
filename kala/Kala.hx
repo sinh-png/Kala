@@ -41,8 +41,8 @@ class Kala {
 	 */
 	public static var timingUnit:TimeUnit = TimeUnit.FRAME;
 	
-	public static var screenWidth:Int = 0;
-	public static var screenHeight:Int = 0;
+	public static var screenWidth(default, null):Int = 0;
+	public static var screenHeight(default, null):Int = 0;
 	
 	public static var antiAliasingSamples(default, null):UInt;
 	
