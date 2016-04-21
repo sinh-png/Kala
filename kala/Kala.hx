@@ -41,8 +41,8 @@ class Kala {
 	 */
 	public static var timingUnit:TimeUnit = TimeUnit.FRAME;
 	
-	public static var width:Int = 0;
-	public static var height:Int = 0;
+	public static var screenWidth:Int = 0;
+	public static var screenHeight:Int = 0;
 	
 	public static var antiAliasingSamples(default, null):UInt;
 	
@@ -99,8 +99,8 @@ class Kala {
 	}
 	
 	static function renderWorld(framebuffer:Framebuffer):Void {
-		width = framebuffer.width;
-		height = framebuffer.height;
+		screenWidth = framebuffer.width;
+		screenHeight = framebuffer.height;
 		
 		framebuffer.g2.begin(true, bgColor);
 		
