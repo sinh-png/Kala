@@ -14,7 +14,7 @@ class Main {
 	
 	public static function main() {
 		
-		Kala.world.onFirstFrame.add(function(_) {
+		Kala.world.onFirstFrame.notify(function(_) {
 			
 			// BasicGroup is a typedef of Group<Object>
 			var group = new BasicGroup(true);
@@ -22,7 +22,7 @@ class Main {
 			group.colorBlendMode = BlendMode.SUB; // How the group color will be blended with its children colors.
 			Kala.world.add(group);
 			
-			group.onPostUpdate.add(function(_, _) {
+			group.onPostUpdate.notify(function(_, _) {
 				group.x = Mouse.x;
 				group.y = Mouse.y;
 				

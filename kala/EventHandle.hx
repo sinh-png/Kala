@@ -54,7 +54,7 @@ class CallbackHandle<T> implements ICallbackHandle {
 		_callbacks = null;
 	}
 	
-	public function add(callback:T):Void {
+	public function notify(callback:T):Void {
 		_callbacks.push(new Callback(callback));
 	}
 	
@@ -74,7 +74,7 @@ class CallbackHandle<T> implements ICallbackHandle {
 		}
 	}
 	
-	function addComponentCB(component:IComponent, callback:T):Void {
+	function notifyComponentCB(component:IComponent, callback:T):Void {
 		_callbacks.push(new Callback(callback, component));
 	}
 	

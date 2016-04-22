@@ -11,7 +11,7 @@ class Main {
 	
 	public static function main() {
 		
-		Kala.world.onFirstFrame.add(function(_) {
+		Kala.world.onFirstFrame.notify(function(_) {
 			
 			Kala.defaultFont = Assets.fonts.ClearSans_Regular;
 			
@@ -31,7 +31,7 @@ class Main {
 			fancyText.position.set(50, 60);
 			Kala.world.add(fancyText);
 			
-			Kala.world.onPostUpdate.add(function(_, _) {
+			Kala.world.onPostUpdate.notify(function(_, _) {
 				basicText.text = "" + Kala.fps;
 				
 				if (Keyboard.justPressed.ONE) fancyText.align = TextAlign.LEFT;

@@ -15,7 +15,7 @@ class Main {
 	
 	public static function main() {
 		
-		Kala.world.onFirstFrame.add(function(_) {
+		Kala.world.onFirstFrame.notify(function(_) {
 			
 			var rect1 = new Rectangle(200, 100, false, true);
 			rect1.position.set(400, 300, 100, 50);
@@ -66,7 +66,7 @@ class Main {
 			collider1.debugColor = collider2.debugColor = 0xff0000ff;
 			#end
 			
-			group.onPostUpdate.add(function(_, _) {
+			group.onPostUpdate.notify(function(_, _) {
 				group.x = Mouse.x;
 				group.y = Mouse.y;
 				

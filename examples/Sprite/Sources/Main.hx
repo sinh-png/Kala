@@ -9,7 +9,7 @@ class Main {
 	
 	public static function main() {
 		
-		Kala.world.onFirstFrame.add(function(_) {
+		Kala.world.onFirstFrame.notify(function(_) {
 			
 			// A sprite with no animation.
 			var staticSprite = new Sprite(Assets.images.sprite_sheet, 0, 0, 137, 110);

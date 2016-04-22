@@ -10,7 +10,7 @@ class Main {
 		
 		// Kala.world is the root group that contains all other objects. Group is also a type of object.
 		// onFirstFrame is a handle for callbacks that will be executed right before the first update / draw of an object. 
-		Kala.world.onFirstFrame.add(function(_) {
+		Kala.world.onFirstFrame.notify(function(_) {
 			
 			// We set a default font that will be used for all text rendering.
 			Kala.defaultFont = Assets.fonts.ClearSans_Regular;

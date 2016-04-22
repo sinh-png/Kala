@@ -11,7 +11,7 @@ class Main {
 	
 	public static function main() {
 		
-		Kala.world.onFirstFrame.add(function(_) {
+		Kala.world.onFirstFrame.notify(function(_) {
 			
 			var group = new BasicGroup();
 			Kala.world.add(group);
@@ -24,7 +24,7 @@ class Main {
 			var background = new Sprite(Assets.images.background);
 			group.add(background);
 			
-			group.onPostUpdate.add(function(_, _) {
+			group.onPostUpdate.notify(function(_, _) {
 				// Scale background to fit framebuffer.
 				background.scale.x = Kala.screenWidth / background.width;
 				background.scale.y = Kala.screenHeight / background.height;

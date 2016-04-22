@@ -11,7 +11,7 @@ class Main {
 	
 	public static function main() {
 		
-		Kala.world.onFirstFrame.add(function(_) {
+		Kala.world.onFirstFrame.notify(function(_) {
 			
 			var player = new Rectangle(60, 60);
 			player.position.setOrigin(30, 30).setXY(300, 300);
@@ -19,7 +19,7 @@ class Main {
 			
 			var timer = new TimerEx().addTo(player);
 			
-			player.onPostUpdate.add(function(_, _) {
+			player.onPostUpdate.notify(function(_, _) {
 				if (Keyboard.pressed.LEFT) player.x -= 4;
 				if (Keyboard.pressed.RIGHT) player.x += 4;
 				if (Keyboard.pressed.UP) player.y -= 4;
@@ -35,7 +35,7 @@ class Main {
 						
 						bullet.position.copy(player.position);
 						
-						bullet.onPostUpdate.add(function(_, _) {
+						bullet.onPostUpdate.notify(function(_, _) {
 							bullet.x += 15;
 							if (bullet.x > 800) bullet.destroy();
 						});

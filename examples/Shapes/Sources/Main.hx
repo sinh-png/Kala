@@ -10,7 +10,7 @@ class Main {
 	
 	public static function main() {
 		
-		Kala.world.onFirstFrame.add(function(_) {
+		Kala.world.onFirstFrame.notify(function(_) {
 			
 			var circle = new Circle(80);
 			circle.position.setXYBetween(0, 0, 800, 600, 20, 50);

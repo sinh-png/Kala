@@ -32,7 +32,7 @@ class VelocityMotion extends Component<Object> {
 	override public function addTo(object:Object):VelocityMotion {
 		super.addTo(object);
 		
-		object.onPostUpdate.addComponentCB(this, update);
+		object.onPostUpdate.notifyComponentCB(this, update);
 		
 		return this;
 	}

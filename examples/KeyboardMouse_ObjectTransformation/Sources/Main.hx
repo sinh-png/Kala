@@ -9,7 +9,7 @@ class Main {
 	
 	public static function main() {
 		
-		Kala.world.onFirstFrame.add(function(_) {
+		Kala.world.onFirstFrame.notify(function(_) {
 			
 			var rect = new Rectangle(200, 100);
 			rect.position.setOrigin(100, 50);
@@ -22,7 +22,7 @@ class Main {
 			
 			Kala.world.add(rect);
 
-			rect.onPostUpdate.add(function(_, _) {
+			rect.onPostUpdate.notify(function(_, _) {
 				
 				// x & y are shortcuts for position.x & position.y
 				rect.x = Mouse.x; 

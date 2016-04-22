@@ -49,7 +49,7 @@ class SpriteAnimation extends Component<Sprite> {
 	override public function addTo(object:Sprite):SpriteAnimation {
 		super.addTo(object);
 		
-		object.onPostUpdate.addComponentCB(this, update);
+		object.onPostUpdate.notifyComponentCB(this, update);
 		object.animation = this;
 		
 		return this;
@@ -225,8 +225,6 @@ class SpriteAnimation extends Component<Sprite> {
 				}
 
 			}
-			
-			
 		}
 	}
 	
