@@ -86,7 +86,7 @@ class View extends Object {
 					var hs = cw / w;
 					var vs = ch / h;
 					
-					var s = hs < vs ? hs : vs; 
+					var s = Math.min(hs, vs);
 					scale.setXY(s, s);
 					
 					w *= s;
@@ -96,7 +96,7 @@ class View extends Object {
 					var hs = cw / w;
 					var vs = ch / h;
 					
-					var s = hs > vs ? hs : vs; 
+					var s = Math.max(hs, vs);
 					scale.setXY(s, s);
 					
 					w *= s;
