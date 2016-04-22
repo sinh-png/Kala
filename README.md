@@ -33,7 +33,7 @@ class Main {
 		
 		// Kala.world is the root group that contains all other objects. Group is also a type of object.
 		// onFirstFrame is a handle for callbacks that will be executed right before the first update / draw of an object. 
-		Kala.world.onFirstFrame.add(function(_) {
+		Kala.world.onFirstFrame.notify(function(_) {
 			
 			// We set a default font that will be used for all text rendering.
 			Kala.defaultFont = Assets.fonts.ClearSans_Regular;
@@ -70,7 +70,7 @@ class Main {
 	
 	public static function main() {
 		
-		Kala.world.onFirstFrame.add(function(_) {
+		Kala.world.onFirstFrame.notify(function(_) {
 			
 			// A sprite with no animation.
 			var staticSprite = new Sprite(Assets.images.sprite_sheet, 0, 0, 137, 110);
@@ -113,7 +113,7 @@ class Main {
 	
 	public static function main() {
 		
-		Kala.world.onFirstFrame.add(function(_) {
+		Kala.world.onFirstFrame.notify(function(_) {
 			
 			var circle = new Circle(80);
 			circle.position.setXYBetween(0, 0, 800, 600, 20, 50);
@@ -161,7 +161,7 @@ class Main {
 	
 	public static function main() {
 		
-		Kala.world.onFirstFrame.add(function(_) {
+		Kala.world.onFirstFrame.notify(function(_) {
 			
 			var rect = new Rectangle(200, 100);
 			rect.position.setOrigin(100, 50);
@@ -174,7 +174,7 @@ class Main {
 			
 			Kala.world.add(rect);
 
-			rect.onPostUpdate.add(function(_, _) {
+			rect.onPostUpdate.notify(function(_, _) {
 				
 				// x & y are shortcuts for position.x & position.y
 				rect.x = Mouse.x; 
@@ -226,7 +226,7 @@ class Main {
 	
 	public static function main() {
 		
-		Kala.world.onFirstFrame.add(function(_) {
+		Kala.world.onFirstFrame.notify(function(_) {
 			
 			// BasicGroup is a typedef of Group<Object>
 			var group = new BasicGroup(true);
@@ -234,7 +234,7 @@ class Main {
 			group.colorBlendMode = BlendMode.SUB; // How the group color will be blended with its children colors.
 			Kala.world.add(group);
 			
-			group.onPostUpdate.add(function(_, _) {
+			group.onPostUpdate.notify(function(_, _) {
 				group.x = Mouse.x;
 				group.y = Mouse.y;
 				
@@ -288,7 +288,7 @@ class Main {
 	
 	public static function main() {
 		
-		Kala.world.onFirstFrame.add(function(_) {
+		Kala.world.onFirstFrame.notify(function(_) {
 			
 			var group = new BasicGroup();
 			Kala.world.add(group);
@@ -301,7 +301,7 @@ class Main {
 			var background = new Sprite(Assets.images.background);
 			group.add(background);
 			
-			group.onPostUpdate.add(function(_, _) {
+			group.onPostUpdate.notify(function(_, _) {
 				// Scale background to fit framebuffer.
 				background.scale.x = Kala.screenWidth / background.width;
 				background.scale.y = Kala.screenHeight / background.height;
@@ -338,7 +338,7 @@ class Main {
 	
 	public static function main() {
 		
-		Kala.world.onFirstFrame.add(function(_) {
+		Kala.world.onFirstFrame.notify(function(_) {
 			
 			Kala.defaultFont = Assets.fonts.ClearSans_Regular;
 			
@@ -358,7 +358,7 @@ class Main {
 			fancyText.position.set(50, 60);
 			Kala.world.add(fancyText);
 			
-			Kala.world.onPostUpdate.add(function(_, _) {
+			Kala.world.onPostUpdate.notify(function(_, _) {
 				basicText.text = "" + Kala.fps;
 				
 				if (Keyboard.justPressed.ONE) fancyText.align = TextAlign.LEFT;
@@ -402,7 +402,7 @@ class Main {
 	
 	public static function main() {
 		
-		Kala.world.onFirstFrame.add(function(_) {
+		Kala.world.onFirstFrame.notify(function(_) {
 			
 			var rect1 = new Rectangle(200, 100, false, true);
 			rect1.position.set(400, 300, 100, 50);
@@ -453,7 +453,7 @@ class Main {
 			collider1.debugColor = collider2.debugColor = 0xff0000ff;
 			#end
 			
-			group.onPostUpdate.add(function(_, _) {
+			group.onPostUpdate.notify(function(_, _) {
 				group.x = Mouse.x;
 				group.y = Mouse.y;
 				
@@ -493,7 +493,7 @@ class Main {
 	
 	public static function main() {
 		
-		Kala.world.onFirstFrame.add(function(_) {
+		Kala.world.onFirstFrame.notify(function(_) {
 			
 			var player = new Rectangle(60, 60);
 			player.position.setOrigin(30, 30).setXY(300, 300);
@@ -501,7 +501,7 @@ class Main {
 			
 			var timer = new TimerEx().addTo(player);
 			
-			player.onPostUpdate.add(function(_, _) {
+			player.onPostUpdate.notify(function(_, _) {
 				if (Keyboard.pressed.LEFT) player.x -= 4;
 				if (Keyboard.pressed.RIGHT) player.x += 4;
 				if (Keyboard.pressed.UP) player.y -= 4;
@@ -517,7 +517,7 @@ class Main {
 						
 						bullet.position.copy(player.position);
 						
-						bullet.onPostUpdate.add(function(_, _) {
+						bullet.onPostUpdate.notify(function(_, _) {
 							bullet.x += 15;
 							if (bullet.x > 800) bullet.destroy();
 						});
