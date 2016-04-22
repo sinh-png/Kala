@@ -113,7 +113,7 @@ class Kala {
 		world.callDraw(new DrawingData(), framebuffer);
 		
 		#if (debug || kala_debug)
-		Debug.draw();
+		if (!Debug.draw()) framebuffer.g2.end();
 		#else
 		framebuffer.g2.end();
 		#end

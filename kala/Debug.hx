@@ -22,11 +22,15 @@ class Debug {
 		return layer;
 	}
 	
-	static inline function draw():Void {
+	static inline function draw():Bool {
 		var previewCanvas:Canvas = null;
+		
+		var hasDrawCall = false;
 		
 		for (layer in _layers) {
 			for (call in layer.copy()) {
+				hasDrawCall = true;
+				
 				layer.remove(call);
 				
 				if (previewCanvas != call.canvas) {
@@ -41,6 +45,8 @@ class Debug {
 		}
 		
 		if (previewCanvas != null) previewCanvas.g2.end();
+		
+		return hasDrawCall;
 	}
 	#end
 	
