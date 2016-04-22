@@ -13,8 +13,8 @@ import kha.Image;
 @:access(kala.objects.Sprite)
 class SpriteAnimation extends Component<Sprite> {
 
-	public var crAnim(default, null):SpriteAnimationData;
-	public var crFrame(default, set):Int;
+	public var anim(default, null):SpriteAnimationData;
+	public var frame(default, set):Int;
 	
 	public var onAnimComplete:CallbackHandle<SpriteAnimation->Void>;
 	
@@ -31,14 +31,14 @@ class SpriteAnimation extends Component<Sprite> {
 	
 	override public function reset():Void {
 		super.reset();
-		crAnim = null;
+		anim = null;
 		removeAllAnimations();
 	}
 	
 	override public function destroy():Void {
 		super.destroy();
 		
-		crAnim = null;
+		anim = null;
 		
 		removeAllAnimations();
 		_animations = null;
@@ -70,13 +70,13 @@ class SpriteAnimation extends Component<Sprite> {
 			key = _lastAddedKey;
 		}
 		
-		crAnim = _animations.get(key);
+		anim = _animations.get(key);
 		
-		if (crAnim != null) {
-			crAnim.delay = _timeLeft = (delay == null) ? crAnim.delay : delay;
-			crAnim.reversed = (reversed == null) ? crAnim.reversed : reversed;
-			crFrame = crAnim.reversed ? crAnim.frames.length - 1 : 0; 
-			if (crAnim.image != null) object.image = crAnim.image;
+		if (anim != null) {
+			anim.delay = _timeLeft = (delay == null) ? anim.delay : delay;
+			anim.reversed = (reversed == null) ? anim.reversed : reversed;
+			frame = anim.reversed ? anim.frames.length - 1 : 0; 
+			if (anim.image != null) object.image = anim.image;
 		} else {
 			return null;
 		}
@@ -85,7 +85,7 @@ class SpriteAnimation extends Component<Sprite> {
 	}
 	
 	public inline function pause():Void {
-		crAnim.delay = -1;
+		anim.delay = -1;
 	}
 	
 	/**
@@ -200,7 +200,7 @@ class SpriteAnimation extends Component<Sprite> {
 	}
 	
 	function update(obj:Object, delta:FastFloat):Void {
-		if (crAnim != null && crAnim.delay > -1) {
+		if (anim != null && anim.delay > -1) {
 			if (Kala.timingUnit == TimeUnit.FRAME) {
 				_timeLeft--;
 			} else {
@@ -208,20 +208,20 @@ class SpriteAnimation extends Component<Sprite> {
 			}
 			
 			if (_timeLeft <= 0) {
-				_timeLeft = crAnim.delay;
+				_timeLeft = anim.delay;
 				
-				if (!crAnim.reversed) {
-					if (crFrame < crAnim.frames.length - 1) {
-						crFrame++;
+				if (!anim.reversed) {
+					if (frame < anim.frames.length - 1) {
+						frame++;
 					} else {
-						crFrame = 0;
+						frame = 0;
 						for (callback in onAnimComplete) callback.cbFunction(this);
 					}
 				} else {
-					if (crFrame > 0) {
-						crFrame--;
+					if (frame > 0) {
+						frame--;
 					} else {
-						crFrame = crAnim.frames.length - 1;
+						frame = anim.frames.length - 1;
 						for (callback in onAnimComplete) callback.cbFunction(this);
 					}
 				}
@@ -230,8 +230,8 @@ class SpriteAnimation extends Component<Sprite> {
 		}
 	}
 	
-	inline function set_crFrame(value:Int):Int {
-		object.frameRect.copy(crAnim.frames[crFrame = value]);
+	inline function set_frame(value:Int):Int {
+		object.frameRect.copy(anim.frames[frame = value]);
 		return value;
 	}
 
