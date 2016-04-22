@@ -211,14 +211,16 @@ class SpriteAnimation extends Component<Sprite> {
 				_timeLeft = crAnim.delay;
 				
 				if (!crAnim.reversed) {
-					crFrame++;
-					if (crFrame == crAnim.frames.length) {
+					if (crFrame < crAnim.frames.length - 1) {
+						crFrame++;
+					} else {
 						crFrame = 0;
 						for (callback in onAnimComplete) callback.cbFunction(this);
 					}
 				} else {
-					crFrame--;
-					if (crFrame == -1) {
+					if (crFrame > 0) {
+						crFrame--;
+					} else {
 						crFrame = crAnim.frames.length - 1;
 						for (callback in onAnimComplete) callback.cbFunction(this);
 					}
