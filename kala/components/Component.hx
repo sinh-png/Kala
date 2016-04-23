@@ -3,6 +3,16 @@ package kala.components;
 import kala.EventHandle;
 import kala.objects.Object;
 
+interface IComponent {
+ 
+	public function destroy():Void;
+	public function reset():Void;
+	public function deepReset():Void;
+	public function remove():Void;
+	public function getObject():Object;
+	
+}
+
 class Component<T:Object> extends EventHandle implements IComponent {
 
 	public var object(default, null):T;
@@ -65,15 +75,5 @@ class Component<T:Object> extends EventHandle implements IComponent {
 	public function getObject():Object {
 		return cast object;
 	}
-	
-}
-
-interface IComponent {
- 
-	public function destroy():Void;
-	public function reset():Void;
-	public function deepReset():Void;
-	public function remove():Void;
-	public function getObject():Object;
 	
 }
