@@ -11,12 +11,18 @@ class MouseInteraction extends Component<Object> {
 
 	public var collider:Collider;
 	
+	public var dragable:Bool;
+	public var dragButtons:Array<MouseButton> = [MouseButton.LEFT];
+	
 	public var onLeftClick:CallbackHandle<MouseInteraction->Void>;
 	public var onRightClick:CallbackHandle<MouseInteraction->Void>;
 	public var onOver:CallbackHandle<MouseInteraction->Void>;
 	public var onOut:CallbackHandle<MouseInteraction->Void>;
 	
 	public var hovered(default, null):Bool;
+	
+	private var _dragPointX:FastFloat;
+	private var _dragPointY:FastFloat;
 	
 	public function new() {
 		super();
@@ -30,7 +36,7 @@ class MouseInteraction extends Component<Object> {
 	override public function reset():Void {
 		super.reset();
 		hovered = false;
-		
+		dragable = false;
 		if (collider != null) collider.reset();
 	}
 	
@@ -76,11 +82,20 @@ class MouseInteraction extends Component<Object> {
 				for (callback in onRightClick) callback.cbFunction(this);
 			}
 			
+			if (dragButtons != null && Mouse.justPressed.checkButtons(dragButtons)) {
+				_dragPointX = mx - obj.x;
+				_dragPointY = my - obj.y;	
+			}
 		} else if (hovered) {
 			for (callback in onOver) {
 				hovered = false;
 				for (callback in onOut) callback.cbFunction(this);
 			}
+		}
+		
+		if (dragable && dragButtons != null &&  Mouse.pressed.checkButtons(dragButtons)) {
+			obj.x = mx - _dragPointX;
+			obj.y = my - _dragPointY;
 		}
 	}
 	
