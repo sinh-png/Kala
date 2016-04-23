@@ -57,8 +57,8 @@ interface IObject {
 	//
 	
 	public var buffer(default, null):Image;
-	public var textureOriginX(default, null):FastFloat;
-	public var textureOriginY(default, null):FastFloat;
+	public var bufferOriginX(default, null):FastFloat;
+	public var bufferOriginY(default, null):FastFloat;
 	
 	//
 	
