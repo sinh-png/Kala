@@ -20,7 +20,7 @@ class Kala {
 	/**
 	 * Root group.
 	 */
-	public static var world(default, null):BasicGroup = new BasicGroup(false);
+	public static var world(default, null):GenericGroup = new GenericGroup(false);
 	
 	/**
 	 * How many times the game will be updated per second.

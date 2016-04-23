@@ -13,7 +13,7 @@ class Main {
 		
 		Kala.world.onFirstFrame.notify(function(_) {
 			
-			var group = new BasicGroup();
+			var group = new GenericGroup();
 			Kala.world.add(group);
 			
 			var view = new View(0, 0, 300, 300);

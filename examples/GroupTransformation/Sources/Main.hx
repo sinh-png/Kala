@@ -5,7 +5,7 @@ import kala.input.Mouse;
 import kala.Kala;
 import kala.math.color.BlendMode;
 import kala.math.Vec2;
-import kala.objects.group.Group.BasicGroup;
+import kala.objects.group.Group.GenericGroup;
 import kala.objects.shapes.Circle;
 import kala.objects.shapes.Polygon;
 import kala.objects.shapes.Rectangle;
@@ -16,8 +16,8 @@ class Main {
 		
 		Kala.world.onFirstFrame.notify(function(_) {
 			
-			// BasicGroup is a typedef of Group<Object>
-			var group = new BasicGroup(true);
+			// GenericGroup is a typedef of Group<Object>
+			var group = new GenericGroup(true);
 			group.antialiasing = true;
 			group.colorBlendMode = BlendMode.SUB; // How the group color will be blended with its children colors.
 			Kala.world.add(group);

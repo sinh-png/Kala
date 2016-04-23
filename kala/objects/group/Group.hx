@@ -11,7 +11,7 @@ import kha.Image;
 import kha.graphics2.ImageScaleQuality;
 import kha.math.FastMatrix3;
 
-typedef BasicGroup = Group<Object>;
+typedef GenericGroup = Group<Object>;
 
 interface IGroup extends IObject {
 	

@@ -62,7 +62,7 @@ interface IObject {
 	
 	//
 	
-	public var group(get, never):BasicGroup;
+	public var group(get, never):GenericGroup;
 	public var pool:ObjectPool<Object>;
 	
 	//
@@ -166,7 +166,7 @@ class Object extends EventHandle implements IObject {
 	
 	//
 	
-	public var group(get, never):BasicGroup;
+	public var group(get, never):GenericGroup;
 	public var pool:ObjectPool<Object>;
 	
 	//
@@ -629,7 +629,7 @@ class Object extends EventHandle implements IObject {
 		return Math.abs(height * scale.y) + Math.abs(width  * scale.x  * Math.tan(skew.y * Angle.CONST_RAD));
 	}
 	
-	function get_group():BasicGroup {
+	function get_group():GenericGroup {
 		return cast _crGroup;
 	}
 	

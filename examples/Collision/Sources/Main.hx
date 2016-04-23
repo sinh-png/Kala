@@ -6,7 +6,7 @@ import kala.input.Mouse;
 import kala.Kala;
 import kala.math.color.BlendMode;
 import kala.math.Vec2;
-import kala.objects.group.Group.BasicGroup;
+import kala.objects.group.Group.GenericGroup;
 import kala.objects.shapes.Circle;
 import kala.objects.shapes.Polygon;
 import kala.objects.shapes.Rectangle;
@@ -25,7 +25,7 @@ class Main {
 			var collider1 = new Collider().addTo(rect1);
 			var colRect = collider1.addRect(0, 0, 200, 100);
 
-			var group = new BasicGroup(true);
+			var group = new GenericGroup(true);
 
 			Kala.world.add(group);
 			
