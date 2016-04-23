@@ -57,6 +57,8 @@ interface IObject {
 	//
 	
 	public var buffer(default, null):Image;
+	public var textureOriginX(default, null):FastFloat;
+	public var textureOriginY(default, null):FastFloat;
 	
 	//
 	
@@ -159,6 +161,8 @@ class Object extends EventHandle implements IObject {
 	//
 	
 	public var buffer(default, null):Image;
+	public var textureOriginX(default, null):FastFloat;
+	public var textureOriginY(default, null):FastFloat;
 	
 	//
 	
@@ -247,6 +251,7 @@ class Object extends EventHandle implements IObject {
 		_firstFrameExecuted = false;
 		
 		unloadGraphics();
+		textureOriginX = textureOriginY = 0;
 		while (_shaders.length > 0) _shaders.pop();
 		
 		for (callback in onReset) callback.cbFunction(this, componentsReset);
@@ -571,7 +576,7 @@ class Object extends EventHandle implements IObject {
 		var tempColor = color;
 		var tempOpacity = opacity;
 		
-		position.set();
+		position.set(textureOriginX, textureOriginY);
 		scale.setXY(1, 1);
 		skew.setXY();
 		rotation.angle = 0;
