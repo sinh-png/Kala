@@ -610,7 +610,7 @@ class Object extends EventHandle implements IObject {
 	}
 	
 	function set_width(value:FastFloat):FastFloat {
-		return _width = value;
+		return _width;
 	}
 	
 	function get_height():FastFloat {
@@ -618,7 +618,7 @@ class Object extends EventHandle implements IObject {
 	}
 	
 	function set_height(value:FastFloat):FastFloat {
-		return _height = value;
+		return _height;
 	}
 	
 	function get_tWidth():FastFloat {
