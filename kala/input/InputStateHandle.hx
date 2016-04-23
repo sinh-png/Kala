@@ -13,6 +13,14 @@ class InputStateHandle<T:EnumValue> {
 		return findRegistered(button) > -1 ? true : false;
 	}
 	
+	public function checkButtons(buttons:Array<T>):Bool {
+		for (button in buttons) {
+			if (findRegistered(button) > -1) return true;
+		}
+		
+		return false;
+	}
+	
 	inline function checkAny():Bool {
 		return _registered.length > 0 ? true : false;
 	}
