@@ -24,4 +24,12 @@ class Rectangle extends Shape {
 		canvas.g2.drawRect(0, 0, _width, _height, lineStrenght);
 	}
 	
+	override function set_width(value:FastFloat):FastFloat {
+		return _width = value;
+	}
+	
+	override function set_height(value:FastFloat):FastFloat {
+		return _height = value;
+	}
+	
 }
