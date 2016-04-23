@@ -161,8 +161,8 @@ class Object extends EventHandle implements IObject {
 	//
 	
 	public var buffer(default, null):Image;
-	public var textureOriginX(default, null):FastFloat;
-	public var textureOriginY(default, null):FastFloat;
+	public var bufferOriginX(default, null):FastFloat;
+	public var bufferOriginY(default, null):FastFloat;
 	
 	//
 	
@@ -251,7 +251,7 @@ class Object extends EventHandle implements IObject {
 		_firstFrameExecuted = false;
 		
 		unloadGraphics();
-		textureOriginX = textureOriginY = 0;
+		bufferOriginX = bufferOriginY = 0;
 		while (_shaders.length > 0) _shaders.pop();
 		
 		for (callback in onReset) callback.cbFunction(this, componentsReset);
@@ -322,7 +322,7 @@ class Object extends EventHandle implements IObject {
 		rotation.movePivot(offsetX, offsetY);
 	
 		applyDrawingData(data, canvas);
-		canvas.g2.drawImage(buffer, 0, 0);
+		canvas.g2.drawImage(buffer, -bufferOriginX, -bufferOriginY);
 
 		offsetX = -offsetX;
 		offsetY = -offsetY;
@@ -586,7 +586,7 @@ class Object extends EventHandle implements IObject {
 		var tempColor = color;
 		var tempOpacity = opacity;
 		
-		position.set(textureOriginX, textureOriginY);
+		position.set(bufferOriginX, bufferOriginY);
 		scale.setXY(1, 1);
 		skew.setXY();
 		rotation.angle = 0;

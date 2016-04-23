@@ -125,7 +125,7 @@ class Circle extends Shape {
 	function set_radius(value:FastFloat):FastFloat {
 		radius = value;
 		updateVertices();
-		textureOriginX = textureOriginY = radius;
+		bufferOriginX = bufferOriginY = radius;
 		_width = _height = radius * 2;
 		return value;
 	}
