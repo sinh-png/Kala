@@ -43,6 +43,7 @@ class SpriteAnimation extends Component<Sprite> {
 		removeAllAnimations();
 		_animations = null;
 		
+		destroyCBHandles();
 		onAnimComplete = null;
 	}
 	
