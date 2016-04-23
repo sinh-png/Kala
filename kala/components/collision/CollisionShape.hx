@@ -232,6 +232,7 @@ class CollisionCircle extends CollisionShape {
 	}
 	
 	public function updateVertices():Void {
+		var segments = this.segments;
 		if (segments <= 0) {
 			segments = Math.floor(10 * Math.sqrt(radius));
 		}
