@@ -366,6 +366,11 @@ class Object extends EventHandle implements IObject {
 		return shader;
 	}
 	
+	public inline function setXY(x:FastFloat, y:FastFloat):Object {
+		position.setXY(x, y);
+		return this;
+	}
+	
 	public inline function setOrigin(x:FastFloat, y:FastFloat):Object {
 		position.setOrigin(x, y);
 		scale.setOrigin(x, y);
