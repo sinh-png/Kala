@@ -28,6 +28,9 @@ class Text extends BasicText {
 	
 	public var align:TextAlign;
 	
+	/**
+	 * The width of this text without padding.
+	 */
 	public var contextWidth(get, null):FastFloat;
 	
 	public var wrapByWord(default, set):Bool;
@@ -267,6 +270,11 @@ class Text extends BasicText {
 	
 	override function get_width():FastFloat {
 		return _width;
+	}
+	
+	override function set_width(value:FastFloat):FastFloat {
+		_dirty = true;
+		return _width = value;
 	}
 
 	override function get_height():FastFloat {
