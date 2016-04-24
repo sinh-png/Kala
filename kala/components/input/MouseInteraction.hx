@@ -59,6 +59,15 @@ class MouseInteraction extends Component<Object> {
 		return this;
 	}
 	
+	override public function remove():Void {
+		if (object != null) {
+			collider.remove();
+			object.onPostUpdate.removeComponentCB(this, update);
+		}
+		
+		super.remove();
+	}
+	
 	public inline function addObjectRect():MouseInteraction {
 		collider.addObjectRect();
 		return this;
