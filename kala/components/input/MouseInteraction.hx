@@ -23,6 +23,7 @@ class MouseInteraction extends Component<Object> {
 	
 	private var _dragPointX:FastFloat;
 	private var _dragPointY:FastFloat;
+	private var _dragging:Bool;
 	
 	public function new() {
 		super();
@@ -37,6 +38,7 @@ class MouseInteraction extends Component<Object> {
 		super.reset();
 		hovered = false;
 		dragable = false;
+		_dragging = false;
 		if (collider != null) collider.reset();
 	}
 	
@@ -93,7 +95,8 @@ class MouseInteraction extends Component<Object> {
 			
 			if (dragButtons != null && Mouse.justPressed.checkButtons(dragButtons)) {
 				_dragPointX = mx - obj.x;
-				_dragPointY = my - obj.y;	
+				_dragPointY = my - obj.y;
+				_dragging = true;
 			}
 		} else if (hovered) {
 			for (callback in onOver) {
@@ -102,9 +105,11 @@ class MouseInteraction extends Component<Object> {
 			}
 		}
 		
-		if (dragable && dragButtons != null &&  Mouse.pressed.checkButtons(dragButtons)) {
+		if (dragable && _dragging && dragButtons != null &&  Mouse.pressed.checkButtons(dragButtons)) {
 			obj.x = mx - _dragPointX;
 			obj.y = my - _dragPointY;
+		} else {
+			_dragging = false;
 		}
 	}
 	
