@@ -23,12 +23,12 @@ class Keyboard {
 		justReleased.capture(k);
 	}
 	
-	static inline function onPreUpdate():Void {
+	static inline function register():Void {
 		justPressed.registerAllCaptured();
 		justReleased.registerAllCaptured();
 	}
 	
-	static inline function onPostUpdate():Void {
+	static inline function release():Void {
 		justPressed.releaseAllRegistered();
 		justReleased.releaseAllRegistered();
 	}

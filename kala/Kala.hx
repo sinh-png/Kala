@@ -113,11 +113,10 @@ class Kala {
 		world.callDraw(new DrawingData(), framebuffer);
 		
 		#if (debug || kala_debug)
-		if (!Debug.draw()) framebuffer.g2.end();
-		#else
-		framebuffer.g2.end();
+		Debug.draw(framebuffer);
 		#end
-
+		
+		framebuffer.g2.end();
 	}
 	
 	static function updateWorld():Void {
@@ -127,13 +126,13 @@ class Kala {
 		
 		fps = Math.ceil(1 / delta);
 		
-		Keyboard.onPreUpdate();
-		Mouse.onPreUpdate();
+		Keyboard.release();
+		Mouse.release();
+		
+		Keyboard.register();
+		Mouse.register();
 		
 		world.callUpdate(delta);
-		
-		Keyboard.onPostUpdate();
-		Mouse.onPostUpdate();
 	}
 	
 	static function set_updateRate(value:UInt):UInt {
