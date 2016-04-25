@@ -64,7 +64,7 @@ class Collider extends BaseCollider<Object> {
 	}
 	
 	/*
-	 * Remove shape. this won't put the shape to its pool.
+	 * Remove shape. this won't put the shape into its pool.
 	 */
 	public inline function removeShape(shape:CollisionShape):CollisionShape {
 		if (_shapes.remove(shape)) return shape;
