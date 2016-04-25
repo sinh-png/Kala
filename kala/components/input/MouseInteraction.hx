@@ -1,9 +1,11 @@
 package kala.components.input;
 
 import kala.components.collision.Collider;
+import kala.components.collision.CollisionShape;
 import kala.components.Component;
 import kala.EventHandle.CallbackHandle;
 import kala.input.Mouse;
+import kala.math.Vec2;
 import kala.objects.Object;
 import kha.FastFloat;
 
@@ -27,6 +29,8 @@ class MouseInteraction extends Component<Object> {
 	
 	public function new() {
 		super();
+		
+		collider = new Collider();
 		
 		onLeftClick = addCBHandle(new CallbackHandle<MouseInteraction->Void>());
 		onRightClick = addCBHandle(new CallbackHandle<MouseInteraction->Void>());
@@ -56,7 +60,7 @@ class MouseInteraction extends Component<Object> {
 	
 	override public function addTo(object:Object):MouseInteraction {
 		super.addTo(object);
-		collider = new Collider().addTo(object);
+		collider.addTo(object);
 		object.onPostUpdate.notifyComponentCB(this, update);
 		return this;
 	}
@@ -70,8 +74,28 @@ class MouseInteraction extends Component<Object> {
 		super.remove();
 	}
 	
+	public inline function addCircle(x:FastFloat, y:FastFloat, radius:FastFloat):MouseInteraction {
+		collider.addCircle(x, y, radius);
+		return this;
+	}
+	
+	public inline function addRect(x:FastFloat, y:FastFloat, width:FastFloat, height:FastFloat):MouseInteraction {
+		collider.addRect(x, y, width, height);
+		return this;
+	}
+	
+	public inline function addPolygon(x:FastFloat, y:FastFloat, vertices:Array<Vec2>, concave:Bool = false):MouseInteraction {
+		collider.addPolygon(x, y, vertices, concave);
+		return this;
+	}
+	
 	public inline function addObjectRect():MouseInteraction {
 		collider.addObjectRect();
+		return this;
+	}
+	
+	public inline function addShape(shape:CollisionShape):MouseInteraction {
+		collider.addShape(shape);
 		return this;
 	}
 	
