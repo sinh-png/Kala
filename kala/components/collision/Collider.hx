@@ -18,7 +18,7 @@ class Collider extends BaseCollider<Object> {
 		circle.position.set(x, y);
 		circle.radius = radius;
 		
-		_shapes.push(circle);
+		shapes.push(circle);
 		
 		return circle;
 	}
@@ -34,7 +34,7 @@ class Collider extends BaseCollider<Object> {
 			new Vec2(width, 0)
 		];
 		
-		_shapes.push(rect);
+		shapes.push(rect);
 		
 		return rect;
 	}
@@ -49,7 +49,7 @@ class Collider extends BaseCollider<Object> {
 		polygon.collider = this;
 		polygon.position.set(x, y);
 		polygon.vertices = vertices.copy();
-		_shapes.push(polygon);
+		shapes.push(polygon);
 		
 		return [polygon];
 	}
@@ -59,7 +59,7 @@ class Collider extends BaseCollider<Object> {
 	}
 	
 	public inline function addShape(shape:CollisionShape):CollisionShape {
-		_shapes.push(shape);
+		shapes.push(shape);
 		return shape;
 	}
 	
@@ -67,7 +67,7 @@ class Collider extends BaseCollider<Object> {
 	 * Remove shape. this won't put the shape into its pool.
 	 */
 	public inline function removeShape(shape:CollisionShape):CollisionShape {
-		if (_shapes.remove(shape)) return shape;
+		if (shapes.remove(shape)) return shape;
 		return null;
 	}
 	

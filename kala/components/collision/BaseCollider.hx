@@ -20,11 +20,10 @@ using kala.math.helpers.FastMatrix3Helper;
 interface ICollider extends IComponent {
 	
 	public var postDrawUpdate(default, set):Bool;
-	
-	private var _shapes:Array<CollisionShape>;
-	private var _matrix:FastMatrix3;
-	
+	public var shapes:Array<CollisionShape>;
 	public function test(collider:ICollider):CollisionResult;
+	
+	private var _matrix:FastMatrix3;
 	private function update():Void;
 	
 }
@@ -49,9 +48,9 @@ class BaseCollider<T:Object> extends Component<T> implements ICollider {
 	 */
 	public var postDrawUpdate(default, set):Bool;
 	
-	private var _postDrawCBAdded:Bool = false;
+	public var shapes:Array<CollisionShape> = new Array<CollisionShape>();
 	
-	private var _shapes:Array<CollisionShape> = new Array<CollisionShape>();
+	private var _postDrawCBAdded:Bool = false;
 	
 	private var _matrix:FastMatrix3;
 	
@@ -60,14 +59,14 @@ class BaseCollider<T:Object> extends Component<T> implements ICollider {
 	override public function reset():Void {
 		super.reset();
 		postDrawUpdate = true;
-		while (_shapes.length > 0) _shapes.pop().put();
+		while (shapes.length > 0) shapes.pop().put();
 	}
 	
 	override public function destroy():Void {
 		super.destroy();
 		
-		while (_shapes.length > 0) _shapes.pop().put();
-		_shapes = null;
+		while (shapes.length > 0) shapes.pop().put();
+		shapes = null;
 		
 		_matrix = null;
 	}
@@ -107,8 +106,8 @@ class BaseCollider<T:Object> extends Component<T> implements ICollider {
 
 		var result:CollisionResult;
 		
-		for (shapeA in _shapes) {
-			for (shapeB in collider._shapes) {
+		for (shapeA in shapes) {
+			for (shapeB in collider.shapes) {
 				result = shapeA.test(shapeB);
 				if (result != null) return result;
 			}
@@ -135,7 +134,7 @@ class BaseCollider<T:Object> extends Component<T> implements ICollider {
 	}	
 	
 	public function testPoint(pointX:FastFloat, pointY:FastFloat):Bool {
-		for (shape in _shapes) {
+		for (shape in shapes) {
 			if (shape.testPoint(pointX, pointY)) return true;
 		}
 		
@@ -162,7 +161,7 @@ class BaseCollider<T:Object> extends Component<T> implements ICollider {
 		g2.color = color;
 		g2.opacity = 1;
 		
-		for (shape in _shapes) {
+		for (shape in shapes) {
 			g2.transformation = shape.updateMatrix().matrix;
 			
 			if (fill) {
