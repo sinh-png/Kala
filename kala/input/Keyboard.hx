@@ -1,11 +1,16 @@
 package kala.input;
 
+import kala.EventHandle.CallbackHandle;
+
 @:access(kala.input.KeyStateHandle)
 class Keyboard {
 	
 	public static var justPressed:KeyStateHandle = new KeyStateHandle();
 	public static var pressed:KeyStateHandle = new KeyStateHandle();
 	public static var justReleased:KeyStateHandle = new KeyStateHandle();
+	
+	public static var onKeyDown(default, never):CallbackHandle<Key->Void> = new CallbackHandle<Key->Void>();
+	public static var onKeyUp(default, never):CallbackHandle<Key->Void> = new CallbackHandle<Key->Void>();
 
 	static function init():Void {
 		kha.input.Keyboard.get().notify(onDown, onUp);
@@ -13,14 +18,20 @@ class Keyboard {
 	
 	static function onDown(key:kha.Key, char:String):Void {
 		var k = khaKeyToKey(key, char);
+		
 		pressed.register(k);
 		justPressed.capture(k);
+		
+		for (callback in onKeyDown) callback.cbFunction(k);
 	}
 	
 	static function onUp(key:kha.Key, char:String):Void {
 		var k = khaKeyToKey(key, char);
+		
 		pressed.releaseRegistered(k);
 		justReleased.capture(k);
+		
+		for (callback in onKeyDown) callback.cbFunction(k);
 	}
 	
 	static inline function register():Void {
