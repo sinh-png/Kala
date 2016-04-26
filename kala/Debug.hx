@@ -1,11 +1,14 @@
 package kala;
 
+import kala.input.Keyboard;
 import kala.input.Mouse;
 import kala.math.Rect;
 import kha.Canvas;
 import kha.FastFloat;
 import kha.Framebuffer;
+import kha.graphics2.Graphics;
 import kha.math.FastMatrix3;
+import kha.Scheduler;
 
 @:allow(kala.Kala)
 class Debug {
@@ -80,13 +83,14 @@ class DebugDrawCall {
 	
 }
 
+@:access(kala.CallbackHandle)
 class DebugConsole {
 	
 	public static inline var NORMAL = 0;
 	public static inline var MAXIMIZED = 1;
 	public static inline var MINIMIZED = 2;
 	
-	public var enable:Bool = true;
+	public var enable(default, set):Bool = false;
 	
 	public var rect(default, null):Rect = new Rect(0, 0, 600, 400);
 	
@@ -105,8 +109,25 @@ class DebugConsole {
 	private var _maxRect:Rect = new Rect();
 	private var _minRect:Rect = new Rect();
 	
+	private var _command:String = "";
+	private var _cmdCursorVisible:Bool = true;
+	private var _cmdCursorTimeTask:Int;
+	
+	private var _backspacePressingTime:Int = 0;
+	
 	public function new() {
-		
+		Keyboard.onKeyDown.notifyPrivateCB(this, function(key:Key) {
+			switch(key) {
+				case CHAR(c): 
+					if (c == '`') {
+						if (!enable) enable = true;
+						else {
+							
+						}
+					}
+				default:
+			}
+		});
 	}
 	
 	public function draw(canvas:Canvas):Void {
@@ -137,7 +158,7 @@ class DebugConsole {
 		g.color = 0x88222222;
 		g.fillRect(0, 0, rect.width , state == MINIMIZED ? 24 : rect.height);
 		
-		// Tab bar background
+		// Title bar background
 		g.color = 0x44666666;
 		g.fillRect(0, 0, rect.width , 24);
 		
@@ -160,25 +181,30 @@ class DebugConsole {
 			_dragging = false;
 		}
 		
-		// Tab button & content
-		
+		// Tab
+
 		g.color = 0xffffffff;
 		g.font = Kala.defaultFont;
 		g.fontSize = 18;
 		
+		var s = '  -  FPS: ${Kala.fps}';
+		
 		switch(tab) {
 			case CONSOLE:
-				g.drawString("CONSOLE", 10, (24 - g.font.height(g.fontSize)) / 2);
+				s = "CONSOLE" + s;
+				if (state != MINIMIZED) drawConsole(rect, g);
 				
 			case DRAWING_SETTINGS:
-				g.drawString("DRAWING SETTINGS", 10, (24 - g.font.height(g.fontSize)) / 2);
+				s = "DRAWING SETTINGS" + s;
 				
 			case MONITOR:
-				g.drawString("MONITOR", 10, (24 - g.font.height(g.fontSize)) / 2);
+				s = "MONITOR" + s;
 				
 			case PROFILER:
-				g.drawString("PROFILER", 10, (24 - g.font.height(g.fontSize)) / 2);
+				s = "PROFILER" + s;
 		}
+		
+		g.drawString(s, 10, (24 - g.font.height(g.fontSize)) / 2);
 		
 		// Close button
 		
@@ -222,6 +248,11 @@ class DebugConsole {
 		
 		// Minimize button
 		
+		if (Keyboard.justPressed.TAB) {
+			if (state == MINIMIZED) state = NORMAL;
+			else state = MINIMIZED;
+		}
+		
 		ma.x -= 30;
 		if (Mouse.isHoveringRect(ma)) {
 			g.color = 0x66999999;
@@ -259,7 +290,79 @@ class DebugConsole {
 		}
 
 	}
-
+	
+	function drawCMDField(rect:Rect, g:Graphics):Void {
+		g.color = 0x44666666;
+		g.fillRect(0, rect.height - 24, rect.width , 24);
+		
+		g.color = 0xffffffff;
+		var s = _command;
+		var i = 0;
+		while (g.font.width(g.fontSize, s) > rect.width) s = s.substr(++i);
+		g.drawString(s, 5, rect.height - 24 + (24 - g.font.height(g.fontSize)) / 2);
+		
+		if (_cmdCursorVisible) {
+			g.fillRect(5 + g.font.width(g.fontSize, s), rect.height - 20, 2, 16);
+		}
+		
+		if (Keyboard.pressed.BACKSPACE) {
+			_backspacePressingTime++;
+			if (_backspacePressingTime > 10 && _command.length > 0) {
+				_command = _command.substr(0, _command.length - 1);
+			}
+		} else {
+			_backspacePressingTime = 0;
+		}
+	}
+	
+	function onCMDIyping(key:Key):Void {
+		if (state == MINIMIZED) return;
+		
+		switch(key) {
+			case CHAR(c):
+				if (c == '`') return;
+				_command += c;
+			
+			case BACKSPACE:
+				if (_backspacePressingTime < 10 && _command.length > 0) {
+					_command = _command.substr(0, _command.length - 1);
+				}
+				
+			case ENTER:
+				execCMD(_command);
+				_command = "";
+				
+			default:
+		}
+	}
+	
+	function execCMD(command:String):Void {
+		if (command.length < 1) return;
+	}
+	
+	function drawConsole(rect:Rect, g:Graphics):Void {
+		drawCMDField(rect, g);
+	}
+	
+	function set_enable(value:Bool):Bool {
+		if (value) {
+			if (!enable) {
+				_cmdCursorTimeTask = Scheduler.addTimeTask(function() {
+					_cmdCursorVisible = !_cmdCursorVisible;
+				}, 0, 0.5);
+				
+				Keyboard.onKeyDown.notifyPrivateCB(this, onCMDIyping);
+			}
+		} else {
+			if (enable) {
+				Scheduler.removeTimeTask(_cmdCursorTimeTask);
+				Keyboard.onKeyDown.remove(onCMDIyping);
+			}
+		}
+		
+		return enable = value;
+	}
+	
 }
 
 enum DebugConsoleTab {
