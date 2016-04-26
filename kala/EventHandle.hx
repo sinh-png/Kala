@@ -66,7 +66,7 @@ class CallbackHandle<T> implements ICallbackHandle {
 	public function remove(callback:T):Void {
 		var i = 0;
 		for (cb in _callbacks) {
-			if (cb.cbFunction == callback && cb.component == null) {
+			if (cb.cbFunction == callback && cb.owner == null) {
 				_callbacks.splice(i, 1);
 				return;
 			}
@@ -74,21 +74,21 @@ class CallbackHandle<T> implements ICallbackHandle {
 		}
 	}
 	
-	function notifyComponentCB(component:IComponent, callback:T):Void {
+	function notifyPrivateCB(component:Dynamic, callback:T):Void {
 		_callbacks.push(new Callback(callback, component));
 	}
 	
-	function removeComponentCB(component:IComponent, callback:T):Void {
+	function removePrivateCB(component:Dynamic, callback:T):Void {
 		var i = 0;
 		for (cb in _callbacks) {
-			if (cb.cbFunction == callback && cb.component == component) {
+			if (cb.cbFunction == callback && cb.owner == component) {
 				_callbacks.splice(i, 1);
 				return;
 			}
 			i++;
 		}
 		
-		throw 'Incorrectly tried to remove a callback of component $component from object $this.';
+		throw 'Incorrectly tried to remove a private callback of $component from object $this.';
 	}
 	
 	public function iterator():Iterator<Callback<T>> {
@@ -100,11 +100,11 @@ class CallbackHandle<T> implements ICallbackHandle {
 class Callback<T> {
 	
 	public var cbFunction(default, null):T;
-	public var component(default, null):IComponent;
+	public var owner(default, null):Dynamic;
 	
-	public inline function new(cbFunction:T, component:IComponent = null) {
+	public inline function new(cbFunction:T, component:Dynamic = null) {
 		this.cbFunction = cbFunction;
-		this.component = component;
+		this.owner = component;
 	}
 	
 }

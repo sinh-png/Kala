@@ -50,7 +50,7 @@ class SpriteAnimation extends Component<Sprite> {
 	override public function addTo(object:Sprite):SpriteAnimation {
 		super.addTo(object);
 		
-		object.onPostUpdate.notifyComponentCB(this, update);
+		object.onPostUpdate.notifyPrivateCB(this, update);
 		object.animation = this;
 		
 		return this;
@@ -58,7 +58,7 @@ class SpriteAnimation extends Component<Sprite> {
 	
 	override public function remove():Void {
 		if (object != null) {
-			object.onPostUpdate.removeComponentCB(this, update);
+			object.onPostUpdate.removePrivateCB(this, update);
 			object.animation = null;
 		}
 		

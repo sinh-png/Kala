@@ -32,14 +32,14 @@ class VelocityMotion extends Component<Object> {
 	override public function addTo(object:Object):VelocityMotion {
 		super.addTo(object);
 		
-		object.onPostUpdate.notifyComponentCB(this, update);
+		object.onPostUpdate.notifyPrivateCB(this, update);
 		
 		return this;
 	}
 	
 	override public function remove():Void {
 		if (object != null) {
-			object.onPostUpdate.removeComponentCB(this, update);
+			object.onPostUpdate.removePrivateCB(this, update);
 		}
 		
 		super.remove();

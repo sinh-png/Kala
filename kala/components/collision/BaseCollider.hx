@@ -75,7 +75,7 @@ class BaseCollider<T:Object> extends Component<T> implements ICollider {
 		super.addTo(object);
 		
 		if (postDrawUpdate && !_postDrawCBAdded) {
-			object.onPostDraw.notifyComponentCB(this, postDrawCB);
+			object.onPostDraw.notifyPrivateCB(this, postDrawCB);
 			_postDrawCBAdded = true;
 		}
 		
@@ -86,7 +86,7 @@ class BaseCollider<T:Object> extends Component<T> implements ICollider {
 	
 	override public function remove():Void {
 		if (postDrawUpdate && object != null) {
-			object.onPostDraw.removeComponentCB(this, postDrawCB);
+			object.onPostDraw.removePrivateCB(this, postDrawCB);
 			_postDrawCBAdded = false;
 		}
 		
@@ -204,10 +204,10 @@ class BaseCollider<T:Object> extends Component<T> implements ICollider {
 		if (object == null) return postDrawUpdate = value;
 		
 		if (value) {
-			object.onPostDraw.notifyComponentCB(this, postDrawCB);
+			object.onPostDraw.notifyPrivateCB(this, postDrawCB);
 			_postDrawCBAdded = true;
 		} else {
-			object.onPostDraw.removeComponentCB(this, postDrawCB);
+			object.onPostDraw.removePrivateCB(this, postDrawCB);
 			_postDrawCBAdded = false;
 		}
 		
