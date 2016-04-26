@@ -54,6 +54,24 @@ class Mouse {
 		return didClickOnRect(rect, LEFT);
 	}
 	
+	public static inline function isPressingOn(
+		x:FastFloat, y:FastFloat, width:FastFloat, height:FastFloat, button:MouseButton
+	):Bool {
+		return isHovering(x, y, width, height) && pressed.check(button);
+	}
+	
+	public static inline function isPressingOnRect(rect:Rect, button:MouseButton):Bool {
+		return isHoveringRect(rect) && pressed.check(button);
+	}
+	
+	public static inline function isLeftPressingOn(x:FastFloat, y:FastFloat, width:FastFloat, height:FastFloat):Bool {
+		return isPressingOn(x, y, width, height, LEFT);
+	}
+	
+	public static inline function isLeftPressingOnRect(rect:Rect):Bool {
+		return isPressingOnRect(rect, LEFT);
+	}
+	
 	//
 	
 	static function init():Void {
