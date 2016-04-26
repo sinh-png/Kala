@@ -69,7 +69,7 @@ class Circle extends Shape {
 		#if sys_html5
 		if (kha.SystemImpl.gl == null) {
 			var g:kha.js.CanvasGraphics = cast g2;
-			radius -= strength / 2; // Reduce radius to fit the line thickness within image width / height.
+			radius -= lineStrenght / 2; // Reduce radius to fit the line thickness within image width / height.
 			g.drawCircle(0, 0, radius, lineStrenght);
 			return;
 		}
