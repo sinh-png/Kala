@@ -63,7 +63,7 @@ interface IObject {
 	//
 	
 	public var group(get, never):GenericGroup;
-	public var pool:ObjectPool<Object>;
+	public var pool:ObjectPool;
 	
 	//
 	
@@ -167,7 +167,7 @@ class Object extends EventHandle implements IObject {
 	//
 	
 	public var group(get, never):GenericGroup;
-	public var pool:ObjectPool<Object>;
+	public var pool:ObjectPool;
 	
 	//
 	

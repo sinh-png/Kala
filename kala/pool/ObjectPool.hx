@@ -2,14 +2,14 @@ package kala.pool;
 
 import kala.objects.Object;
 
-class ObjectPool<T:Object> extends Pool<T> {
+class ObjectPool extends Pool<Object> {
 
-	public function new(?factoryFunction:Void->T, ?initFunction:T->Void) {
+	public function new(?factoryFunction:Void->Object, ?initFunction:Object->Void) {
 		super(factoryFunction, initFunction);
 	}
 	
-	override public function put(obj:T):T {
-		obj.pool = cast this;
+	override public function put(obj:Object):Object {
+		obj.pool = this;
 		return super.put(obj);
 	}
 	
