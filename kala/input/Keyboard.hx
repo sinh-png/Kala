@@ -31,7 +31,7 @@ class Keyboard {
 		pressed.releaseRegistered(k);
 		justReleased.capture(k);
 		
-		for (callback in onKeyDown) callback.cbFunction(k);
+		for (callback in onKeyUp) callback.cbFunction(k);
 	}
 	
 	static inline function register():Void {
