@@ -128,7 +128,6 @@ class Object extends EventHandle implements IObject {
 	 * Shortcut to position.x
 	 */
 	public var x(get, set):FastFloat;
-	
 	/**
 	 * Shortcut to position.y
 	 */
@@ -136,7 +135,13 @@ class Object extends EventHandle implements IObject {
 	
 	public var position:Vec2T = new Vec2T();
 	
+	/**
+	 * Flip scale.x
+	 */
 	public var flipX:Bool;
+	/**
+	 * Flip scale.y
+	 */
 	public var flipY:Bool;
 	
 	public var scale:Vec2T = new Vec2T();
@@ -150,12 +155,24 @@ class Object extends EventHandle implements IObject {
 	
 	//
 	
-	var _width:FastFloat;
+	/**
+	 * The original width of this object.
+	 */
 	public var width(get, set):FastFloat;
-	var _height:FastFloat;
+	var _width:FastFloat;
+	/**
+	 * The original height of this object.
+	 */
 	public var height(get, set):FastFloat;
+	var _height:FastFloat;
 	
+	/**
+	 * The width of this object taking scaling and skewing into account.
+	 */
 	public var tWidth(get, never):FastFloat;
+	/**
+	 * The height of this object taking scaling and skewing into account.
+	 */
 	public var tHeight(get, never):FastFloat;
 	
 	//
