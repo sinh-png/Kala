@@ -68,7 +68,7 @@ class CallbackHandle<T> implements ICallbackHandle {
 		for (cb in _callbacks) {
 			if (cb.cbFunction == callback && cb.component == null) {
 				_callbacks.splice(i, 1);
-				break;
+				return;
 			}
 			i++;
 		}
