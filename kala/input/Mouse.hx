@@ -1,5 +1,8 @@
 package kala.input;
 
+import kala.math.Rect;
+import kha.FastFloat;
+
 @:access(kala.input.MouseStateHandle)
 class Mouse {
 	
@@ -14,6 +17,26 @@ class Mouse {
 	
 	private static var _wheel:Int;
 	private static var _wheelRegistered:Bool = false;
+	
+	//
+	
+	public static inline function isHovering(x:FastFloat, y:FastFloat, width:FastFloat, height:FastFloat):Bool {
+		return (
+			Mouse.x >= x && Mouse.x <= x + width &&
+			Mouse.y >= y && Mouse.y <= y + height
+		);
+		
+	}
+	
+	public static inline function isHoveringRect(rect:Rect):Bool {
+		return (
+			Mouse.x >= rect.x && Mouse.x <= rect.x + rect.width &&
+			Mouse.y >= rect.y && Mouse.y <= rect.y + rect.height
+		);
+		
+	}
+	
+	//
 	
 	static function init():Void {
 		kha.input.Mouse.get().notify(onDown, onUp, onMove, onWheel);
