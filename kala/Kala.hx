@@ -33,7 +33,7 @@ class Kala {
 	 */
 	public static var drawRate(get, null):Int;
 	
-	public static var fps(default, null):Int;
+	public static var fps(default, null):UInt;
 	
 	/**
 	 * The unit used for timing. 
@@ -125,6 +125,7 @@ class Kala {
 		_lastUpdateTime = time;
 		
 		fps = Math.ceil(1 / delta);
+		if (fps > updateRate) fps = updateRate;
 		
 		Keyboard.release();
 		Mouse.release();
