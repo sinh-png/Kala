@@ -36,6 +36,24 @@ class Mouse {
 		
 	}
 	
+	public static inline function didClickOn(
+		x:FastFloat, y:FastFloat, width:FastFloat, height:FastFloat, button:MouseButton
+	):Bool {
+		return isHovering(x, y, width, height) && justPressed.check(button);
+	}
+	
+	public static inline function didClickOnRect(rect:Rect, button:MouseButton):Bool {
+		return isHoveringRect(rect) && justPressed.check(button);
+	}
+	
+	public static inline function didLeftClickOn(x:FastFloat, y:FastFloat, width:FastFloat, height:FastFloat):Bool {
+		return didClickOn(x, y, width, height, LEFT);
+	}
+	
+	public static inline function didLeftClickOnRect(rect:Rect):Bool {
+		return didClickOnRect(rect, LEFT);
+	}
+	
 	//
 	
 	static function init():Void {
