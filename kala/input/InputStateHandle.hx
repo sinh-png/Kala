@@ -30,7 +30,7 @@ class InputStateHandle<T:EnumValue> {
 	}
 	
 	inline function checkAny():Bool {
-		return _registered.length > 0 ? true : false;
+		return _registered.length > 0;
 	}
 	
 	inline function capture(button:T):Void {
