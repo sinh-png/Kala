@@ -124,9 +124,8 @@ class Kala {
 		var delta = time - _lastUpdateTime;
 		_lastUpdateTime = time;
 		
-		fps = Math.ceil(1 / delta);
-		if (fps > updateRate) fps = updateRate;
-		
+		fps = Math.round(1 / delta);
+	
 		Keyboard.release();
 		Mouse.release();
 		
