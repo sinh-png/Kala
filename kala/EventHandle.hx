@@ -74,21 +74,21 @@ class CallbackHandle<T> implements ICallbackHandle {
 		}
 	}
 	
-	function notifyPrivateCB(component:Dynamic, callback:T):Void {
-		_callbacks.push(new Callback(callback, component));
+	function notifyPrivateCB(owner:Dynamic, callback:T):Void {
+		_callbacks.push(new Callback(callback, owner));
 	}
 	
-	function removePrivateCB(component:Dynamic, callback:T):Void {
+	function removePrivateCB(owner:Dynamic, callback:T):Void {
 		var i = 0;
 		for (cb in _callbacks) {
-			if (cb.cbFunction == callback && cb.owner == component) {
+			if (cb.cbFunction == callback && cb.owner == owner) {
 				_callbacks.splice(i, 1);
 				return;
 			}
 			i++;
 		}
 		
-		throw 'Incorrectly tried to remove a private callback of $component from object $this.';
+		throw 'Incorrectly tried to remove a private callback of $owner from object $this.';
 	}
 	
 	public function iterator():Iterator<Callback<T>> {
