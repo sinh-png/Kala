@@ -564,7 +564,6 @@ class Object extends EventHandle implements IObject {
 			g2.color = color;
 		} else {
 			g2.color = Color.getBlendColor(color, data.color, data.colorBlendMode, data.colorAlphaBlendMode);
-			g2.color = Color.getBlendColor(color, data.color, data.colorBlendMode, data.colorAlphaBlendMode);
 		}
 		
 		g2.opacity = opacity * data.opacity;
