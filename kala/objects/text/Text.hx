@@ -31,7 +31,7 @@ class Text extends BasicText {
 	/**
 	 * The width of this text without padding.
 	 */
-	public var contextWidth(get, null):FastFloat;
+	public var contentWidth(get, null):FastFloat;
 	
 	public var wrapByWord(default, set):Bool;
 	
@@ -134,7 +134,7 @@ class Text extends BasicText {
 		
 		switch(align) {
 			case TextAlign.JUSTIFY:
-				var contextWidth = this.contextWidth;
+				var contentWidth = this.contentWidth;
 				var line:LineData;
 				var lineWidth:FastFloat;
 				var words:Array<String>;
@@ -153,7 +153,7 @@ class Text extends BasicText {
 					
 					lineWidth = line.getWidth(true);
 					
-					if (lineWidth < contextWidth * 0.8) {
+					if (lineWidth < contentWidth * 0.8) {
 						for (textData in line) {
 							g2.font = textData.font;
 							g2.fontSize = textData.size;
@@ -163,7 +163,7 @@ class Text extends BasicText {
 							tx += textData.getWidth();
 						}
 					} else {
-						spaceSize = (contextWidth - lineWidth) / (words.length - 1);
+						spaceSize = (contentWidth - lineWidth) / (words.length - 1);
 					
 						if (_htmlText == null) {
 							for (word in words) {
@@ -191,7 +191,7 @@ class Text extends BasicText {
 				}
 				
 			default:
-				var contextWidth = this.contextWidth;
+				var contentWidth = this.contentWidth;
 				var tx:FastFloat = 0;
 				var ty:FastFloat = padding.y;
 				
@@ -199,9 +199,9 @@ class Text extends BasicText {
 					if (align.equals(TextAlign.LEFT)) {
 						tx = 0;
 					} else if (align.equals(TextAlign.RIGHT)) {
-						tx = contextWidth - line.width;
+						tx = contentWidth - line.width;
 					} else {
-						tx = (contextWidth - line.width) / 2;
+						tx = (contentWidth - line.width) / 2;
 					}
 					
 					tx += padding.x;
@@ -235,7 +235,7 @@ class Text extends BasicText {
 		for (s in array) {
 			if (
 				s != eolSymbol &&
-				(_width == 0 || lineString == "" || font.getWidth(lineString + s, size, bold) <= contextWidth)
+				(_width == 0 || lineString == "" || font.getWidth(lineString + s, size, bold) <= contentWidth)
 			) {
 				lineString += s;
 			} else {
@@ -314,7 +314,7 @@ class Text extends BasicText {
 		return bold = value;
 	}
 	
-	function get_contextWidth():FastFloat {
+	function get_contentWidth():FastFloat {
 		return width - padding.x * 2;
 	}
 	
