@@ -61,7 +61,7 @@ class FastMatrix3Helper {
 			centerY = y + rotation.py;
 			
 			matrix = FastMatrix3.translation(centerX, centerY)
-					.multmat(FastMatrix3.rotation(rotation.rad()))
+					.multmat(FastMatrix3.rotation(rotation.rad))
 					.multmat(FastMatrix3.translation( -centerX, -centerY))
 					.multmat(matrix);
 			
