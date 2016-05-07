@@ -40,7 +40,7 @@ class Debug {
 
 	public static inline function error(message:String):Void {
 		#if (debug || kala_debug)
-		debugger.pushConsoleOutput(message, Color.RED);
+		debugger.pushConsoleOutput("ERR: " + message, Color.RED);
 		debugger.enable = true;
 		#end
 	}
