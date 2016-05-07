@@ -7,6 +7,14 @@ import kha.FastFloat;
 
 abstract Color(UInt) from UInt to UInt from kha.Color to kha.Color {
 	
+	public static inline var TRANSPARENT:Color = 	0x00000000;
+	public static inline var WHITE:Color = 			0xFFFFFFFF;
+	public static inline var BLACK:Color =  		0xFF000000;
+	public static inline var RED:Color = 			0xFFFF0000;
+	public static inline var GREEN:Color = 			0xFF00FF00;
+	public static inline var BLUE:Color = 			0xFF0000FF;
+
+	
 	public static inline function fromBytes(alpha:UInt, red:UInt, green:UInt, blue:UInt):Color {
 		return (alpha << 24) | (red << 16 ) | (green << 8) | blue;
 	}
