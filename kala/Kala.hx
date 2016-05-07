@@ -125,7 +125,7 @@ class Kala {
 		_lastUpdateTime = time;
 		
 		fps = Math.round(1 / delta);
-	
+		
 		Keyboard.release();
 		Mouse.release();
 		
