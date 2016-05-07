@@ -3,7 +3,6 @@ package kala.components;
 import haxe.ds.StringMap;
 import kala.components.SpriteAnimation.SpriteAnimationData;
 import kala.EventHandle.CallbackHandle;
-import kala.Kala.TimeUnit;
 import kala.math.Rect.RectI;
 import kala.objects.Object;
 import kala.objects.Sprite;
@@ -100,7 +99,7 @@ class SpriteAnimation extends Component<Sprite> {
 	 * @param	frameHeight		Frame height. If set to 0, will use the current frame height of the owner sprite (set by sprite.loadImage or most preview calling of addAnim). If this argument is set to 0 and the component wasn't added to a sprite, this method will do nothing and return null.
 	 * @param	totalFrames		Total number of frames in sprite sheet.
 	 * @param	framesPerRow	Number of frames per row. (Last row may have less frames.)
-	 * @param	delay			Delay time between frames. In frames or milliseconds depends on Kala.timingUnit.
+	 * @param	delay			Delay time between frames. In frames or milliseconds depends on the value of Kala.frameTiming.
 	 * 
 	 * @return					Return this component if success otherwise return null.
 	 */
@@ -202,7 +201,7 @@ class SpriteAnimation extends Component<Sprite> {
 	
 	function update(obj:Object, delta:FastFloat):Void {
 		if (anim != null && anim.delay > -1) {
-			if (Kala.timingUnit == TimeUnit.FRAME) {
+			if (Kala.frameTiming) {
 				_timeLeft--;
 			} else {
 				_timeLeft -= Std.int(delta * 1000);

@@ -254,7 +254,7 @@ class TweenTimeline {
 	
 	function update(delta:FastFloat):Void {
 		if (waitTimeLeft > 0) {
-			if (Kala.timingUnit == TimeUnit.FRAME) {
+			if (Kala.frameTiming) {
 				waitTimeLeft--;
 			} else {
 				waitTimeLeft -= Std.int(delta * 1000);
@@ -473,7 +473,7 @@ class TweenTask {
 	}
 	
 	function update(delta:FastFloat):Bool {
-		if (Kala.timingUnit == TimeUnit.FRAME) {
+		if (Kala.frameTiming) {
 			elapsed++;
 		} else {
 			elapsed += Std.int(delta * 1000);

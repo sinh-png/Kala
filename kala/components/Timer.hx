@@ -2,7 +2,6 @@ package kala.components;
 
 import kala.components.tween.Ease.EaseFunction;
 import kala.components.tween.Tween;
-import kala.Kala.TimeUnit;
 import kala.components.Component;
 import kala.objects.Object;
 import kala.util.types.Pair;
@@ -79,7 +78,7 @@ class Timer extends Component<Object> {
 	
 	function update(obj:Object, delta:FastFloat):Void {
 		var elapsed  = 1;
-		if (Kala.timingUnit == TimeUnit.MILLISECOND) {
+		if (!Kala.frameTiming) {
 			elapsed  = Std.int(delta * 1000);
 		}
 

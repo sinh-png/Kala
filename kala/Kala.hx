@@ -36,10 +36,9 @@ class Kala {
 	public static var fps(default, null):UInt;
 	
 	/**
-	 * The unit used for timing. 
-	 * DEFAULT: FRAME
+	 * If true, use frames as timing unit otherwise use milliseconds.
 	 */
-	public static var timingUnit:TimeUnit = TimeUnit.FRAME;
+	public static var frameTiming:Bool = true;
 	
 	public static var width(default, null):Int = 0;
 	public static var height(default, null):Int = 0;
@@ -154,9 +153,4 @@ class Kala {
 		return defaultFont = value;
 	}
 
-}
-
-enum TimeUnit {
-	FRAME;
-	MILLISECOND;
 }
