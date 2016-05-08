@@ -56,13 +56,26 @@ class Kala {
 	 */
 	public static var deltaTiming:Bool = false;
 
+	/**
+	 * The current screen width.
+	 */
 	public static var width(default, null):Int = 0;
+	
+	/**
+	 * The current screen height.
+	 */
 	public static var height(default, null):Int = 0;
 
 	public static var antiAliasingSamples(default, null):UInt;
 	
+	/**
+	 * Background color.
+	 */
 	public static var bgColor:Color = 0xff000000;
 	
+	/**
+	 * Default font used for text rendering.
+	 */
 	public static var defaultFont(default, set):Font;
 	
 	//
