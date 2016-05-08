@@ -36,17 +36,29 @@ class Kala {
 	public static var fps(default, null):UInt;
 	
 	/**
+	 * The last calculated elapsed time of update loop in seconds.
+	 */
+	public static var elapsedTime:FastFloat = 0;
+	
+	/**
+	 * The elapsed time of update loop in seconds when the game runs in perfect framerate.
+	 */
+	public static var perfectElapsedTime:FastFloat;
+	 
+	/**
+	 * The last calculated delta / elapsed time of update loop in milliseconds.
+	 */
+	public static var delta:Int = 0;
+	
+	/**
 	 * If true, use milliseconds as timing unit otherwise use frames.
+	 * DEFAULT: false
 	 */
 	public static var deltaTiming:Bool = false;
-	public static var deltaFunction:Int->FastFloat->FastFloat;
-	
+
 	public static var width(default, null):Int = 0;
 	public static var height(default, null):Int = 0;
-	
-	public static var screenWidth(default, null):Int = 0;
-	public static var screenHeight(default, null):Int = 0;
-	
+
 	public static var antiAliasingSamples(default, null):UInt;
 	
 	public static var bgColor:Color = 0xff000000;
@@ -62,14 +74,14 @@ class Kala {
 	 * Start the game.
 	 * 
 	 * @param	title			The windows title.
-	 * @param	screenWidth		The width of the game window / screen.
-	 * @param	screenHeight	The height of the game window / screen.
+	 * @param	width			The width of the game window / screen.
+	 * @param	height			The height of the game window / screen.
 	 * @param 	updateRate		How many times the game will be updated per second.
 	 * @param	loadAllAssets	If true, load all assets.
 	 */
 	public static function start(
 		?title:String = "Hello!",
-		?windowWidth:UInt = 800, ?windowHeight:UInt = 600,
+		?screenWidth:UInt = 800, ?screenHeight:UInt = 600,
 		?antiAliasingSamples:UInt = 1,
 		?updateRate:UInt = 60,
 		?loadAllAssets:Bool = true
@@ -96,6 +108,13 @@ class Kala {
 		);
 	}
 	
+	/**
+	 * Return a new value relative to the current game framerate.
+	 */
+	public static function applyDelta(value:FastFloat):FastFloat {
+		return elapsedTime / perfectElapsedTime * value;
+	}
+	
 	static function startWorld(updateRate:UInt):Void {
 		Keyboard.init();
 		Mouse.init();
@@ -105,8 +124,8 @@ class Kala {
 	}
 	
 	static function renderWorld(framebuffer:Framebuffer):Void {
-		screenWidth = framebuffer.width;
-		screenHeight = framebuffer.height;
+		width = framebuffer.width;
+		height = framebuffer.height;
 		
 		framebuffer.g2.begin(true, bgColor);
 		
@@ -121,10 +140,10 @@ class Kala {
 	
 	static function updateWorld():Void {
 		var time = Scheduler.time();
-		var delta = time - _lastUpdateTime;
+		elapsedTime = time - _lastUpdateTime;
 		_lastUpdateTime = time;
 		
-		fps = Math.round(1 / delta);
+		fps = Math.round(1 / elapsedTime);
 		
 		//Keyboard.release();
 		Mouse.release();
@@ -132,18 +151,20 @@ class Kala {
 		//Keyboard.register();
 		Mouse.register();
 		
-		delta = Std.int(delta * 1000);
+		delta = Std.int(elapsedTime * 1000);
 		world.callUpdate(delta);
 		Keyboard.update(delta);
 	}
 	
 	static function set_updateRate(value:UInt):UInt {
+		perfectElapsedTime = 1 / value;
+		
 		if (_updateTaskID != null) {
 			Scheduler.removeTimeTask(_updateTaskID);
 		}
 		
-		Scheduler.addTimeTask(updateWorld, 0, 1 / value);
-		
+		_updateTaskID = Scheduler.addTimeTask(updateWorld, 0, 1 / value);
+
 		return updateRate = value;
 	}
 	
