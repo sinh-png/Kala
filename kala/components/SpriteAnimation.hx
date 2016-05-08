@@ -199,12 +199,12 @@ class SpriteAnimation extends Component<Sprite> {
 		for (key in _animations.keys()) _animations.remove(key);
 	}
 	
-	function update(obj:Object, delta:FastFloat):Void {
+	function update(obj:Object, delta:Int):Void {
 		if (anim != null && anim.delay > -1) {
 			if (Kala.frameTiming) {
 				_timeLeft--;
 			} else {
-				_timeLeft -= Std.int(delta * 1000);
+				_timeLeft -= delta;
 			}
 			
 			if (_timeLeft <= 0) {

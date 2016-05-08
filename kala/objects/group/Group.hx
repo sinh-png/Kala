@@ -60,7 +60,7 @@ class Group<T:Object> extends Object implements IGroup {
 		_views = null;
 	}
 	
-	override public function update(delta:FastFloat):Void {
+	override public function update(delta:Int):Void {
 		var removedIndices = new Array<Int>();
 		var child:T;
 

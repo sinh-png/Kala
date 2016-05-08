@@ -49,7 +49,7 @@ class Tween extends Component<Object> {
 		return TweenTimeline.get().init(this, target, ease, onTweenUpdateCB);
 	}
 	
-	function update(obj:Object, delta:FastFloat):Void {
+	function update(obj:Object, delta:Int):Void {
 		for (tween in _tweens) {
 			tween.update(delta);
 		}
@@ -252,12 +252,12 @@ class TweenTimeline {
 		return this;
 	}
 	
-	function update(delta:FastFloat):Void {
+	function update(delta:Int):Void {
 		if (waitTimeLeft > 0) {
 			if (Kala.frameTiming) {
 				waitTimeLeft--;
 			} else {
-				waitTimeLeft -= Std.int(delta * 1000);
+				waitTimeLeft -= delta;
 			}
 			
 			if (waitTimeLeft <= 0) nextNode();
@@ -472,11 +472,11 @@ class TweenTask {
 		elapsed = 0;
 	}
 	
-	function update(delta:FastFloat):Bool {
+	function update(delta:Int):Bool {
 		if (Kala.frameTiming) {
 			elapsed++;
 		} else {
-			elapsed += Std.int(delta * 1000);
+			elapsed += delta;
 		}
 		
 		percent = elapsed /  duration;

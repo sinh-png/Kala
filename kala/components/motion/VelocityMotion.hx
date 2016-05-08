@@ -45,7 +45,7 @@ class VelocityMotion extends Component<Object> {
 		super.remove();
 	}
 	
-	function update(obj:Object, delta:FastFloat):Void {
+	function update(obj:Object, delta:Int):Void {
 		if (accel.x != 0) velocity.x += accel.x;
 		if (accel.y != 0) velocity.y += accel.y;
 		

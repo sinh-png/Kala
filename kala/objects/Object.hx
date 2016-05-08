@@ -70,8 +70,8 @@ interface IObject {
 	public var onDestroy:CallbackHandle<Object->Bool->Void>;
 	public var onReset:CallbackHandle<Object->Bool->Void>;
 	
-	public var onPreUpdate:CallbackHandle<Object->FastFloat->Bool>;
-	public var onPostUpdate:CallbackHandle<Object->FastFloat->Void>;
+	public var onPreUpdate:CallbackHandle<Object->Int->Bool>;
+	public var onPostUpdate:CallbackHandle<Object->Int->Void>;
 	
 	public var onPreDraw:CallbackHandle<Object->DrawingData->Canvas->Bool>;
 	public var onPostDraw:CallbackHandle<Object->DrawingData->Canvas->Void>;
@@ -103,7 +103,7 @@ interface IObject {
 	public function reset(componentsReset:Bool = false):Void;
 	public function destroy(componentsDestroy:Bool = true):Void;
 	public function deepReset(componentsDeepReset:Bool = true):Void;
-	public function update(delta:FastFloat):Void;
+	public function update(delta:Int):Void;
 	public function draw(data:DrawingData, canvas:Canvas):Void;
 	public function drawBuffer(data:DrawingData, canvas:Canvas):Void;
 	public function isVisible():Bool;
@@ -191,8 +191,8 @@ class Object extends EventHandle implements IObject {
 	public var onDestroy:CallbackHandle<Object->Bool->Void>;
 	public var onReset:CallbackHandle<Object->Bool->Void>;
 	
-	public var onPreUpdate:CallbackHandle<Object->FastFloat->Bool>;
-	public var onPostUpdate:CallbackHandle<Object->FastFloat->Void>;
+	public var onPreUpdate:CallbackHandle<Object->Int->Bool>;
+	public var onPostUpdate:CallbackHandle<Object->Int->Void>;
 	
 	public var onPreDraw:CallbackHandle<Object->DrawingData->Canvas->Bool>;
 	public var onPostDraw:CallbackHandle<Object->DrawingData->Canvas->Void>;
@@ -225,8 +225,8 @@ class Object extends EventHandle implements IObject {
 		onDestroy = addCBHandle(new CallbackHandle<Object->Bool->Void>());
 		onReset = addCBHandle(new CallbackHandle<Object->Bool->Void>());
 		
-		onPreUpdate = addCBHandle(new CallbackHandle<Object->FastFloat->Bool>());
-		onPostUpdate = addCBHandle(new CallbackHandle<Object->FastFloat->Void>());
+		onPreUpdate = addCBHandle(new CallbackHandle<Object->Int->Bool>());
+		onPostUpdate = addCBHandle(new CallbackHandle<Object->Int->Void>());
 		
 		onPreDraw = addCBHandle(new CallbackHandle<Object->DrawingData->Canvas->Bool>());
 		onPostDraw = addCBHandle(new CallbackHandle<Object->DrawingData->Canvas->Void>());
@@ -321,7 +321,7 @@ class Object extends EventHandle implements IObject {
 		removefromGroups();
 	}
 	
-	public function update(delta:FastFloat):Void {
+	public function update(delta:Int):Void {
 
 	}
 	
@@ -495,7 +495,7 @@ class Object extends EventHandle implements IObject {
 		}
 	}
 	
-	inline function callUpdate(?caller:Object, delta:FastFloat):Void {
+	inline function callUpdate(?caller:Object, delta:Int):Void {
 		_crGroup = caller;
 		
 		execFirstFrame();

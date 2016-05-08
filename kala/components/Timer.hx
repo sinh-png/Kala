@@ -76,10 +76,10 @@ class Timer extends Component<Object> {
 		return task;
 	}
 	
-	function update(obj:Object, delta:FastFloat):Void {
+	function update(obj:Object, delta:Int):Void {
 		var elapsed  = 1;
 		if (!Kala.frameTiming) {
-			elapsed  = Std.int(delta * 1000);
+			elapsed = delta;
 		}
 
 		for (cdID in _coolingDownIDs.copy()) {
@@ -170,7 +170,7 @@ class TimerEx extends Timer {
 		_tween.object = null;
 	}
 	
-	override function update(obj:Object, delta:FastFloat):Void {
+	override function update(obj:Object, delta:Int):Void {
 		super.update(obj, delta);
 		_tween.update(obj, delta);
 	}

@@ -144,6 +144,7 @@ class Debugger {
 	private var _cmdFieldVisible:Bool = false;
 	private var _cmdCursorVisible:Bool = true;
 	private var _cmdCursorTimeTask:Int;
+	private var _cmdCursorPos:Int = 0;
 	private var _cmdFieldInFocus:Bool = false;
 	
 	private var _backspacePressingTime:Int = 0;
@@ -167,18 +168,7 @@ class Debugger {
 	private var _consoleOutputLines:Array<Pair<String, UInt>> = new Array<Pair<String, UInt>>();
 	
 	public function new() {
-		Keyboard.onKeyDown.notifyPrivateCB(this, function(key:Key) {
-			switch(key) {
-				case CHAR(c): 
-					if (c == '`') {
-						if (!enable) enable = true;
-						else {
-							
-						}
-					}
-				default:
-			}
-		});
+		Keyboard.onKeyDown.notifyPrivateCB(this, onKeyboardInput);
 		
 		Kala.world.onFirstFrame.notifyPrivateCB(this, function(_) {
 			_contentBuffer = Image.createRenderTarget(Std.int(rect.width - 15), Std.int(rect.height - 15 - 24 * 2));
@@ -497,10 +487,12 @@ class Debugger {
 		while (g.font.width(g.fontSize, s) > rect.width) s = s.substr(++i);
 		g.drawString(s, 5, rect.height - 24 + (24 - g.font.height(g.fontSize)) / 2);
 		
+		// Draw the cursor.
 		if (_cmdFieldInFocus && _cmdCursorVisible) {
-			g.fillRect(5 + g.font.width(g.fontSize, s), rect.height - 20, 2, 16);
+			g.fillRect(5 + g.font.width(g.fontSize, s.substr(0, _cmdCursorPos)), rect.height - 20, 2, 16);
 		}
 		
+		//
 		if (Keyboard.pressed.BACKSPACE) {
 			_backspacePressingTime++;
 			if (_backspacePressingTime > 10 && _command.length > 0) {
@@ -510,32 +502,7 @@ class Debugger {
 			_backspacePressingTime = 0;
 		}
 	}
-	
-	function onCMDIyping(key:Key):Void {
-		if (!_cmdFieldInFocus || state == MINIMIZED) return;
-		
-		switch(key) {
-			case CHAR(c):
-				if (c == '`') return;
-				_command += c;
-			
-			case BACKSPACE:
-				if (_backspacePressingTime < 10 && _command.length > 0) {
-					_command = _command.substr(0, _command.length - 1);
-				}
-				
-			case ENTER:
-				execCMD(_command);
-				_command = "";
-				
-			default:
-		}
-	}
-	
-	function execCMD(command:String):Void {
-		if (command.length < 1) return;
-	}
-	
+
 	function drawConsole(rect:Rect, g:Graphics):Void {
 		drawCMDField(rect, g);
 		
@@ -568,6 +535,53 @@ class Debugger {
 		framebufferGraphics.begin(false);
 	}
 	
+	function execCMD(command:String):Void {
+		if (command.length < 1) return;
+	}
+	
+	function onKeyboardInput(key:Key):Void {
+		switch(key) {
+			case CHAR(c): 
+				if (c == '`') {
+					enable = !enable;
+					return;
+				}
+				
+			default:
+		}
+		
+		if (tab == CONSOLE) onConsoleInput(key);
+	}
+	
+	function onConsoleInput(key:Key):Void {
+		if (!_cmdFieldInFocus || state == MINIMIZED) return;
+		
+		switch(key) {
+			case CHAR(c):
+				_command += c;
+				_cmdCursorPos++;
+			
+			case BACKSPACE:
+				if (_command.length > 0 && _backspacePressingTime < 10 && _command.length > 0) {
+					_command = _command.substr(0, _command.length - 1);
+					_cmdCursorPos--;
+				}
+				
+			case LEFT:
+				if (_cmdCursorPos > 0) _cmdCursorPos--;
+				
+			case RIGHT:
+				if (_cmdCursorPos < _command.length) _cmdCursorPos++;
+
+			case ENTER:
+				execCMD(_command);
+				_command = "";
+				_cmdCursorPos = 0;
+				
+			default:
+		}
+	}
+	
 	inline function getLineHeight():FastFloat {
 		return _font.height(fontSize) + 4;
 	}
@@ -578,13 +592,10 @@ class Debugger {
 				_cmdCursorTimeTask = Scheduler.addTimeTask(function() {
 					_cmdCursorVisible = !_cmdCursorVisible;
 				}, 0, 0.5);
-				
-				Keyboard.onKeyDown.notifyPrivateCB(this, onCMDIyping);
 			}
 		} else {
 			if (enable) {
 				Scheduler.removeTimeTask(_cmdCursorTimeTask);
-				Keyboard.onKeyDown.remove(onCMDIyping);
 			}
 		}
 		

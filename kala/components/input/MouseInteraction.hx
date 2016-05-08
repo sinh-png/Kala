@@ -99,7 +99,7 @@ class MouseInteraction extends Component<Object> {
 		return this;
 	}
 	
-	function update(obj:Object, delta:FastFloat):Void {
+	function update(obj:Object, delta:Int):Void {
 		var mx = Mouse.x;
 		var my = Mouse.y;
 	

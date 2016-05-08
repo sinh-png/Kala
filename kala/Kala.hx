@@ -125,13 +125,15 @@ class Kala {
 		
 		fps = Math.round(1 / delta);
 		
-		Keyboard.release();
+		//Keyboard.release();
 		Mouse.release();
 		
-		Keyboard.register();
+		//Keyboard.register();
 		Mouse.register();
 		
+		delta = Std.int(delta * 1000);
 		world.callUpdate(delta);
+		Keyboard.update(delta);
 	}
 	
 	static function set_updateRate(value:UInt):UInt {
