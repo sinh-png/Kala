@@ -254,10 +254,10 @@ class TweenTimeline {
 	
 	function update(delta:Int):Void {
 		if (waitTimeLeft > 0) {
-			if (Kala.frameTiming) {
-				waitTimeLeft--;
-			} else {
+			if (Kala.deltaTiming) {
 				waitTimeLeft -= delta;
+			} else {
+				waitTimeLeft--;
 			}
 			
 			if (waitTimeLeft <= 0) nextNode();
@@ -473,10 +473,10 @@ class TweenTask {
 	}
 	
 	function update(delta:Int):Bool {
-		if (Kala.frameTiming) {
-			elapsed++;
-		} else {
+		if (Kala.deltaTiming) {
 			elapsed += delta;
+		} else {
+			elapsed++;
 		}
 		
 		percent = elapsed /  duration;

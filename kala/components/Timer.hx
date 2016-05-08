@@ -78,7 +78,7 @@ class Timer extends Component<Object> {
 	
 	function update(obj:Object, delta:Int):Void {
 		var elapsed  = 1;
-		if (!Kala.frameTiming) {
+		if (Kala.deltaTiming) {
 			elapsed = delta;
 		}
 

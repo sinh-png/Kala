@@ -36,9 +36,10 @@ class Kala {
 	public static var fps(default, null):UInt;
 	
 	/**
-	 * If true, use frames as timing unit otherwise use milliseconds.
+	 * If true, use milliseconds as timing unit otherwise use frames.
 	 */
-	public static var frameTiming:Bool = true;
+	public static var deltaTiming:Bool = false;
+	public static var deltaFunction:Int->FastFloat->FastFloat;
 	
 	public static var width(default, null):Int = 0;
 	public static var height(default, null):Int = 0;
