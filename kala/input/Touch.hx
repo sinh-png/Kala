@@ -17,7 +17,8 @@ class Touch {
 	public static var touches(default, never):TouchHandle = new TouchHandle();
 	
 	static function init():Void {
-		Surface.get().notify(touchStartListener, touchEndListener, touchMoveListener);
+		var surface = Surface.get();
+		if (surface != null) surface.notify(touchStartListener, touchEndListener, touchMoveListener);
 	}
 	
 	static function touchStartListener(id:Int, x:Int, y:Int):Void {
