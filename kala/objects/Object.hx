@@ -286,7 +286,6 @@ class Object extends EventHandle implements IObject {
 		//
 		
 		unloadGraphics();
-		while (_shaders.length > 0) _shaders.pop();
 		_shaders = null;
 		
 		//

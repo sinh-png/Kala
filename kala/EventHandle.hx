@@ -50,7 +50,6 @@ class CallbackHandle<T> implements ICallbackHandle {
 	}
 	
 	function destroy():Void {
-		removeAll();
 		_callbacks = null;
 	}
 	

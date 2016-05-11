@@ -52,11 +52,7 @@ class Group<T:Object> extends Object implements IGroup {
 	
 	override public function destroy(componentsDestroy:Bool = true):Void {
 		super.destroy(componentsDestroy);
-		
-		while (_children.length > 0 ) _children.pop();
 		_children = null;
-		
-		while (_views.length > 0) _views.pop();
 		_views = null;
 	}
 	
@@ -87,6 +83,8 @@ class Group<T:Object> extends Object implements IGroup {
 			}
 
 			if (view.alive && view.active) view.callUpdate(this, delta);
+			
+			i++;
 		}
 	}
 	

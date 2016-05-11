@@ -140,10 +140,6 @@ class TweenTimeline {
 		
 		node = null;
 		
-		while (nodes.length > 0) nodes.pop();
-		while (loopsLeft.length > 0) loopsLeft.pop();
-		while (loopStartPos.length > 0) loopStartPos.pop();
-		
 		nodes = null;
 		loopsLeft = null;
 		loopStartPos = null;
