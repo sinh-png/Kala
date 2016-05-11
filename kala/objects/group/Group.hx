@@ -61,40 +61,32 @@ class Group<T:Object> extends Object implements IGroup {
 	}
 	
 	override public function update(delta:Int):Void {
-		var removedIndices = new Array<Int>();
+		var i = 0;
 		var child:T;
-
-		for (index in 0..._children.length) {
-			child = _children[index];
+		while (i < _children.length) {
+			child = _children[i];
 
 			if (child == null) {
-				removedIndices.push(index);
+				_children.splice(i, 1);
 				continue;
 			}
 			
 			if (child.alive && child.active) child.callUpdate(this, delta);
+			
+			i++;
 		}
 		
-		for (index in removedIndices) {
-			_children.splice(index, 1);
-		}
-		
-		removedIndices = new Array<Int>();
+		i = 0;
 		var view:View;
-		
-		for (index in 0..._views.length) {
-			view = _views[index];
+		while (i < _views.length) {
+			view = _views[i];
 			
 			if (view == null) {
-				removedIndices.push(index);
+				_views.splice(i, 1);
 				continue;
 			}
 
 			if (view.alive && view.active) view.callUpdate(this, delta);
-		}
-		
-		for (index in removedIndices) {
-			_views.splice(index, 1);
 		}
 	}
 	
