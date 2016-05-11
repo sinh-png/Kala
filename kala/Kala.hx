@@ -3,6 +3,7 @@ package kala;
 import kala.Assets;
 import kala.input.Keyboard;
 import kala.input.Mouse;
+import kala.input.Touch;
 import kala.math.color.Color;
 import kala.objects.Object;
 import kala.objects.group.Group;
@@ -12,9 +13,6 @@ import kha.Framebuffer;
 import kha.Scheduler;
 import kha.System;
 
-@:access(kala.objects.Object)
-@:access(kala.input.Keyboard)
-@:access(kala.input.Mouse)
 class Kala {
 	
 	/**
@@ -129,8 +127,17 @@ class Kala {
 	}
 
 	static function startWorld(updateRate:UInt):Void {
+		#if (debug || kala_debug || kala_keyboard)
 		Keyboard.init();
+		#end
+		
+		#if (debug || kala_debug || kala_mouse)
 		Mouse.init();
+		#end
+		
+		#if kala_touch
+		Touch.init();
+		#end
 	
 		System.notifyOnRender(renderWorld);
 		Kala.updateRate = updateRate;
@@ -159,8 +166,19 @@ class Kala {
 		fps = Math.round(1 / elapsedTime);
 
 		delta = Std.int(elapsedTime * 1000);
+		
+		#if (debug || kala_debug || kala_keyboard)
 		Keyboard.update(delta);
+		#end
+		
+		#if (debug || kala_debug || kala_mouse)
 		Mouse.update(delta);
+		#end
+		
+		#if kala_touch
+		Touch.update(delta);
+		#end
+	
 		world.callUpdate(delta);
 	}
 	

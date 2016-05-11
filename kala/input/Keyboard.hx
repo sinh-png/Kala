@@ -1,10 +1,13 @@
 package kala.input;
 
+#if (debug || kala_debug || kala_keyboard)
+
 import kala.input.ButtonInputHandle;
 import kala.EventHandle.CallbackHandle;
 import kha.FastFloat;
 import kha.Key;
 
+@:allow(kala.Kala)
 @:access(kala.CallbackHandle)
 @:access(kala.input.ButtonInput)
 class Keyboard {
@@ -349,3 +352,5 @@ enum Key {
 	CHAR(char:String);
 	
 }
+
+#end

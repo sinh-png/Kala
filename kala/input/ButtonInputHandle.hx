@@ -1,7 +1,6 @@
 package kala.input;
 
 import kala.EventHandle.CallbackHandle;
-import kala.input.Keyboard.Key;
 import kha.FastFloat;
 
 class ButtonInputHandle<T:EnumValue> {

@@ -1,5 +1,7 @@
 package kala.components.input;
 
+#if (debug || kala_debug || kala_mouse)
+
 import kala.components.collision.Collider;
 import kala.components.collision.CollisionShape;
 import kala.components.Component;
@@ -138,3 +140,5 @@ class MouseInteraction extends Component<Object> {
 	}
 	
 }
+
+#end

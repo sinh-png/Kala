@@ -113,6 +113,8 @@ interface IObject {
 	
 }
 
+
+@:allow(kala.Kala)
 @:allow(kala.components.Component)
 @:access(kala.objects.group.IGroup)
 @:access(kala.math.color.Color)

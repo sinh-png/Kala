@@ -1,10 +1,13 @@
 package kala.input;
 
+#if (debug || kala_debug || kala_mouse)
+
 import kala.EventHandle.CallbackHandle;
 import kala.input.ButtonInputHandle;
 import kala.math.Rect;
 import kha.FastFloat;
 
+@:allow(kala.Kala)
 @:access(kala.CallbackHandle)
 @:access(kala.input.ButtonInput)
 class Mouse {
@@ -154,3 +157,5 @@ enum MouseButton {
 	MIDDLE;
 	
 }
+
+#end
