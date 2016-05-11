@@ -32,7 +32,7 @@ class Main {
 				view.viewPos.x = Mouse.x;
 				view.viewPos.y = Mouse.y;
 				
-				if (Mouse.pressed.LEFT) view.rotation.angle += 1;
+				if (Mouse.LEFT.pressed) view.rotation.angle += 1;
 				if (Mouse.pressed.RIGHT) view.skew.x += 1;
 			});
 			

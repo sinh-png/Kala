@@ -1,57 +1,338 @@
 package kala.input;
 
+import kala.input.ButtonInputHandle;
 import kala.EventHandle.CallbackHandle;
+import kha.FastFloat;
+import kha.Key;
 
-@:access(kala.input.KeyStateHandle)
+@:access(kala.CallbackHandle)
+@:access(kala.input.ButtonInput)
 class Keyboard {
 	
-	public static var justPressed:KeyStateHandle = new KeyStateHandle();
-	public static var pressed:KeyStateHandle = new KeyStateHandle();
-	public static var justReleased:KeyStateHandle = new KeyStateHandle();
-	
-	public static var onKeyDown(default, never):CallbackHandle<Key->Void> = new CallbackHandle<Key->Void>();
-	public static var onKeyUp(default, never):CallbackHandle<Key->Void> = new CallbackHandle<Key->Void>();
+	public static var onStartPressing(default, never):CallbackHandle<Key->Void> = new CallbackHandle<Key->Void>();
+	public static var onRelease(default, never):CallbackHandle<Key->Void> = new CallbackHandle<Key->Void>();
 
-	static function init():Void {
-		kha.input.Keyboard.get().notify(onDown, onUp);
+	//
+	
+	public static var ANY(default, null):ButtonInput<Key>;
+	
+	public static var LEFT(default, null):ButtonInput<Key>;
+	public static var RIGHT(default, null):ButtonInput<Key>;
+	public static var UP(default, null):ButtonInput<Key>;
+	public static var DOWN(default, null):ButtonInput<Key>;
+	
+	public static var ESC(default, null):ButtonInput<Key>;
+	public static var TAB(default, null):ButtonInput<Key>;
+	public static var SHIFT(default, null):ButtonInput<Key>;
+	public static var CTRL(default, null):ButtonInput<Key>;
+	public static var ALT(default, null):ButtonInput<Key>;
+	public static var BACKSPACE(default, null):ButtonInput<Key>;
+	public static var ENTER(default, null):ButtonInput<Key>;
+	public static var DEL(default, null):ButtonInput<Key>;
+	public static var BACK(default, null):ButtonInput<Key>;
+	
+	public static var SPACE(default, null):ButtonInput<Key>;
+	
+	public static var A(default, null):ButtonInput<Key>;
+	public static var B(default, null):ButtonInput<Key>;
+	public static var C(default, null):ButtonInput<Key>;
+	public static var D(default, null):ButtonInput<Key>;
+	public static var E(default, null):ButtonInput<Key>;
+	public static var F(default, null):ButtonInput<Key>;
+	public static var G(default, null):ButtonInput<Key>;
+	public static var H(default, null):ButtonInput<Key>;
+	public static var I(default, null):ButtonInput<Key>;
+	public static var J(default, null):ButtonInput<Key>;
+	public static var K(default, null):ButtonInput<Key>;
+	public static var L(default, null):ButtonInput<Key>;
+	public static var M(default, null):ButtonInput<Key>;
+	public static var N(default, null):ButtonInput<Key>;
+	public static var O(default, null):ButtonInput<Key>;
+	public static var P(default, null):ButtonInput<Key>;
+	public static var Q(default, null):ButtonInput<Key>;
+	public static var R(default, null):ButtonInput<Key>;
+	public static var S(default, null):ButtonInput<Key>;
+	public static var T(default, null):ButtonInput<Key>;
+	public static var U(default, null):ButtonInput<Key>;
+	public static var V(default, null):ButtonInput<Key>;
+	public static var W(default, null):ButtonInput<Key>;
+	public static var X(default, null):ButtonInput<Key>;
+	public static var Y(default, null):ButtonInput<Key>;
+	public static var Z(default, null):ButtonInput<Key>;
+	
+	public static var ONE(default, null):ButtonInput<Key>;
+	public static var TWO(default, null):ButtonInput<Key>;
+	public static var THREE(default, null):ButtonInput<Key>;
+	public static var FOUR(default, null):ButtonInput<Key>;
+	public static var FIVE(default, null):ButtonInput<Key>;
+	public static var SIX(default, null):ButtonInput<Key>;
+	public static var SEVEN(default, null):ButtonInput<Key>;
+	public static var EIGHT(default, null):ButtonInput<Key>;
+	public static var NINE(default, null):ButtonInput<Key>;
+	public static var ZERO(default, null):ButtonInput<Key>;
+	
+	public static var BACKQUOTE(default, null):ButtonInput<Key>;
+	
+	//
+	
+	private static var _handle:ButtonInputHandle<Key>;
+	
+	//
+	
+	public static inline function checkAnyPressed(buttons:Array<Key>):Bool {
+		return _handle.checkAnyPressed(buttons);
 	}
 	
-	static function onDown(key:kha.Key, char:String):Void {
-		var k = khaKeyToKey(key, char);
-		
-		pressed.register(k);
-		justPressed.capture(k);
-		
-		for (callback in onKeyDown) callback.cbFunction(k);
+	public static inline function checkAnyJustPressed(buttons:Array<Key>):Bool {
+		return _handle.checkAnyJustPressed(buttons);
 	}
 	
-	static function onUp(key:kha.Key, char:String):Void {
-		var k = khaKeyToKey(key, char);
-		
-		pressed.releaseRegistered(k);
-		justReleased.capture(k);
-		
-		for (callback in onKeyUp) callback.cbFunction(k);
+	public static inline function checkAnyJustReleased(buttons:Array<Key>):Bool {
+		return _handle.checkAnyJustReleased(buttons);
 	}
 	
-	static inline function register():Void {
-		justPressed.registerAllCaptured();
-		justReleased.registerAllCaptured();
+	public static inline function checkAllPressed(buttons:Array<Key>):Bool {
+		return _handle.checkAllPressed(buttons);
 	}
 	
-	static inline function release():Void {
-		justPressed.releaseAllRegistered();
-		justReleased.releaseAllRegistered();
+	public static inline function checkAllJustPressed(buttons:Array<Key>):Bool {
+		return _handle.checkAllJustPressed(buttons);
 	}
 	
-	static function khaKeyToKey(key:kha.Key, char:String):Key {
+	public static inline function checkAllJustReleased(buttons:Array<Key>):Bool {
+		return _handle.checkAllJustReleased(buttons);
+	}
+	
+	//
+	
+	/*
+	static inline function khaKeyToKey(key:kha.Key, char:String):Key {
 		return Key.createByName(key.getName(), char.length == 0 ? null : [char]);
+	}
+	*/
+	
+	static function init():Void {
+		kha.input.Keyboard.get().notify(keyDownListener, keyUpListener);
+		
+		_handle = new ButtonInputHandle<Key>(onStartPressing, onRelease);
+		
+		ANY 		= _handle.addButton(Key.ANY);
+		
+		LEFT 		= _handle.addButton(Key.LEFT);
+		RIGHT 		= _handle.addButton(Key.RIGHT);
+		UP 			= _handle.addButton(Key.UP);
+		DOWN 		= _handle.addButton(Key.DOWN);
+		
+		ESC 		= _handle.addButton(Key.ESC);
+		TAB 		= _handle.addButton(Key.TAB);
+		SHIFT 		= _handle.addButton(Key.SHIFT);
+		CTRL 		= _handle.addButton(Key.CTRL);
+		ALT 		= _handle.addButton(Key.ALT);
+		BACKSPACE 	= _handle.addButton(Key.BACKSPACE);
+		ENTER 		= _handle.addButton(Key.ENTER);
+		DEL 		= _handle.addButton(Key.DEL);
+		BACK 		= _handle.addButton(Key.BACK);
+		
+		SPACE 		= _handle.addButton(Key.CHAR(' '));
+		
+		A 			= _handle.addButton(Key.CHAR('a'));
+		B 			= _handle.addButton(Key.CHAR('b'));
+		C 			= _handle.addButton(Key.CHAR('c'));
+		D 			= _handle.addButton(Key.CHAR('d'));
+		E 			= _handle.addButton(Key.CHAR('e'));
+		F 			= _handle.addButton(Key.CHAR('f'));
+		G 			= _handle.addButton(Key.CHAR('g'));
+		H 			= _handle.addButton(Key.CHAR('h'));
+		I 			= _handle.addButton(Key.CHAR('i'));
+		J 			= _handle.addButton(Key.CHAR('j'));
+		K 			= _handle.addButton(Key.CHAR('k'));
+		L 			= _handle.addButton(Key.CHAR('l'));
+		M 			= _handle.addButton(Key.CHAR('m'));
+		N 			= _handle.addButton(Key.CHAR('n'));
+		O 			= _handle.addButton(Key.CHAR('o'));
+		P 			= _handle.addButton(Key.CHAR('p'));
+		Q 			= _handle.addButton(Key.CHAR('q'));
+		R 			= _handle.addButton(Key.CHAR('r'));
+		S 			= _handle.addButton(Key.CHAR('s'));
+		T 			= _handle.addButton(Key.CHAR('t'));
+		U 			= _handle.addButton(Key.CHAR('u'));
+		V 			= _handle.addButton(Key.CHAR('v'));
+		W 			= _handle.addButton(Key.CHAR('w'));
+		X 			= _handle.addButton(Key.CHAR('x'));
+		Y 			= _handle.addButton(Key.CHAR('y'));
+		Z 			= _handle.addButton(Key.CHAR('z'));
+		
+		ONE 		= _handle.addButton(Key.CHAR('1'));
+		TWO 		= _handle.addButton(Key.CHAR('2'));
+		THREE 		= _handle.addButton(Key.CHAR('3'));
+		FOUR 		= _handle.addButton(Key.CHAR('4'));
+		FIVE 		= _handle.addButton(Key.CHAR('5'));
+		SIX 		= _handle.addButton(Key.CHAR('6'));
+		SEVEN 		= _handle.addButton(Key.CHAR('7'));
+		EIGHT 		= _handle.addButton(Key.CHAR('8'));
+		NINE 		= _handle.addButton(Key.CHAR('9'));
+		ZERO 		= _handle.addButton(Key.CHAR('0'));
+		
+		#if js 
+		BACKQUOTE 	= _handle.addButton(Key.CHAR('à'));
+		#else
+		BACKQUOTE 	= _handle.addButton(Key.CHAR('`'));
+		#end
+	}
+	
+	static inline function update(delta:Int):Void {
+		_handle.update(delta);
+	}
+	
+	static function keyDownListener(key:kha.Key, char:String):Void {
+		ANY.waitForRegistration();
+		
+		switch(key) {
+			case kha.Key.LEFT: 			LEFT.waitForRegistration();
+			case kha.Key.RIGHT: 		RIGHT.waitForRegistration();
+			case kha.Key.UP: 			UP.waitForRegistration();
+			case kha.Key.DOWN: 			DOWN.waitForRegistration();
+
+			case kha.Key.ESC:			ESC.waitForRegistration();
+			case kha.Key.TAB:			TAB.waitForRegistration();
+			case kha.Key.SHIFT:			SHIFT.waitForRegistration();
+			case kha.Key.CTRL:			CTRL.waitForRegistration();
+			case kha.Key.ALT:			ALT.waitForRegistration();
+			case kha.Key.BACKSPACE:		BACKSPACE.waitForRegistration();
+			case kha.Key.ENTER:			ENTER.waitForRegistration();
+			case kha.Key.DEL:			DEL.waitForRegistration();
+			case kha.Key.BACK:			BACK.waitForRegistration();
+			
+			case kha.Key.CHAR:
+				switch(char.toLowerCase()) {
+					case ' ':	SPACE.waitForRegistration();
+					
+					case 'a':	A.waitForRegistration();
+					case 'b':	B.waitForRegistration();
+					case 'c':	C.waitForRegistration();
+					case 'd':	D.waitForRegistration();
+					case 'e':	E.waitForRegistration();
+					case 'f':	F.waitForRegistration();
+					case 'g':	G.waitForRegistration();
+					case 'h':	H.waitForRegistration();
+					case 'i':	I.waitForRegistration();
+					case 'j':	J.waitForRegistration();
+					case 'k':	K.waitForRegistration();
+					case 'l':	L.waitForRegistration();
+					case 'm':	M.waitForRegistration();
+					case 'n':	N.waitForRegistration();
+					case 'o':	O.waitForRegistration();
+					case 'p':	P.waitForRegistration();
+					case 'q':	Q.waitForRegistration();
+					case 'r':	R.waitForRegistration();
+					case 's':	S.waitForRegistration();
+					case 't':	T.waitForRegistration();
+					case 'u':	U.waitForRegistration();
+					case 'v':	V.waitForRegistration();
+					case 'w':	W.waitForRegistration();
+					case 'x':	X.waitForRegistration();
+					case 'y':	Y.waitForRegistration();
+					case 'z':	Z.waitForRegistration();
+					
+					case '1':	ONE.waitForRegistration();
+					case '2':	TWO.waitForRegistration();
+					case '3':	THREE.waitForRegistration();
+					case '4':	FOUR.waitForRegistration();
+					case '5':	FIVE.waitForRegistration();
+					case '6':	SIX.waitForRegistration();
+					case '7':	SEVEN.waitForRegistration();
+					case '8':	EIGHT.waitForRegistration();
+					case '9':	NINE.waitForRegistration();
+					case '0':	ZERO.waitForRegistration();
+					
+					#if js 
+					case 'à':	BACKQUOTE.waitForRegistration();
+					#else
+					case '`':	BACKQUOTE.waitForRegistration();
+					#end
+				}
+			
+			default:
+		}
+	}
+	
+	static function keyUpListener(key:kha.Key, char:String):Void {
+		ANY.waitForReleasing();
+		
+		switch(key) {
+			case kha.Key.LEFT: 			LEFT.waitForReleasing();
+			case kha.Key.RIGHT: 		RIGHT.waitForReleasing();
+			case kha.Key.UP: 			UP.waitForReleasing();
+			case kha.Key.DOWN: 			DOWN.waitForReleasing();
+
+			case kha.Key.ESC:			ESC.waitForReleasing();
+			case kha.Key.TAB:			TAB.waitForReleasing();
+			case kha.Key.SHIFT:			SHIFT.waitForReleasing();
+			case kha.Key.CTRL:			CTRL.waitForReleasing();
+			case kha.Key.ALT:			ALT.waitForReleasing();
+			case kha.Key.BACKSPACE:		BACKSPACE.waitForReleasing();
+			case kha.Key.ENTER:			ENTER.waitForReleasing();
+			case kha.Key.DEL:			DEL.waitForReleasing();
+			case kha.Key.BACK:			BACK.waitForReleasing();
+			
+			case kha.Key.CHAR:
+				switch(char.toLowerCase()) {
+					case ' ':	SPACE.waitForReleasing();
+					
+					case 'a':	A.waitForReleasing();
+					case 'b':	B.waitForReleasing();
+					case 'c':	C.waitForReleasing();
+					case 'd':	D.waitForReleasing();
+					case 'e':	E.waitForReleasing();
+					case 'f':	F.waitForReleasing();
+					case 'g':	G.waitForReleasing();
+					case 'h':	H.waitForReleasing();
+					case 'i':	I.waitForReleasing();
+					case 'j':	J.waitForReleasing();
+					case 'k':	K.waitForReleasing();
+					case 'l':	L.waitForReleasing();
+					case 'm':	M.waitForReleasing();
+					case 'n':	N.waitForReleasing();
+					case 'o':	O.waitForReleasing();
+					case 'p':	P.waitForReleasing();
+					case 'q':	Q.waitForReleasing();
+					case 'r':	R.waitForReleasing();
+					case 's':	S.waitForReleasing();
+					case 't':	T.waitForReleasing();
+					case 'u':	U.waitForReleasing();
+					case 'v':	V.waitForReleasing();
+					case 'w':	W.waitForReleasing();
+					case 'x':	X.waitForReleasing();
+					case 'y':	Y.waitForReleasing();
+					case 'z':	Z.waitForReleasing();
+					
+					case '1':	ONE.waitForReleasing();
+					case '2':	TWO.waitForReleasing();
+					case '3':	THREE.waitForReleasing();
+					case '4':	FOUR.waitForReleasing();
+					case '5':	FIVE.waitForReleasing();
+					case '6':	SIX.waitForReleasing();
+					case '7':	SEVEN.waitForReleasing();
+					case '8':	EIGHT.waitForReleasing();
+					case '9':	NINE.waitForReleasing();
+					case '0':	ZERO.waitForReleasing();
+					
+					#if js
+					case 'à':	BACKQUOTE.waitForReleasing(); 
+					#else
+					case '`':	BACKQUOTE.waitForReleasing();
+					#end
+				}
+			
+			default:
+		}
 	}
 	
 }
 
 enum Key {
 	
+	ANY;
 	BACKSPACE;
 	TAB;
 	ENTER;
@@ -66,72 +347,5 @@ enum Key {
 	RIGHT;
 	BACK;
 	CHAR(char:String);
-	
-}
-
-class KeyStateHandle extends InputStateHandle<Key> {
-	
-	public inline function checkChar(char:String):Bool {
-		return check(CHAR(char));
-	}
-	
-	//
-	
-	public var ANY				(get, never):Bool; inline function get_ANY()			return checkAny();
-	
-	public var UP				(get, never):Bool; inline function get_UP()				return check(Key.UP);
-	public var DOWN				(get, never):Bool; inline function get_DOWN()			return check(Key.DOWN);
-	public var LEFT				(get, never):Bool; inline function get_LEFT()			return check(Key.LEFT);
-	public var RIGHT			(get, never):Bool; inline function get_RIGHT()          return check(Key.RIGHT);
-	
-	public var ESC				(get, never):Bool; inline function get_ESC()			return check(Key.ESC);
-	public var TAB				(get, never):Bool; inline function get_TAB()			return check(Key.TAB);
-	public var SHIFT			(get, never):Bool; inline function get_SHIFT()			return check(Key.SHIFT);
-	public var CTRL				(get, never):Bool; inline function get_CTRL()			return check(Key.CTRL);
-	public var ALT				(get, never):Bool; inline function get_ALT()			return check(Key.ALT);
-	public var BACKSPACE		(get, never):Bool; inline function get_BACKSPACE()		return check(Key.BACKSPACE);
-	public var ENTER			(get, never):Bool; inline function get_ENTER()			return check(Key.ENTER);
-	public var DEL				(get, never):Bool; inline function get_DEL()			return check(Key.DEL);
-	public var BACK				(get, never):Bool; inline function get_BACK()			return check(Key.BACK);
-	
-	public var SPACE			(get, never):Bool; inline function get_SPACE()			return checkChar(' ');
-	
-	public var A				(get, never):Bool; inline function get_A()				return checkChar('a');
-	public var B				(get, never):Bool; inline function get_B()				return checkChar('b');
-	public var C				(get, never):Bool; inline function get_C()				return checkChar('c');
-	public var D				(get, never):Bool; inline function get_D()				return checkChar('d');
-	public var E				(get, never):Bool; inline function get_E()				return checkChar('e');
-	public var F				(get, never):Bool; inline function get_F()				return checkChar('f');
-	public var G				(get, never):Bool; inline function get_G()				return checkChar('g');
-	public var H				(get, never):Bool; inline function get_H()				return checkChar('h');
-	public var I				(get, never):Bool; inline function get_I()				return checkChar('i');
-	public var J				(get, never):Bool; inline function get_J()				return checkChar('j');
-	public var K				(get, never):Bool; inline function get_K()				return checkChar('k');
-	public var L				(get, never):Bool; inline function get_L()				return checkChar('l');
-	public var M				(get, never):Bool; inline function get_M()				return checkChar('m');
-	public var N				(get, never):Bool; inline function get_N()				return checkChar('n');
-	public var O				(get, never):Bool; inline function get_O()				return checkChar('o');
-	public var P				(get, never):Bool; inline function get_P()				return checkChar('p');
-	public var Q				(get, never):Bool; inline function get_Q()				return checkChar('q');
-	public var R				(get, never):Bool; inline function get_R()				return checkChar('r');
-	public var S				(get, never):Bool; inline function get_S()				return checkChar('s');
-	public var T				(get, never):Bool; inline function get_T()				return checkChar('t');
-	public var U				(get, never):Bool; inline function get_U()				return checkChar('u');
-	public var V				(get, never):Bool; inline function get_V()				return checkChar('v');
-	public var W				(get, never):Bool; inline function get_W()				return checkChar('w');
-	public var X				(get, never):Bool; inline function get_X()				return checkChar('x');
-	public var Y				(get, never):Bool; inline function get_Y()				return checkChar('y');
-	public var Z				(get, never):Bool; inline function get_Z()				return checkChar('z');
-	
-	public var ZERO				(get, never):Bool; inline function get_ZERO()			return checkChar('0');
-	public var ONE				(get, never):Bool; inline function get_ONE()			return checkChar('1');
-	public var TWO				(get, never):Bool; inline function get_TWO()			return checkChar('2');
-	public var THREE			(get, never):Bool; inline function get_THREE()			return checkChar('3');
-	public var FOUR				(get, never):Bool; inline function get_FOUR()			return checkChar('4');
-	public var FIVE				(get, never):Bool; inline function get_FIVE()			return checkChar('5');
-	public var SIX				(get, never):Bool; inline function get_SIX()			return checkChar('6');
-	public var SEVEN			(get, never):Bool; inline function get_SEVEN()			return checkChar('7');
-	public var EIGHT			(get, never):Bool; inline function get_EIGHT()			return checkChar('8');
-	public var NINE				(get, never):Bool; inline function get_NINE()			return checkChar('9');
 	
 }

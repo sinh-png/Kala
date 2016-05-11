@@ -28,7 +28,7 @@ class Main {
 				rect.x = Mouse.x; 
 				rect.y = Mouse.y; 
 				
-				if (Mouse.pressed.LEFT) {
+				if (Mouse.LEFT.pressed) {
 					rect.scale.x = rect.scale.y += 0.01;
 				}
 				

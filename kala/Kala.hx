@@ -36,17 +36,17 @@ class Kala {
 	public static var fps(default, null):UInt;
 	
 	/**
-	 * The last calculated elapsed time of update loop in seconds.
+	 * delta in seconds.
 	 */
 	public static var elapsedTime:FastFloat = 0;
 	
 	/**
-	 * The elapsed time of update loop in seconds when the game runs in perfect framerate.
+	 * Elapsed time of successive frames in seconds when the game runs in perfect framerate.
 	 */
 	public static var perfectElapsedTime:FastFloat;
 	 
 	/**
-	 * The last calculated delta / elapsed time of update loop in milliseconds.
+	 * The last calculated delta / elapsed time of successive frames in milliseconds.
 	 */
 	public static var delta:Int = 0;
 	
@@ -101,8 +101,8 @@ class Kala {
 	):Void {
 		Kala.antiAliasingSamples = antiAliasingSamples;
 		
-		width = windowWidth;
-		height = windowHeight;
+		width = screenWidth;
+		height = screenHeight;
 		
 		System.init(
 			{ 
@@ -127,11 +127,11 @@ class Kala {
 	public static function applyDelta(value:FastFloat):FastFloat {
 		return elapsedTime / perfectElapsedTime * value;
 	}
-	
+
 	static function startWorld(updateRate:UInt):Void {
 		Keyboard.init();
 		Mouse.init();
-
+	
 		System.notifyOnRender(renderWorld);
 		Kala.updateRate = updateRate;
 	}
@@ -157,16 +157,11 @@ class Kala {
 		_lastUpdateTime = time;
 		
 		fps = Math.round(1 / elapsedTime);
-		
-		//Keyboard.release();
-		Mouse.release();
-		
-		//Keyboard.register();
-		Mouse.register();
-		
+
 		delta = Std.int(elapsedTime * 1000);
-		world.callUpdate(delta);
 		Keyboard.update(delta);
+		Mouse.update(delta);
+		world.callUpdate(delta);
 	}
 	
 	static function set_updateRate(value:UInt):UInt {

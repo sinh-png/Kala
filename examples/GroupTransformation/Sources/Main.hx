@@ -26,7 +26,7 @@ class Main {
 				group.x = Mouse.x;
 				group.y = Mouse.y;
 				
-				if (Mouse.pressed.LEFT) 	group.skew.x += 1;
+				if (Mouse.LEFT.pressed) 	group.skew.x += 1;
 				if (Mouse.pressed.RIGHT) 	group.scale.y += 0.01;
 				
 				if (Keyboard.pressed.SPACE) group.rotation.angle += 5;

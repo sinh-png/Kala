@@ -34,21 +34,21 @@ class Debug {
 	public static inline function echo(value:Dynamic):Void {
 		#if (debug || kala_debug)
 		debugger.pushConsoleOutput(Std.string(value), Color.WHITE);
-		debugger.enable = true;
+		debugger.visible = true;
 		#end
 	}
 
 	public static inline function error(message:String):Void {
 		#if (debug || kala_debug)
 		debugger.pushConsoleOutput("ERR: " + message, Color.RED);
-		debugger.enable = true;
+		debugger.visible = true;
 		#end
 	}
 	
 	public static inline function print(value:Dynamic, ?textColor:Color = Color.WHITE, showDebugger:Bool = true):Void {
 		#if (debug || kala_debug)
 		debugger.pushConsoleOutput(Std.string(value), textColor);
-		debugger.enable = showDebugger;
+		debugger.visible = showDebugger;
 		#end
 	}
 	
@@ -86,7 +86,7 @@ class Debug {
 			framebuffer.g2.begin(false);
 		}
 		
-		if (debugger.enable) debugger.draw(framebuffer);
+		if (debugger.visible) debugger.draw(framebuffer);
 	}
 	#end
 	
@@ -117,7 +117,7 @@ class Debugger {
 	public static inline var MAXIMIZED = 1;
 	public static inline var MINIMIZED = 2;
 	
-	public var enable(default, set):Bool = false;
+	public var visible(default, set):Bool = false;
 	
 	public var rect(default, null):Rect = new Rect(0, 0, 600, 400);
 	
@@ -147,7 +147,7 @@ class Debugger {
 	private var _cmdCursorPos:Int = 0;
 	private var _cmdFieldInFocus:Bool = false;
 	
-	private var _backspacePressingTime:Int = 0;
+	private var _backspacePressingTime:FastFloat = 0;
 	
 	private var _draggingHHandle:Bool = false;
 	private var _draggingVHandle:Bool = false;
@@ -168,7 +168,7 @@ class Debugger {
 	private var _consoleOutputLines:Array<Pair<String, UInt>> = new Array<Pair<String, UInt>>();
 	
 	public function new() {
-		Keyboard.onKeyDown.notifyPrivateCB(this, onKeyboardInput);
+		Keyboard.onStartPressing.notifyPrivateCB(this, onKeyboardInput);
 		
 		Kala.world.onFirstFrame.notifyPrivateCB(this, function(_) {
 			_contentBuffer = Image.createRenderTarget(Std.int(rect.width - 15), Std.int(rect.height - 15 - 24 * 2));
@@ -176,7 +176,7 @@ class Debugger {
 	}
 	
 	public function pushConsoleOutput(string:String, color:Color):Void {
-		if (_consoleOutputLines.length > 50) _consoleOutputLines.splice(0, 1);
+		if (_consoleOutputLines.length > 150) _consoleOutputLines.splice(0, 1);
 		_consoleOutputLines.push(new Pair(string, color));
 	}
 	
@@ -217,13 +217,13 @@ class Debugger {
 		var my = Mouse.y;
 		var ma = new Rect(rect.x, rect.y, rect.width, 24);
 		
-		if (!_dragging && Mouse.didLeftClickOnRect(ma)) {
+		if (!_dragging && Mouse.didLeftClickRect(ma)) {
 			_dragging = true;
 			_dragPointX = mx - ma.x;
 			_dragPointY = my - ma.y;
 		}
 		
-		if (_dragging && Mouse.pressed.LEFT) {
+		if (_dragging && Mouse.LEFT.pressed) {
 			this.rect.x = mx - _dragPointX;
 			this.rect.y = my - _dragPointY;
 		} else {
@@ -239,7 +239,7 @@ class Debugger {
 			g.fillRect(rect.width - 30, 0, 30, 24);
 			g.color = 0xffffffff;
 			
-			if (Mouse.justPressed.LEFT) enable = false;
+			if (Mouse.LEFT.justPressed) visible = false;
 		}
 		
 		g.drawLine(rect.width - 20, 7, rect.width - 10, 17, 1);
@@ -253,7 +253,7 @@ class Debugger {
 			g.fillRect(ma.x - rect.x, 0, 30, 24);
 			g.color = 0xffffffff;
 			
-			if (Mouse.justPressed.LEFT) {
+			if (Mouse.LEFT.justPressed) {
 				if (state == MAXIMIZED) state = NORMAL;
 				else state = MAXIMIZED;
 			}
@@ -279,9 +279,11 @@ class Debugger {
 			g.fillRect(ma.x - rect.x, 0, 30, 24);
 			g.color = 0xffffffff;
 			
-			if (Mouse.justPressed.LEFT) {
-				if (state == MINIMIZED) state = NORMAL;
-				else state = MINIMIZED;
+			if (Mouse.LEFT.justPressed) {
+				if (state == MINIMIZED) {
+					state = NORMAL;
+					rect = this.rect;
+				} else state = MINIMIZED;
 			}
 		}
 		
@@ -297,7 +299,7 @@ class Debugger {
 		switch(tab) {
 			case CONSOLE:
 				s = "CONSOLE" + s;
-				if (state != MINIMIZED) drawConsole(rect, g);
+				if (state != MINIMIZED) drawConsoleOutput(rect, g);
 				
 			case DRAWING_SETTINGS:
 				s = "DRAWING SETTINGS" + s;
@@ -332,13 +334,13 @@ class Debugger {
 			g.drawLine(rect.width - 3, rect.height, rect.width, rect.height - 3, 1);
 			
 			ma.set(rect.x + rect.width - 9, rect.y + rect.height - 9, 9, 9);
-			if (!_resizing && Mouse.didLeftClickOnRect(ma)) {
+			if (!_resizing && Mouse.didLeftClickRect(ma)) {
 				_resizing = true;
 				_resizePointX = rect.width - mx + rect.x;
 				_resizePointY = rect.height - my + rect.y;
 			}
 			
-			if (_resizing && Mouse.pressed.LEFT) {
+			if (_resizing && Mouse.LEFT.pressed) {
 				rect.width = mx - rect.x + _resizePointX;
 				rect.height = my - rect.y + _resizePointY;
 				
@@ -409,37 +411,41 @@ class Debugger {
 		
 		// Vertical handle
 		
+		g.color = 0x55aaaaaa;
+		
 		var contentHeight = _contentHeight;
 		var fullHeightVisible = _contentBuffer.height >= contentHeight;
 		var ratio = fullHeightVisible ? 1 : _contentBuffer.height / contentHeight;
 		var handleMaxLenght = vbarLenght - 15 * 2;
 		var handleLenght = ratio * handleMaxLenght; if (handleLenght < 24) handleLenght = 24;
-		var space = handleMaxLenght - handleLenght;
-		var handlePos = fullHeightVisible ? 0 : _contentVPos * space;
 		
-		g.color = 0x55aaaaaa;
-		g.fillRect(vbarX, 24 + 15 + handlePos, 15, handleLenght);
-		
-		ma.set(rect.x + vbarX, rect.y + 24 + 15 + handlePos, 15, handleLenght);
-		if (!_draggingVHandle && Mouse.didLeftClickOnRect(ma)) {
-			_draggingVHandle = true;
-			_handleDragPoint = my - ma.y;
-		}
-		
-		if (_draggingVHandle && !fullHeightVisible) {
-			if (Mouse.pressed.LEFT) {
-				_contentVPos = (my - _handleDragPoint - (rect.y + 24 + 15)) / space;
+		if (handleMaxLenght > handleLenght) {
+			var space = handleMaxLenght - handleLenght;
+			var handlePos = fullHeightVisible ? 0 : _contentVPos * space;
+
+			g.fillRect(vbarX, 24 + 15 + handlePos, 15, handleLenght);
+			
+			ma.set(rect.x + vbarX, rect.y + 24 + 15 + handlePos, 15, handleLenght);
+			if (!_draggingVHandle && Mouse.didLeftClickRect(ma)) {
+				_draggingVHandle = true;
+				_handleDragPoint = my - ma.y;
+			}
+			
+			if (_draggingVHandle && !fullHeightVisible) {
+				if (Mouse.LEFT.pressed) {
+					_contentVPos = (my - _handleDragPoint - (rect.y + 24 + 15)) / space;
+					if (_contentVPos < 0) _contentVPos = 0;
+					else if (_contentVPos > 1) _contentVPos = 1;
+				} else {
+					_draggingVHandle = false;
+				}
+			} else {
+				_contentVPos = (_contentVPos * space - Mouse.wheel * 2) / space;
 				if (_contentVPos < 0) _contentVPos = 0;
 				else if (_contentVPos > 1) _contentVPos = 1;
-			} else {
+				
 				_draggingVHandle = false;
 			}
-		} else {
-			_contentVPos = (_contentVPos * space - Mouse.wheel * 2) / space;
-			if (_contentVPos < 0) _contentVPos = 0;
-			else if (_contentVPos > 1) _contentVPos = 1;
-			
-			_draggingVHandle = false;
 		}
 		
 		// Horizontal handle
@@ -449,32 +455,35 @@ class Debugger {
 		var ratio = fullWidthVisible ? 1 : _contentBuffer.width / contentWidth;
 		var handleMaxLenght = hbarLenght - 15 * 2;
 		var handleLenght = ratio * handleMaxLenght; if (handleLenght < 24) handleLenght = 24;
-		var space = handleMaxLenght - handleLenght;
-		var handlePos = fullWidthVisible ? 0 : _contentHPos * space;
 		
-		g.fillRect(15 + handlePos, hbarY, handleLenght, 15);
-		
-		ma.set(rect.x + 15 + handlePos, rect.y + hbarY, handleLenght, 15);
-		if (!_draggingHHandle && Mouse.didLeftClickOnRect(ma)) {
-			_draggingHHandle = true;
-			_handleDragPoint = mx - ma.x;
-		}
-		
-		if (_draggingHHandle && !fullWidthVisible && Mouse.pressed.LEFT) {
-			_contentHPos = (mx - _handleDragPoint - (rect.x + 15)) / space;
-			if (_contentHPos < 0) _contentHPos = 0;
-			else if (_contentHPos > 1) _contentHPos = 1;
-		} else {
-			_draggingHHandle = false;
+		if (handleMaxLenght > handleLenght) {
+			var space = handleMaxLenght - handleLenght;
+			var handlePos = fullWidthVisible ? 0 : _contentHPos * space;
+			
+			g.fillRect(15 + handlePos, hbarY, handleLenght, 15);
+			
+			ma.set(rect.x + 15 + handlePos, rect.y + hbarY, handleLenght, 15);
+			if (!_draggingHHandle && Mouse.didLeftClickRect(ma)) {
+				_draggingHHandle = true;
+				_handleDragPoint = mx - ma.x;
+			}
+			
+			if (_draggingHHandle && !fullWidthVisible && Mouse.LEFT.pressed) {
+				_contentHPos = (mx - _handleDragPoint - (rect.x + 15)) / space;
+				if (_contentHPos < 0) _contentHPos = 0;
+				else if (_contentHPos > 1) _contentHPos = 1;
+			} else {
+				_draggingHHandle = false;
+			}
 		}
 	}
 	
 	function drawCMDField(rect:Rect, g:Graphics):Void {
 		_cmdFieldVisible = true;
 		
-		if (Keyboard.justPressed.TAB) _cmdFieldInFocus = true;
+		if (Keyboard.TAB.justPressed) _cmdFieldInFocus = true;
 		
-		if (Mouse.justPressed.LEFT) {
+		if (Mouse.LEFT.justPressed) {
 			_cmdFieldInFocus = Mouse.isHoveringRect(rect);
 		}
 		
@@ -493,9 +502,9 @@ class Debugger {
 		}
 		
 		//
-		if (Keyboard.pressed.BACKSPACE) {
-			_backspacePressingTime++;
-			if (_backspacePressingTime > 10 && _command.length > 0) {
+		if (Keyboard.BACKSPACE.pressed) {
+			_backspacePressingTime += Kala.elapsedTime;
+			if (_backspacePressingTime >= 0.25 && _command.length > 0) {
 				_command = _command.substr(0, _command.length - 1);
 			}
 		} else {
@@ -503,7 +512,7 @@ class Debugger {
 		}
 	}
 
-	function drawConsole(rect:Rect, g:Graphics):Void {
+	function drawConsoleOutput(rect:Rect, g:Graphics):Void {
 		drawCMDField(rect, g);
 		
 		var framebufferGraphics = g;
@@ -515,21 +524,24 @@ class Debugger {
 		g.color = 0x66333333;
 		g.fillRect(0, 0, _contentBuffer.width, _contentBuffer.height);
 		
-		g.font = framebufferGraphics.font;
-		g.fontSize = framebufferGraphics.fontSize;
-		
-		var lineHeight = getLineHeight();
-		var visibleLineCount = Math.floor(_contentBuffer.height / lineHeight);
-		var lineIndex = Math.floor(_contentVPos * (_consoleOutputLines.length - visibleLineCount));
-		var lineX = 10 + _contentHPos * (_contentBuffer.width - (_contentWidth + 20));
-		var lineContent:Pair<String, UInt>;
-		
-		for (i in 0...visibleLineCount) {
-			lineContent = _consoleOutputLines[lineIndex + i];
-			g.color = lineContent.b;
-			g.drawString(lineContent.a, lineX, i * lineHeight + 4);
+		if (_consoleOutputLines.length > 0) {
+			g.font = framebufferGraphics.font;
+			g.fontSize = framebufferGraphics.fontSize;
+			
+			var lineHeight = getLineHeight();
+			var visibleLineCount = Math.floor(_contentBuffer.height / lineHeight);
+			if (visibleLineCount > _consoleOutputLines.length) visibleLineCount = _consoleOutputLines.length;
+			var lineIndex = Math.floor(_contentVPos * (_consoleOutputLines.length - visibleLineCount));
+			var lineX = 10 + _contentHPos * (_contentBuffer.width - (_contentWidth + 20));
+			var lineContent:Pair<String, UInt>;
+			
+			for (i in 0...visibleLineCount) {
+				lineContent = _consoleOutputLines[lineIndex + i];
+				g.color = lineContent.b;
+				g.drawString(lineContent.a, lineX, i * lineHeight + 4);
+			}
 		}
-		
+
 		g.end();
 		
 		framebufferGraphics.begin(false);
@@ -541,9 +553,9 @@ class Debugger {
 	
 	function onKeyboardInput(key:Key):Void {
 		switch(key) {
-			case CHAR(c): 
-				if (c == '`') {
-					enable = !enable;
+			case CHAR(c):
+				if (c == '`' || c == 'à') {
+					visible = !visible;
 					return;
 				}
 				
@@ -562,7 +574,7 @@ class Debugger {
 				_cmdCursorPos++;
 			
 			case BACKSPACE:
-				if (_command.length > 0 && _backspacePressingTime < 10 && _command.length > 0) {
+				if (_command.length > 0 && _backspacePressingTime < 0.25 && _command.length > 0) {
 					_command = _command.substr(0, _command.length - 1);
 					_cmdCursorPos--;
 				}
@@ -586,20 +598,20 @@ class Debugger {
 		return _font.height(fontSize) + 4;
 	}
 	
-	function set_enable(value:Bool):Bool {
+	function set_visible(value:Bool):Bool {
 		if (value) {
-			if (!enable) {
+			if (!visible) {
 				_cmdCursorTimeTask = Scheduler.addTimeTask(function() {
 					_cmdCursorVisible = !_cmdCursorVisible;
 				}, 0, 0.5);
 			}
 		} else {
-			if (enable) {
+			if (visible) {
 				Scheduler.removeTimeTask(_cmdCursorTimeTask);
 			}
 		}
 		
-		return enable = value;
+		return visible = value;
 	}
 	
 	function get__contentWidth():FastFloat {

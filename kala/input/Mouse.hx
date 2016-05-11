@@ -1,22 +1,63 @@
 package kala.input;
 
+import kala.EventHandle.CallbackHandle;
+import kala.input.ButtonInputHandle;
 import kala.math.Rect;
 import kha.FastFloat;
 
-@:access(kala.input.MouseStateHandle)
+@:access(kala.CallbackHandle)
+@:access(kala.input.ButtonInput)
 class Mouse {
+	
+	public static var onStartPressing(default, never):CallbackHandle<MouseButton->Void> = new CallbackHandle<MouseButton->Void>();
+	public static var onRelease(default, never):CallbackHandle<MouseButton->Void> = new CallbackHandle<MouseButton->Void>();
+
+	//
 	
 	public static var x(default, null):Int = 0;
 	public static var y(default, null):Int = 0;
 	
-	public static var pressed:MouseStateHandle = new MouseStateHandle();
-	public static var justPressed:MouseStateHandle = new MouseStateHandle();
-	public static var justReleased:MouseStateHandle = new MouseStateHandle();
-	
 	public static var wheel(get, null):Int;
+	
+	//
+	
+	public static var ANY(default, null):ButtonInput<MouseButton>;
+	public static var LEFT(default, null):ButtonInput<MouseButton>;
+	public static var RIGHT(default, null):ButtonInput<MouseButton>;
+	public static var MIDDLE(default, null):ButtonInput<MouseButton>;
+	
+	//
 	
 	private static var _wheel:Int;
 	private static var _wheelRegistered:Bool = false;
+	
+	private static var _handle:ButtonInputHandle<MouseButton>;
+	
+	//
+	
+	public static inline function checkAnyPressed(buttons:Array<MouseButton>):Bool {
+		return _handle.checkAnyPressed(buttons);
+	}
+	
+	public static inline function checkAnyJustPressed(buttons:Array<MouseButton>):Bool {
+		return _handle.checkAnyJustPressed(buttons);
+	}
+	
+	public static inline function checkAnyJustReleased(buttons:Array<MouseButton>):Bool {
+		return _handle.checkAnyJustReleased(buttons);
+	}
+	
+	public static inline function checkAllPressed(buttons:Array<MouseButton>):Bool {
+		return _handle.checkAllPressed(buttons);
+	}
+	
+	public static inline function checkAllJustPressed(buttons:Array<MouseButton>):Bool {
+		return _handle.checkAllJustPressed(buttons);
+	}
+	
+	public static inline function checkAllJustReleased(buttons:Array<MouseButton>):Bool {
+		return _handle.checkAllJustReleased(buttons);
+	}
 	
 	//
 	
@@ -25,7 +66,6 @@ class Mouse {
 			Mouse.x >= x && Mouse.x <= x + width &&
 			Mouse.y >= y && Mouse.y <= y + height
 		);
-		
 	}
 	
 	public static inline function isHoveringRect(rect:Rect):Bool {
@@ -33,64 +73,64 @@ class Mouse {
 			Mouse.x >= rect.x && Mouse.x <= rect.x + rect.width &&
 			Mouse.y >= rect.y && Mouse.y <= rect.y + rect.height
 		);
-		
-	}
-	
-	public static inline function didClickOn(
-		x:FastFloat, y:FastFloat, width:FastFloat, height:FastFloat, button:MouseButton
-	):Bool {
-		return isHovering(x, y, width, height) && justPressed.check(button);
-	}
-	
-	public static inline function didClickOnRect(rect:Rect, button:MouseButton):Bool {
-		return isHoveringRect(rect) && justPressed.check(button);
 	}
 	
 	public static inline function didLeftClickOn(x:FastFloat, y:FastFloat, width:FastFloat, height:FastFloat):Bool {
-		return didClickOn(x, y, width, height, LEFT);
+		return LEFT.justPressed && isHovering(x, y, width, height);
+	}
+
+	public static inline function didLeftClickRect(rect:Rect):Bool {
+		return LEFT.justPressed && isHoveringRect(rect);
 	}
 	
-	public static inline function didLeftClickOnRect(rect:Rect):Bool {
-		return didClickOnRect(rect, LEFT);
+	public static inline function didRightClickOn(x:FastFloat, y:FastFloat, width:FastFloat, height:FastFloat):Bool {
+		return RIGHT.justPressed && isHovering(x, y, width, height);
 	}
-	
-	public static inline function isPressingOn(
-		x:FastFloat, y:FastFloat, width:FastFloat, height:FastFloat, button:MouseButton
-	):Bool {
-		return isHovering(x, y, width, height) && pressed.check(button);
-	}
-	
-	public static inline function isPressingOnRect(rect:Rect, button:MouseButton):Bool {
-		return isHoveringRect(rect) && pressed.check(button);
-	}
-	
-	public static inline function isLeftPressingOn(x:FastFloat, y:FastFloat, width:FastFloat, height:FastFloat):Bool {
-		return isPressingOn(x, y, width, height, LEFT);
-	}
-	
-	public static inline function isLeftPressingOnRect(rect:Rect):Bool {
-		return isPressingOnRect(rect, LEFT);
+
+	public static inline function didRightClickRect(rect:Rect):Bool {
+		return RIGHT.justPressed && isHoveringRect(rect);
 	}
 	
 	//
 	
+	/*
+	static inline function buttonIndexToButton(index:Int):MouseButton {
+		return MouseButton.createByIndex(index + 1);
+	}
+	*/
+	
 	static function init():Void {
-		kha.input.Mouse.get().notify(onDown, onUp, onMove, onWheel);
-	}
-
-	static function onDown(button:Int, x:Int, y:Int):Void {
-		var btn = codeToEnum(button);
-		pressed.register(btn);
-		justPressed.capture(btn);
-	}
-	
-	static function onUp(button:Int, x:Int, y:Int):Void {
-		var btn = codeToEnum(button);
-		pressed.releaseRegistered(btn);
-		justReleased.capture(btn);
+		kha.input.Mouse.get().notify(mouseDownListener, mouseUpListener, mouseMoveListener, onWheel);
+		
+		_handle = new ButtonInputHandle<MouseButton>(onStartPressing, onRelease);
+		
+		ANY 		= _handle.addButton(MouseButton.ANY);
+		
+		LEFT 		= _handle.addButton(MouseButton.LEFT);
+		RIGHT 		= _handle.addButton(MouseButton.RIGHT);
+		MIDDLE 		= _handle.addButton(MouseButton.MIDDLE);
 	}
 	
-	static function onMove(x:Int, y:Int, _:Int, _:Int):Void {
+	static inline function update(delta:Int):Void {
+		_handle.update(delta);
+		
+		if (_wheel != 0) {
+			if (_wheelRegistered) _wheel = 0;
+			else _wheelRegistered = true;
+		}
+	}
+	
+	static function mouseDownListener(button:Int, x:Int, y:Int):Void {
+		ANY.waitForRegistration();
+		_handle.inputs[button + 1].waitForRegistration();
+	}
+	
+	static function mouseUpListener(button:Int, x:Int, y:Int):Void {
+		ANY.waitForReleasing();
+		_handle.inputs[button + 1].waitForReleasing();
+	}
+	
+	static function mouseMoveListener(x:Int, y:Int, _:Int, _:Int):Void {
 		Mouse.x = x;
 		Mouse.y = y;
 	}
@@ -100,44 +140,17 @@ class Mouse {
 		_wheelRegistered = false;
 	}
 	
-	static inline function register():Void {
-		justPressed.registerAllCaptured();
-		justReleased.registerAllCaptured();
-		
-		_wheelRegistered = true;
-	}
-	
-	static inline function release():Void {
-		justPressed.releaseAllRegistered();
-		justReleased.releaseAllRegistered();
-		
-		if (_wheelRegistered) _wheel = 0;
-	}
-	
-	static inline function codeToEnum(buttonCode:Int):MouseButton {
-		return MouseButton.createByIndex(buttonCode);
-	}
-	
 	static function get_wheel():Int {
 		return _wheelRegistered ? _wheel : 0;
 	}
-
+	
 }
 
 enum MouseButton {
 	
+	ANY;
 	LEFT;
 	RIGHT;
 	MIDDLE;
-	
-}
-
-class MouseStateHandle extends InputStateHandle<MouseButton> {
-
-	public var ANY				(get, never):Bool; inline function get_ANY()			return checkAny();
-	
-	public var LEFT				(get, never):Bool; inline function get_LEFT()			return check(MouseButton.LEFT);
-	public var RIGHT			(get, never):Bool; inline function get_RIGHT()			return check(MouseButton.RIGHT);
-	public var MIDDLE			(get, never):Bool; inline function get_MIDDLE()			return check(MouseButton.MIDDLE);
 	
 }

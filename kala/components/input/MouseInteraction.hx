@@ -109,15 +109,15 @@ class MouseInteraction extends Component<Object> {
 				for (callback in onOver) callback.cbFunction(this);
 			}
 			
-			if (Mouse.justPressed.LEFT) {
+			if (Mouse.LEFT.justPressed) {
 				for (callback in onLeftClick) callback.cbFunction(this);
 			}
 			
-			if (Mouse.justPressed.RIGHT) {
+			if (Mouse.RIGHT.justPressed) {
 				for (callback in onRightClick) callback.cbFunction(this);
 			}
 			
-			if (dragButtons != null && Mouse.justPressed.checkAnyOf(dragButtons)) {
+			if (dragButtons != null && Mouse.checkAnyJustPressed(dragButtons)) {
 				_dragPointX = mx - obj.x;
 				_dragPointY = my - obj.y;
 				_dragging = true;
@@ -129,7 +129,7 @@ class MouseInteraction extends Component<Object> {
 			}
 		}
 		
-		if (dragable && _dragging && dragButtons != null &&  Mouse.pressed.checkAnyOf(dragButtons)) {
+		if (dragable && _dragging && dragButtons != null &&  Mouse.checkAnyPressed(dragButtons)) {
 			obj.x = mx - _dragPointX;
 			obj.y = my - _dragPointY;
 		} else {
