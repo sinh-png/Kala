@@ -46,7 +46,7 @@ class CallbackHandle<T> implements ICallbackHandle {
 	}
 	
 	function removeAll():Void {
-		while (_callbacks.length > 0) _callbacks.pop();
+		_callbacks.splice(0, _callbacks.length);
 	}
 	
 	function destroy():Void {

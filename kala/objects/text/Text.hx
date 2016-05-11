@@ -95,10 +95,7 @@ class Text extends BasicText {
 	
 	override public function destroy(componentsDestroy:Bool = true):Void {
 		super.destroy(componentsDestroy);
-		
 		padding = null;
-		
-		while (_lines.length > 0) _lines.pop();
 		_lines = null;
 	}
 		
@@ -222,7 +219,7 @@ class Text extends BasicText {
 	}
 	
 	function refreshText():Void {
-		while (_lines.length > 0) _lines.pop();
+		_lines.splice(0, _lines.length);
 		
 		var array:Array<String>;
 		

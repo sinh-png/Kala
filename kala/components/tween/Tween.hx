@@ -115,9 +115,9 @@ class TweenTimeline {
 	}
 	
 	public function reset():Void {
-		while (nodes.length > 0) nodes.pop();
-		while (loopsLeft.length > 0) loopsLeft.pop();
-		while (loopStartPos.length > 0) loopStartPos.pop();
+		nodes.splice(0, nodes.length);
+		loopsLeft.splice(0, loopsLeft.length);
+		loopStartPos.splice(0, loopStartPos.length);
 		
 		pos = -1;
 		node = null;
@@ -158,9 +158,9 @@ class TweenTimeline {
 		
 		node = null;
 		
-		while (nodes.length > 0) nodes.pop();
-		while (loopsLeft.length > 0) loopsLeft.pop();
-		while (loopStartPos.length > 0) loopStartPos.pop();
+		nodes.splice(0, nodes.length);
+		loopsLeft.splice(0, loopsLeft.length);
+		loopStartPos.splice(0, loopStartPos.length);
 		
 		pool.put(this);
 	}

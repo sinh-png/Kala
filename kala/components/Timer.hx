@@ -17,9 +17,9 @@ class Timer extends Component<Object> {
 	override public function reset():Void {
 		super.reset();
 		
-		while (_coolingDownIDs.length > 0) _coolingDownIDs.pop();
-		while (_coolingDownFunctions.length > 0) _coolingDownFunctions.pop();
-		while (_loopTasks.length > 0 )_loopTasks.pop();
+		_coolingDownIDs.splice(0, _coolingDownIDs.length);
+		_coolingDownFunctions.splice(0, _coolingDownFunctions.length);
+		_loopTasks.splice(0, _loopTasks.length);
 	}
 	
 	override public function addTo(object:Object):Timer {

@@ -271,7 +271,7 @@ class Object extends EventHandle implements IObject {
 		
 		unloadGraphics();
 		bufferOriginX = bufferOriginY = 0;
-		while (_shaders.length > 0) _shaders.pop();
+		_shaders.splice(0, _shaders.length);
 		
 		for (callback in onReset) callback.cbFunction(this, componentsReset);
 

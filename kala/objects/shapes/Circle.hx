@@ -94,7 +94,7 @@ class Circle extends Shape {
 			segments = Math.floor(10 * Math.sqrt(radius));
 		}
 		
-		while (_vertices.length > segments) _vertices.pop();
+		if (_vertices.length > segments) _vertices.splice(0, _vertices.length - segments);
 		
 		var theta = 2 * Math.PI / segments;
 		var c = Math.cos(theta);
