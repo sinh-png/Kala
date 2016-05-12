@@ -16,7 +16,7 @@ class Shader {
 
 	public var pipeline:PipelineState;
 	
-	public var size(default, null):UInt;
+	public var size:UInt;
 	
 	public function destroy():Void {
 		pipeline = null;
