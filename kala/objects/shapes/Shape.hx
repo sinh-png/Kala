@@ -15,10 +15,10 @@ class Shape extends Object {
 	public var type(default, null):ShapeType;
 	
 	public var lineStrenght:UInt;
-	public var lineColor:Color = 0xffffffff;
+	public var lineColor:Color = Color.WHITE;
 	public var lineOpacity:FastFloat;
 
-	public var fillColor:Color = 0xffffffff;
+	public var fillColor:Color = Color.WHITE;
 	public var fillOpacity:FastFloat;
 	
 	public var colorBlendMode:BlendMode = BlendMode.ADD;
@@ -40,12 +40,12 @@ class Shape extends Object {
 	override public function reset(componentsReset:Bool = false):Void {
 		super.reset(componentsReset);
 	
-		color = 0x00000000;
+		color = Color.TRANSPARENT;
 		
 		lineStrenght = 1;
-		lineColor = 0xffffffff;
+		lineColor = Color.WHITE;
 		
-		fillColor = 0xffffffff;
+		fillColor = Color.WHITE;
 
 		colorBlendMode = BlendMode.ADD;
 	}

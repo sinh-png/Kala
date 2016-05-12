@@ -40,13 +40,13 @@ class Text extends BasicText {
 	public var padding:Vec2 = new Vec2();
 	
 	public var borderSize:UInt;
-	public var borderColor:Color = 0xffffffff;
+	public var borderColor:Color = Color.WHITE;
 	public var borderOpacity:FastFloat;
 	
-	public var bgColor:Color = 0xffffffff;
+	public var bgColor:Color = Color.WHITE;
 	public var bgOpacity:FastFloat;
 	
-	public var textColor:Color = 0xffffffff;
+	public var textColor:Color = Color.WHITE;
 	public var textOpacity:FastFloat;
 	
 	public var colorBlendMode:BlendMode = BlendMode.ADD;
@@ -78,16 +78,16 @@ class Text extends BasicText {
 		padding.set();
 		
 		borderSize = 1;
-		borderColor = 0xffffffff;
+		borderColor = Color.WHITE;
 		borderOpacity = 0;
 		
-		bgColor = 0xffffffff;
+		bgColor = Color.WHITE;
 		bgOpacity = 0;
 		
-		textColor = 0xffffffff;
+		textColor = Color.WHITE;
 		textOpacity = 1;
 		
-		color = 0x00000000;
+		color = Color.TRANSPARENT;
 		
 		colorBlendMode = BlendMode.ADD;
 		colorAlphaBlendMode = null;

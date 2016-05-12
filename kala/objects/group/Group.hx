@@ -45,7 +45,7 @@ class Group<T:Object> extends Object implements IGroup {
 	
 	override public function reset(componentsReset:Bool = false):Void {
 		super.reset(componentsReset);
-		color = 0x00000000;
+		color = Color.TRANSPARENT;
 		colorBlendMode = BlendMode.ADD;
 		colorAlphaBlendMode = null;
 	}

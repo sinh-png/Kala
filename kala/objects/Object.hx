@@ -261,7 +261,7 @@ class Object extends EventHandle implements IObject {
 		skew.set(0, 0, 0, 0);
 		rotation.set(0, 0, 0);
 		
-		color = 0xffffffff;
+		color = Color.WHITE;
 		
 		opacity = 1;
 		
@@ -607,7 +607,7 @@ class Object extends EventHandle implements IObject {
 		scale.setXY(1, 1);
 		skew.setXY();
 		rotation.angle = 0;
-		color = 0xffffffff;
+		color = Color.WHITE;
 		opacity = 1;
 	
 		_texture.g2.begin();

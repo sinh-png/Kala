@@ -231,13 +231,13 @@ class Debugger {
 		}
 		
 		// Close button
-		g.color = 0xffffffff;
+		g.color = Color.WHITE;
 		
 		ma.set(rect.x + rect.width - 30, rect.y, 30, 24);
 		if (Mouse.isHoveringRect(ma)) {
 			g.color = 0x66999999;
 			g.fillRect(rect.width - 30, 0, 30, 24);
-			g.color = 0xffffffff;
+			g.color = Color.WHITE;
 			
 			if (Mouse.LEFT.justPressed) visible = false;
 		}
@@ -251,7 +251,7 @@ class Debugger {
 		if (Mouse.isHoveringRect(ma)) {
 			g.color = 0x66999999;
 			g.fillRect(ma.x - rect.x, 0, 30, 24);
-			g.color = 0xffffffff;
+			g.color = Color.WHITE;
 			
 			if (Mouse.LEFT.justPressed) {
 				if (state == MAXIMIZED) state = NORMAL;
@@ -277,7 +277,7 @@ class Debugger {
 		if (Mouse.isHoveringRect(ma)) {
 			g.color = 0x66999999;
 			g.fillRect(ma.x - rect.x, 0, 30, 24);
-			g.color = 0xffffffff;
+			g.color = Color.WHITE;
 			
 			if (Mouse.LEFT.justPressed) {
 				if (state == MINIMIZED) {
@@ -327,7 +327,7 @@ class Debugger {
 		// Resize button
 		
 		if (state == NORMAL) {
-			g.color = 0xffffffff;
+			g.color = Color.WHITE;
 			
 			g.drawLine(rect.width - 9, rect.height, rect.width, rect.height - 9, 1);
 			g.drawLine(rect.width - 6, rect.height, rect.width, rect.height - 6, 1);
@@ -371,7 +371,7 @@ class Debugger {
 		g.fillRect(vbarX, 24, 15, vbarLenght + 15);
 		g.fillRect(0, hbarY, hbarLenght, 15);
 		
-		g.color = 0xffffffff;
+		g.color = Color.WHITE;
 		
 		var mx = Mouse.x;
 		var my = Mouse.y;
@@ -490,7 +490,7 @@ class Debugger {
 		g.color = 0xaa333333;
 		g.fillRect(0, rect.height - 24, rect.width , 24);
 		
-		g.color = 0xffffffff;
+		g.color = Color.WHITE;
 		var s = _command;
 		var i = 0;
 		while (g.font.width(g.fontSize, s) > rect.width) s = s.substr(++i);
