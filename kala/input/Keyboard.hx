@@ -2,8 +2,8 @@ package kala.input;
 
 #if (debug || kala_debug || kala_keyboard)
 
-import kala.input.ButtonInputHandle;
 import kala.EventHandle.CallbackHandle;
+import kala.input.ButtonInputHandle;
 import kha.FastFloat;
 import kha.Key;
 
@@ -119,7 +119,7 @@ class Keyboard {
 		
 		_handle = new ButtonInputHandle<Key>(onStartPressing, onRelease);
 		
-		ANY 		= _handle.addButtonAny(Key.ANY);
+		ANY 		= _handle.addButton(null);
 		
 		LEFT 		= _handle.addButton(Key.LEFT);
 		RIGHT 		= _handle.addButton(Key.RIGHT);
@@ -188,8 +188,6 @@ class Keyboard {
 	}
 	
 	static function keyDownListener(key:kha.Key, char:String):Void {
-		ANY.waitForRegistration();
-		
 		switch(key) {
 			case kha.Key.LEFT: 			LEFT.waitForRegistration();
 			case kha.Key.RIGHT: 		RIGHT.waitForRegistration();
@@ -260,8 +258,6 @@ class Keyboard {
 	}
 	
 	static function keyUpListener(key:kha.Key, char:String):Void {
-		ANY.waitForReleasing();
-		
 		switch(key) {
 			case kha.Key.LEFT: 			LEFT.waitForReleasing();
 			case kha.Key.RIGHT: 		RIGHT.waitForReleasing();
@@ -335,7 +331,6 @@ class Keyboard {
 
 enum Key {
 	
-	ANY;
 	BACKSPACE;
 	TAB;
 	ENTER;

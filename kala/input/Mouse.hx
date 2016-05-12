@@ -107,7 +107,7 @@ class Mouse {
 		
 		_handle = new ButtonInputHandle<MouseButton>(onStartPressing, onRelease);
 		
-		ANY 		= _handle.addButtonAny(MouseButton.ANY);
+		ANY 		= _handle.addButton(null);
 		
 		LEFT 		= _handle.addButton(MouseButton.LEFT);
 		RIGHT 		= _handle.addButton(MouseButton.RIGHT);
@@ -124,13 +124,11 @@ class Mouse {
 	}
 	
 	static function mouseDownListener(button:Int, x:Int, y:Int):Void {
-		ANY.waitForRegistration();
-		_handle.inputs[button + 1].waitForRegistration();
+		_handle.inputs[button].waitForRegistration();
 	}
 	
 	static function mouseUpListener(button:Int, x:Int, y:Int):Void {
-		ANY.waitForReleasing();
-		_handle.inputs[button + 1].waitForReleasing();
+		_handle.inputs[button].waitForReleasing();
 	}
 	
 	static function mouseMoveListener(x:Int, y:Int, _:Int, _:Int):Void {
@@ -151,7 +149,6 @@ class Mouse {
 
 enum MouseButton {
 	
-	ANY;
 	LEFT;
 	RIGHT;
 	MIDDLE;

@@ -8,6 +8,8 @@ class ButtonInputHandle<T:EnumValue> {
 	public var inputs:Array<ButtonInput<T>> = new Array<ButtonInput<T>>();
 	public var activeInputs:Array<ButtonInput<T>> = new Array<ButtonInput<T>>();
 	
+	public var inputAny:ButtonInput<T>;
+	
 	public var  onStartPressing:CallbackHandle<T->Void>;
 	public var  onRelease:CallbackHandle<T->Void>;
 	
@@ -17,19 +19,20 @@ class ButtonInputHandle<T:EnumValue> {
 	}
 	
 	public function addButton(button:T):ButtonInput<T> {
-		var buttonInput = new ButtonInput<T>(button, this);
-		inputs.push(buttonInput);
-		return buttonInput;
+		var input = new ButtonInput<T>(button, this);
+		
+		if (button == null) inputAny = input; 
+		else inputs.push(input);
+		
+		return input;
 	}
-	
-	public function addButtonAny(button:T):ButtonInput<T> {
-		var buttonInput = new ButtonInput<T>(button, this);
-		buttonInput._any = true;
-		inputs.push(buttonInput);
-		return buttonInput;
-	}
-	
+
 	public function update(delta:Int):Void {
+		if (activeInputs.length == 0) {
+			inputAny.duration = -1;
+			return;
+		}
+		
 		var e = 1;
 		if (Kala.deltaTiming) e = delta;
 		
@@ -56,6 +59,9 @@ class ButtonInputHandle<T:EnumValue> {
 				input.duration += e;
 			}
 		}
+		
+		if (inputAny.duration == -1) inputAny.duration = 0;
+		else inputAny.duration += e;
 	}
 	
 	public function checkAnyPressed(buttons:Array<T>):Bool {
@@ -201,8 +207,6 @@ class ButtonInput<T:EnumValue> {
 	private var _state:Int = 0; // 1 - waiting to be registered, 2 - waiting to be released
 	
 	private var _handle:ButtonInputHandle<T>;
-	
-	private var _any:Bool = false;
 
 	public function new(button:T, handle:ButtonInputHandle<T>) {
 		this.button = button;
@@ -210,7 +214,7 @@ class ButtonInput<T:EnumValue> {
 	}
 	
 	inline function waitForRegistration():Void {
-		if (!_any || _handle.activeInputs.length == 0) _handle.activeInputs.push(this);
+		_handle.activeInputs.push(this);
 		_state = 1;
 	}
 	
