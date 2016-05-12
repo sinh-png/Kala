@@ -50,6 +50,8 @@ abstract Color(UInt) from UInt to UInt from kha.Color to kha.Color {
 	public var fgreen(get, set):FastFloat;
 	public var fblue(get, set):FastFloat;
 	
+	public var rgb(get, set):UInt;
+	
 	public inline function setBytes(alpha:UInt, red:UInt, green:UInt, blue:UInt):Void {
 		this = (alpha << 24) | (red << 16 ) | (green << 8) | blue;
 	}
@@ -533,6 +535,15 @@ abstract Color(UInt) from UInt to UInt from kha.Color to kha.Color {
 	
 	inline function set_fblue(value:FastFloat):FastFloat {
 		setBytes(alpha, red, green, Std.int(Math.abs(value * 255)));
+		return value;
+	}
+	
+	inline function get_rgb():UInt {
+		return (red << 16 ) | (green << 8) | blue;
+	}
+	
+	inline function set_rgb(value:UInt):UInt {
+		this = (alpha << 24) | value;
 		return value;
 	}
 	
