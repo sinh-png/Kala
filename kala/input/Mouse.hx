@@ -107,7 +107,7 @@ class Mouse {
 		
 		_handle = new ButtonInputHandle<MouseButton>(onStartPressing, onRelease);
 		
-		ANY 		= _handle.addButton(MouseButton.ANY);
+		ANY 		= _handle.addButtonAny(MouseButton.ANY);
 		
 		LEFT 		= _handle.addButton(MouseButton.LEFT);
 		RIGHT 		= _handle.addButton(MouseButton.RIGHT);

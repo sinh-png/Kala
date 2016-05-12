@@ -119,7 +119,7 @@ class Keyboard {
 		
 		_handle = new ButtonInputHandle<Key>(onStartPressing, onRelease);
 		
-		ANY 		= _handle.addButton(Key.ANY);
+		ANY 		= _handle.addButtonAny(Key.ANY);
 		
 		LEFT 		= _handle.addButton(Key.LEFT);
 		RIGHT 		= _handle.addButton(Key.RIGHT);

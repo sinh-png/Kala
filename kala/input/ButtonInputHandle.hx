@@ -22,6 +22,13 @@ class ButtonInputHandle<T:EnumValue> {
 		return buttonInput;
 	}
 	
+	public function addButtonAny(button:T):ButtonInput<T> {
+		var buttonInput = new ButtonInput<T>(button, this);
+		buttonInput._any = true;
+		inputs.push(buttonInput);
+		return buttonInput;
+	}
+	
 	public function update(delta:Int):Void {
 		var e = 1;
 		if (Kala.deltaTiming) e = delta;
@@ -54,14 +61,14 @@ class ButtonInputHandle<T:EnumValue> {
 	public function checkAnyPressed(buttons:Array<T>):Bool {
 		var btns = buttons.copy();
 		var i:Int;
-		for (input in inputs) {
+		for (input in activeInputs) {
 			i = 0;
 			for (button in btns) {
 				if (input.button.equals(button)) {
 					if (input.pressed) return true;
 					if (btns.length == 1) return false;
 					btns.splice(i, 1);
-					break;
+					continue;
 				}
 				
 				i++;
@@ -74,14 +81,14 @@ class ButtonInputHandle<T:EnumValue> {
 	public function checkAnyJustPressed(buttons:Array<T>):Bool {
 		var btns = buttons.copy();
 		var i:Int;
-		for (input in inputs) {
+		for (input in activeInputs) {
 			i = 0;
 			for (button in btns) {
 				if (input.button.equals(button)) {
 					if (input.justPressed) return true;
 					if (btns.length == 1) return false;
 					btns.splice(i, 1);
-					break;
+					continue;
 				}
 				
 				i++;
@@ -94,14 +101,14 @@ class ButtonInputHandle<T:EnumValue> {
 	public function checkAnyJustReleased(buttons:Array<T>):Bool {
 		var btns = buttons.copy();
 		var i:Int;
-		for (input in inputs) {
+		for (input in activeInputs) {
 			i = 0;
 			for (button in btns) {
 				if (input.button.equals(button)) {
 					if (input.justReleased) return true;
 					if (btns.length == 1) return false;
 					btns.splice(i, 1);
-					break;
+					continue;
 				}
 				
 				i++;
@@ -114,14 +121,15 @@ class ButtonInputHandle<T:EnumValue> {
 	public function checkAllPressed(buttons:Array<T>):Bool {
 		var btns = buttons.copy();
 		var i:Int;
-		for (input in inputs) {
+		
+		for (input in activeInputs) {
 			i = 0;
 			for (button in btns) {
 				if (input.button.equals(button)) {
 					if (!input.pressed) return false;
 					if (btns.length == 1) return true;
 					btns.splice(i, 1);
-					break;
+					continue;
 				}
 				
 				i++;
@@ -134,14 +142,14 @@ class ButtonInputHandle<T:EnumValue> {
 	public function checkAllJustPressed(buttons:Array<T>):Bool {
 		var btns = buttons.copy();
 		var i:Int;
-		for (input in inputs) {
+		for (input in activeInputs) {
 			i = 0;
 			for (button in btns) {
 				if (input.button.equals(button)) {
 					if (!input.justPressed) return false;
 					if (btns.length == 1) return true;
 					btns.splice(i, 1);
-					break;
+					continue;
 				}
 				
 				i++;
@@ -154,14 +162,14 @@ class ButtonInputHandle<T:EnumValue> {
 	public function checkAllJustReleased(buttons:Array<T>):Bool {
 		var btns = buttons.copy();
 		var i:Int;
-		for (input in inputs) {
+		for (input in activeInputs) {
 			i = 0;
 			for (button in btns) {
 				if (input.button.equals(button)) {
 					if (!input.justReleased) return false;
 					if (btns.length == 1) return true;
 					btns.splice(i, 1);
-					break;
+					continue;
 				}
 				
 				i++;
@@ -193,6 +201,8 @@ class ButtonInput<T:EnumValue> {
 	private var _state:Int = 0; // 1 - waiting to be registered, 2 - waiting to be released
 	
 	private var _handle:ButtonInputHandle<T>;
+	
+	private var _any:Bool = false;
 
 	public function new(button:T, handle:ButtonInputHandle<T>) {
 		this.button = button;
@@ -200,7 +210,7 @@ class ButtonInput<T:EnumValue> {
 	}
 	
 	inline function waitForRegistration():Void {
-		_handle.activeInputs.push(this);
+		if (!_any || _handle.activeInputs.length == 0) _handle.activeInputs.push(this);
 		_state = 1;
 	}
 	
