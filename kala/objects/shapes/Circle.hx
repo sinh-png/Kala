@@ -3,7 +3,6 @@ package kala.objects.shapes;
 import kala.DrawingData;
 import kala.math.color.Color;
 import kala.math.Vec2;
-import kala.objects.shapes.Shape.ShapeType;
 import kha.Canvas;
 import kha.FastFloat;
 import kha.graphics2.Graphics;
@@ -20,7 +19,6 @@ class Circle extends Shape {
 	
 	public function new(radius:FastFloat, fill:Bool = true, outline:Bool = false) {
 		super(fill, outline);
-		type = ShapeType.CIRCLE;
 		this.radius = radius;
 	}
 	

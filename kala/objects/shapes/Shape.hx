@@ -11,9 +11,6 @@ import kha.math.FastMatrix3;
 @:access(kala.math.color.Color)
 class Shape extends Object {
 
-	// To avoid using Std.is().
-	public var type(default, null):ShapeType;
-	
 	public var lineStrenght:UInt;
 	public var lineColor:Color;
 	public var lineOpacity:FastFloat;
@@ -82,10 +79,4 @@ class Shape extends Object {
 		_canvas.g2.opacity = _opacity * lineOpacity;
 	}
 	
-}
-
-enum ShapeType {
-	CIRCLE;
-	RECTANGLE;
-	POLYGON;
 }
