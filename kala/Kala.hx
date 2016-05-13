@@ -122,7 +122,7 @@ class Kala {
 	/**
 	 * Return a new value relative to the current game framerate.
 	 */
-	public static function applyDelta(value:FastFloat):FastFloat {
+	public static inline function applyDelta(value:FastFloat):FastFloat {
 		return elapsedTime / perfectElapsedTime * value;
 	}
 
