@@ -23,9 +23,10 @@ class SpriteAnimation extends Component<Sprite> {
 	
 	private var _lastAddedKey:String;
 	
-	public function new() {
+	public function new(?sprite:Sprite) {
 		super();
 		onAnimComplete = addCBHandle(new CallbackHandle<SpriteAnimation->Void>());
+		if (sprite != null) addTo(sprite);
 	}
 	
 	override public function reset():Void {

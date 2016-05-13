@@ -15,6 +15,11 @@ class VelocityMotion extends Component<Object> {
 	public var turnSpeed:FastFloat;
 	public var turnAccel:FastFloat;
 	
+	public function new(?object:Object) {
+		super();
+		if (object != null) addTo(object);
+	}
+	
 	override public function reset():Void {
 		super.reset();
 		velocity.set();

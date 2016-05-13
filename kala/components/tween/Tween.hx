@@ -15,6 +15,11 @@ class Tween extends Component<Object> {
 	
 	private var _tweens:Array<TweenTimeline> = new Array<TweenTimeline>();
 	
+	public function new(?object:Object) {
+		super();
+		if (object != null) addTo(object);
+	}
+	
 	override public function reset():Void {
 		super.reset();
 		while (_tweens.length > 0) _tweens.pop().put();

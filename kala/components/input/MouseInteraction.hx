@@ -1,4 +1,5 @@
 package kala.components.input;
+import kala.math.color.Color;
 
 #if (debug || kala_debug || kala_mouse)
 
@@ -12,8 +13,9 @@ import kala.objects.Object;
 import kha.FastFloat;
 
 class MouseInteraction extends Component<Object> {
-
-	public var collider:Collider;
+	
+	public var collider(default, set):Collider;
+	public var debugColor:Color = 0xffff00ff;
 	
 	public var dragable:Bool;
 	public var dragButtons:Array<MouseButton> = [MouseButton.LEFT];
@@ -29,7 +31,7 @@ class MouseInteraction extends Component<Object> {
 	private var _dragPointY:FastFloat;
 	private var _dragging:Bool;
 	
-	public function new() {
+	public function new(?object:Object, addObjectRect:Bool = false) {
 		super();
 		
 		collider = new Collider();
@@ -38,6 +40,11 @@ class MouseInteraction extends Component<Object> {
 		onRightClick = addCBHandle(new CallbackHandle<MouseInteraction->Void>());
 		onOver = addCBHandle(new CallbackHandle<MouseInteraction->Void>());
 		onOut = addCBHandle(new CallbackHandle<MouseInteraction->Void>());
+		
+		if (object != null) {
+			addTo(object);
+			if (addObjectRect) this.addObjectRect();
+		}
 	}
 	
 	override public function reset():Void {
@@ -137,6 +144,11 @@ class MouseInteraction extends Component<Object> {
 		} else {
 			_dragging = false;
 		}
+	}
+	
+	function set_collider(value:Collider):Collider {
+		value.debugColor = debugColor;
+		return collider = value;
 	}
 	
 }

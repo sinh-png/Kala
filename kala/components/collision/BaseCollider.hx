@@ -55,7 +55,7 @@ class BaseCollider<T:Object> extends Component<T> implements ICollider {
 	private var _matrix:FastMatrix3;
 	
 	var _shapeMatrix:FastMatrix3 = FastMatrix3.translation(0, 0);
-
+	
 	override public function reset():Void {
 		super.reset();
 		postDrawUpdate = true;
