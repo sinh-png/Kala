@@ -34,12 +34,12 @@ class BaseCollider<T:Object> extends Component<T> implements ICollider {
 	
 	#if (debug || kala_debug)
 	private static var _debugDrawCalls:Array<DebugDrawCall> = Debug.addDrawLayer();
-	
-	public var debugColor:Color = 0xffff0000;
-	public var debugLineStrenght:UInt = 2;
-	public var debugFill:Bool = false;
 	#end
 
+	public var debugColor:Color = 0xffff0000;
+	public var debugFill:Bool = false;
+	public var debugLineStrenght:UInt = 2;
+	
 	/**
 	 * If true, update transformation on object post draw using the object already calculated drawing matrix.
 	 * If false, update transformation on every collision testing. Might be slower if testing is done often.
