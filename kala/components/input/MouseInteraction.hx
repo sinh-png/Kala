@@ -14,8 +14,10 @@ import kha.FastFloat;
 
 class MouseInteraction extends Component<Object> {
 	
-	public var collider(default, set):Collider;
+	public var collider:Collider;
 	public var debugColor:Color = 0xffff00ff;
+	public var debugFill:Bool = false;
+	public var debugLineStrenght:UInt = 2;
 	
 	public var dragable:Bool;
 	public var dragButtons:Array<MouseButton> = [MouseButton.LEFT];
@@ -144,11 +146,14 @@ class MouseInteraction extends Component<Object> {
 		} else {
 			_dragging = false;
 		}
-	}
-	
-	function set_collider(value:Collider):Collider {
-		value.debugColor = debugColor;
-		return collider = value;
+		
+		#if (debug || kala_debug)
+		if (collider != null) {
+			collider.debugColor = debugColor;
+			collider.debugFill = debugFill;
+			collider.debugLineStrenght = debugLineStrenght;
+		}
+		#end
 	}
 	
 }
