@@ -60,7 +60,9 @@ class Collider extends BaseCollider<Object> {
 	}
 	
 	public inline function addObjectRect():CollisionPolygon {
-		return addRect(0, 0, object.width, object.height);
+		var rect = addRect(0, 0, object.width, object.height);
+		rect.position.setOrigin(object.position.ox, object.position.oy);
+		return rect;
 	}
 	
 	public inline function addShape(shape:CollisionShape):CollisionShape {
