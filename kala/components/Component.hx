@@ -9,7 +9,6 @@ interface IComponent {
 	public function reset():Void;
 	public function deepReset():Void;
 	public function remove():Void;
-	public function getObject():Object;
 	
 }
 
@@ -72,10 +71,6 @@ class Component<T:Object> extends EventHandle implements IComponent {
 			object._components.remove(this);
 			object = null;
 		}
-	}
-	
-	public function getObject():Object {
-		return cast object;
 	}
 	
 }
