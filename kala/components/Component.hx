@@ -24,7 +24,7 @@ class Component<T:Object> extends EventHandle implements IComponent {
 	public var onAdd:CallbackHandle<Component<T>->Void>;
 	public var onRemove:CallbackHandle<Component<T>->Void>;
 	
-	public function new() {
+	public function new(?object:T) {
 		super();
 		
 		onDestroy = addCBHandle(new CallbackHandle<Component<T>->Void>());
@@ -33,6 +33,8 @@ class Component<T:Object> extends EventHandle implements IComponent {
 		onRemove = addCBHandle(new CallbackHandle<Component<T>->Void>());
 		
 		reset();
+		
+		if (object != null) addTo(object);
 	}
 	
 	public function reset():Void {

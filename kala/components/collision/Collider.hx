@@ -7,11 +7,6 @@ import kha.FastFloat;
 
 class Collider extends BaseCollider<Object> {
 
-	public function new(?object:Object) {
-		super();
-		if (object != null) addTo(object);
-	}
-	
 	override public function addTo(object:Object):Collider {
 		super.addTo(object);
 		return this;

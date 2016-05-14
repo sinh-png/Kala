@@ -14,11 +14,6 @@ class Timer extends Component<Object> {
 	
 	private var _loopTasks:Array<LoopTask> = new Array<LoopTask>();
 	
-	public function new(?object:Object) {
-		super();
-		if (object != null) addTo(object);
-	}
-	
 	override public function reset():Void {
 		super.reset();
 		

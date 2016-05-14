@@ -38,10 +38,10 @@ class MouseInteraction extends Component<Object> {
 	private var _dragPointY:FastFloat;
 	
 	
-	public function new(?object:Object, addObjectRect:Bool = false) {
-		super();
+	public function new(?object:Object, ?collider:Collider, addObjectRect:Bool = false) {
+		super(null);
 		
-		collider = new Collider();
+		this.collider = collider == null ? new Collider() : collider;
 		
 		onButtonInput = addCBHandle(new CallbackHandle<MouseInteraction->MouseInteractionInput->Void>());
 		onWheel = addCBHandle(new CallbackHandle<MouseInteraction->Int->Void>());
