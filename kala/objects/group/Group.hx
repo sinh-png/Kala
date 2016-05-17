@@ -32,8 +32,8 @@ class Group<T:Object> extends Object implements IGroup {
 	
 	public var transformEnable:Bool;
 	
-	public var colorBlendMode:BlendMode = BlendMode.ADD;
-	public var colorAlphaBlendMode:BlendMode = null;
+	public var colorBlendMode:BlendMode;
+	public var colorAlphaBlendMode:BlendMode;
 
 	private var _children:Array<T> = new Array<T>();
 	private var _views:Array<View> = new Array<View>();
@@ -45,8 +45,8 @@ class Group<T:Object> extends Object implements IGroup {
 	
 	override public function reset(componentsReset:Bool = false):Void {
 		super.reset(componentsReset);
-		color = Color.TRANSPARENT;
-		colorBlendMode = BlendMode.ADD;
+		color = Color.WHITE;
+		colorBlendMode = BlendMode.MULTI_2X;
 		colorAlphaBlendMode = null;
 	}
 	
