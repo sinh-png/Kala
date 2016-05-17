@@ -198,9 +198,9 @@ class AssetLoader extends EventHandle {
 	/**
 	 * The loading process in percent, between 0 and 1.
 	 */
-	public var percent(default, null):FastFloat;
-	public var totalSize(default, null):FastFloat;
-	public var loadedSize(default, null):FastFloat;
+	public var percent(default, null):FastFloat = 0;
+	public var totalSize(default, null):FastFloat = 0;
+	public var loadedSize(default, null):FastFloat = 0;
 	
 	public var onProcess(default, null):CallbackHandle<Dynamic->AssetLoadingInfo->AssetLoadingInfo->Bool>;
 	
@@ -211,7 +211,7 @@ class AssetLoader extends EventHandle {
 	 * 3 - loading & waiting to pause
 	 * 4 - paused
 	 */
-	private var _state(default, set):Int = 0; 
+	private var _state:Int = 0; 
 	
 	public function new() {
 		super();
@@ -311,7 +311,7 @@ class AssetLoader extends EventHandle {
 	
 	public function reload():AssetLoadingInfo {
 		if ((_queuingAssets.length > 0 || _loadedAssets.length > 0) && (_state == 0 || _state == 4)) {
-			_state = 0;
+			loadedSize = percent = 0;
 		
 			while (_loadedAssets.length > 0) {
 				_queuingAssets.push(_loadedAssets.splice(0, 1)[0]);
@@ -347,6 +347,15 @@ class AssetLoader extends EventHandle {
 		
 		var nextAsset = _queuingAssets.length > 0 ? _queuingAssets[0] : null;
 		
+		var i = 0;
+		var callback:Dynamic->AssetLoadingInfo->AssetLoadingInfo->Bool;
+		while (i < onProcess.lenght) {
+			callback = onProcess._callbacks[i].cbFunction;
+			if (callback(data, loadedAsset, nextAsset)) {
+				onProcess._callbacks.splice(i, 1);
+			} else i++;
+		}
+		
 		if (nextAsset == null) { // all assets loaded
 			_state = 0;
 		} else {
@@ -355,21 +364,13 @@ class AssetLoader extends EventHandle {
 				_loadedAssets.splice(0, _loadedAssets.length);
 				nextAsset = null;
 				_state = 0;
+				loadedSize = totalSize = percent = 0;
 			} else if (_state == 3) { // paused
 				nextAsset = null;
 				_state = 4;
 			} else {
 				nextAsset.load(process);
 			}
-		}
-
-		var i = 0;
-		var callback:Dynamic->AssetLoadingInfo->AssetLoadingInfo->Bool;
-		while (i < onProcess.lenght) {
-			callback = onProcess._callbacks[i].cbFunction;
-			if (callback(data, loadedAsset, nextAsset)) {
-				onProcess._callbacks.splice(i, 1);
-			} else i++;
 		}
 	}
 
@@ -387,11 +388,6 @@ class AssetLoader extends EventHandle {
 	
 	inline function get_loadedAssets():Array<AssetLoadingInfo> {
 		return _loadedAssets.copy();
-	}
-	
-	function set__state(value:Int):Int {
-		if (value == 0) loadedSize = totalSize = percent = 0;
-		return _state = value;
 	}
 	
 }
