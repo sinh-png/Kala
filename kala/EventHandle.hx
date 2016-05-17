@@ -39,6 +39,8 @@ interface ICallbackHandle {
 @:allow(kala.components.Component)
 class CallbackHandle<T> implements ICallbackHandle {
 	
+	public var lenght(get, never):Int;
+	
 	private var _callbacks:Array<Callback<T>> = new Array<Callback<T>>();
 	
 	public function new() {
@@ -92,6 +94,10 @@ class CallbackHandle<T> implements ICallbackHandle {
 	
 	public function iterator():Iterator<Callback<T>> {
 		return _callbacks.iterator();
+	}
+	
+	function get_lenght():Int {
+		return _callbacks.length;
 	}
 	
 }
