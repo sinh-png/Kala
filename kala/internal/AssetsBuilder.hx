@@ -55,7 +55,7 @@ class AssetsBuilder {
 						name: name,
 						doc: null,
 						meta: [],
-						access: [APublic, AStatic],
+						access: [APublic],
 						kind: FProp("default", "never", macro :SheetData, macro new SheetData($v{json.frames})),
 						pos: Context.currentPos()
 					});
