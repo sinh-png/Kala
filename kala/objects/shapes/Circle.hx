@@ -8,8 +8,6 @@ import kha.FastFloat;
 import kha.graphics2.Graphics;
 import kha.math.FastMatrix3;
 
-using kha.graphics2.GraphicsExtension;
-
 class Circle extends Shape {
 
 	public var radius(default, set):FastFloat;
