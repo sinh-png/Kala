@@ -61,12 +61,9 @@ class Shape extends Object {
 	
 	override function applyDrawingData(data:DrawingData, canvas:Canvas):Void {
 		super.applyDrawingData(data, canvas);
-		
 		_color = canvas.g2.color;
 		_opacity = canvas.g2.opacity;
-	
 		_canvas = canvas;
-		
 	}
 	
 	inline function applyFillDrawingData():Void {
