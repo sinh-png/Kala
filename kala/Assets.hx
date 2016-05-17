@@ -272,7 +272,7 @@ class AssetLoader extends EventHandle {
 	 * 
 	 * @return	This loader.
 	 */
-	public inline function queueAll(?sizes:Array<FastFloat>):AssetLoader {
+	public function queueAll(?sizes:Array<FastFloat>):AssetLoader {
 		var i = 0;
 		for (file in Assets.files) {
 			if (file.type != "shader") {
