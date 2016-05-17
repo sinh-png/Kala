@@ -313,9 +313,8 @@ class AssetLoader extends EventHandle {
 		if ((_queuingAssets.length > 0 || _loadedAssets.length > 0) && (_state == 0 || _state == 4)) {
 			_state = 0;
 		
-			var appendedIndex = _queuingAssets.length;
 			while (_loadedAssets.length > 0) {
-				_queuingAssets.insert(appendedIndex, _loadedAssets.splice(0, 1)[0]);
+				_queuingAssets.push(_loadedAssets.splice(0, 1)[0]);
 			}
 			
 			process(null);
