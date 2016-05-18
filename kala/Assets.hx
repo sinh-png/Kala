@@ -268,19 +268,19 @@ class AssetLoader extends EventHandle {
 	}
 	
 	/**
-	 * Queue all assets that were processed by Khamake.
+	 * Queue all assets that were processed by Khamake except for shaders and assets which are already in the queuing list.
 	 * 
 	 * @return	This loader.
 	 */
 	public function queueAll(?sizes:Array<FastFloat>):AssetLoader {
 		var i = 0;
+		var type:AssetType;
 		for (file in Assets.files) {
 			if (file.type != "shader") {
-				queue(
-					AssetType.createByName(cast(file.type, String).toUpperCase()),
-					file.name,
-					sizes == null ? 1 : sizes[i] 
-				);
+				type = AssetType.createByName(cast(file.type, String).toUpperCase());
+				if (findQueuingAssetByName(type, file.name) == -1) {
+					queue(type, file.name, sizes == null ? 1 : sizes[i]);
+				}
 			}
 
 			i++;
@@ -374,6 +374,16 @@ class AssetLoader extends EventHandle {
 				nextAsset.load(process);
 			}
 		}
+	}
+	
+	function findQueuingAssetByName(type:AssetType, name:String):Int {
+		for (i in 0..._queuingAssets.length) {
+			if (_queuingAssets[i].type.getIndex() == type.getIndex() && _queuingAssets[i].name == name) {
+				return i;
+			}
+		}
+		
+		return -1;
 	}
 
 	inline function get_loading():Bool {
