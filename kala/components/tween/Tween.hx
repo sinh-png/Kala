@@ -188,6 +188,7 @@ class TweenTimeline {
 		var task = TweenTask.get();
 		task.init(target, vars, duration, ease, onUpdateCB);
 		nodes.push(TWEEN(task));
+		
 		return this;
 	}
 	
@@ -195,10 +196,7 @@ class TweenTimeline {
 		target:Dynamic, x:FastFloat, y:FastFloat, duration:UInt, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
 		var task = TweenTask.get();
-		
-		var vars:Dynamic = { x: x, y: y };
-
-		task.init(target, vars, duration, ease, onUpdateCB);
+		task.init(target, { x: x, y: y }, duration, ease, onUpdateCB);
 		nodes.push(TWEEN(task));
 		
 		return this;
@@ -208,10 +206,7 @@ class TweenTimeline {
 		target:Dynamic, x:FastFloat, duration:UInt, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
 		var task = TweenTask.get();
-		
-		var vars:Dynamic = { x: x };
-
-		task.init(target, vars, duration, ease, onUpdateCB);
+		task.init(target, { x: x }, duration, ease, onUpdateCB);
 		nodes.push(TWEEN(task));
 		
 		return this;
@@ -221,10 +216,20 @@ class TweenTimeline {
 		target:Dynamic, y:FastFloat, duration:UInt, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
 		var task = TweenTask.get();
+		task.init(target, { y: y }, duration, ease, onUpdateCB);
+		nodes.push(TWEEN(task));
 		
-		var vars:Dynamic = { y: y };
-
-		task.init(target, vars, duration, ease, onUpdateCB);
+		return this;
+	}
+	
+	public function tweenAngle(
+		target:Object, ?fromAngle:FastFloat, toAngle:FastFloat, duration:UInt, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void
+	):TweenTimeline {
+		if (target == null) target = this.target;
+		if (fromAngle != null) target.rotation.angle = fromAngle;
+		
+		var task = TweenTask.get();
+		task.init(target.rotation, { angle: toAngle }, duration, ease, onUpdateCB);
 		nodes.push(TWEEN(task));
 		
 		return this;
