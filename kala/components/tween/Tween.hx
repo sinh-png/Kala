@@ -204,6 +204,32 @@ class TweenTimeline {
 		return this;
 	}
 	
+	public function tweenX(
+		target:Dynamic, x:FastFloat, duration:UInt, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void
+	):TweenTimeline {
+		var task = TweenTask.get();
+		
+		var vars:Dynamic = { x: x };
+
+		task.init(target, vars, duration, ease, onUpdateCB);
+		nodes.push(TWEEN(task));
+		
+		return this;
+	}
+	
+	public function tweenY(
+		target:Dynamic, y:FastFloat, duration:UInt, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void
+	):TweenTimeline {
+		var task = TweenTask.get();
+		
+		var vars:Dynamic = { y: y };
+
+		task.init(target, vars, duration, ease, onUpdateCB);
+		nodes.push(TWEEN(task));
+		
+		return this;
+	}
+	
 	public function tweenBack(?duration:UInt = 0, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void):TweenTimeline {
 		var task = TweenTask.get();
 		task.init(null, null, duration, ease, onUpdateCB);
