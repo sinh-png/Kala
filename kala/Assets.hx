@@ -59,7 +59,11 @@ class SheetData {
 			return spriteData;
 		}
 		
-		spriteData = _frames.get(key).clone();
+		spriteData = _frames.get(key);
+		
+		if (spriteData == null) throw "key not found";
+		
+		spriteData = spriteData.clone();
 		spriteData.image = image;
 		
 		return spriteData;

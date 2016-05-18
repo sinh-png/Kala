@@ -27,7 +27,6 @@ class AssetsBuilder {
 		var path = resPath.substr(0, resPath.length - 11) + '/';
 		
 		switch(type) {
-			
 			case "FileArray":
 				fields.push({
 					name: "files",
