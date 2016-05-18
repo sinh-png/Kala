@@ -80,7 +80,7 @@ interface IObject {
 		
 	//
 
-	private var _firstFrameExecuted:Bool;
+	private var firstFrameExecuted:Bool;
 	
 	private var _crGroup:Object;
 	private var _groups:Array<Object>;
