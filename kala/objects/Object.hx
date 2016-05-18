@@ -453,6 +453,14 @@ class Object extends EventHandle implements IObject {
 		}
 	}
 	
+	public inline function kill():Void {
+		alive = false;
+	}
+	
+	public inline function revive():Void {
+		alive = true;
+	}
+	
 	public inline function put():Void {
 		pool.put(this);
 	}
