@@ -190,6 +190,7 @@ class Group<T:Object> extends Object implements IGroup {
 		obj._groups.push(this);
 		
 		swappedObj._groups.remove(this);
+		if (swappedObj._crGroup == this) swappedObj._crGroup = null;
 		
 		return true;
 	}
@@ -203,6 +204,7 @@ class Group<T:Object> extends Object implements IGroup {
 		else _children[index] = null;
 
 		obj._groups.remove(this);
+		if (obj._crGroup == this) obj._crGroup = null;
 		
 		return obj;
 	}
@@ -229,6 +231,7 @@ class Group<T:Object> extends Object implements IGroup {
 		else _views[index] = null;
 		
 		view._groups.remove(this);
+		if (view._crGroup == this) view._crGroup = null;
 		
 		return view;
 	}
