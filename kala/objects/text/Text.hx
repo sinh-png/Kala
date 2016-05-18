@@ -61,6 +61,8 @@ class Text extends BasicText {
 		
 		this.width = width;
 		this.align = align == null ? TextAlign.LEFT : align;
+		
+		if (text != null) refreshText();
 	}
 	
 	override public function reset(componentsReset:Bool = false):Void {
