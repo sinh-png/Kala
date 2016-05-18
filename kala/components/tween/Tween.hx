@@ -77,6 +77,8 @@ class TweenTimeline {
 	public var pos(default, null):Int;
 	public var node(default, null):TweenNode;
 	
+	public var paralleling(default, null):Bool;
+	
 	public var loopsLeft(default, null):Array<UInt> = new Array<UInt>();
 	public var loopStartPos(default, null):Array<UInt> = new Array<UInt>();
 	
@@ -86,8 +88,8 @@ class TweenTimeline {
 	public var ease(default, null):EaseFunction;
 	public var tweenUpdateCB(default, null):TweenTask->Void;
 	
-	private var _prvTweenTask:TweenTask;
-	private var _crTweenTask:TweenTask;
+	private var _prvTweenTasks:Array<TweenTask> = new Array<TweenTask>();
+	private var _crTweenTasks:Array<TweenTask> = new Array<TweenTask>();
 
 	private var _orgnTarget:Dynamic;
 	private var _orgnEase:EaseFunction;
@@ -116,6 +118,9 @@ class TweenTimeline {
 	
 	public function reset():Void {
 		nodes.splice(0, nodes.length);
+		
+		paralleling = false;
+		
 		loopsLeft.splice(0, loopsLeft.length);
 		loopStartPos.splice(0, loopStartPos.length);
 		
@@ -236,9 +241,7 @@ class TweenTimeline {
 	}
 	
 	public function tweenBack(?duration:UInt = 0, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void):TweenTimeline {
-		var task = TweenTask.get();
-		task.init(null, null, duration, ease, onUpdateCB);
-		nodes.push(BACKWARD_TWEEN(task));
+		nodes.push(BACKWARD_TWEEN(duration, ease, onUpdateCB));
 		return this;
 	}
 	
@@ -254,6 +257,16 @@ class TweenTimeline {
 	
 	public function call(callback:TweenTimeline->Void):TweenTimeline {
 		nodes.push(CALL(callback));
+		return this;
+	}
+	
+	public function startParallel(times:UInt = 0):TweenTimeline {
+		nodes.push(START_PARALLEL);
+		return this;
+	}
+	
+	public function endParallel():TweenTimeline {
+		nodes.push(END_PARALLEL);
 		return this;
 	}
 	
@@ -288,13 +301,17 @@ class TweenTimeline {
 			if (waitTimeLeft <= 0) nextNode();
 			
 		} else {
-			if (_crTweenTask != null) {
-				if (_crTweenTask.update(delta)) {
-					_prvTweenTask = _crTweenTask;
-					_crTweenTask = null;
-					nextNode();
-				}
+			var i = 0;
+			var task:TweenTask;
+			while (i < _crTweenTasks.length) {
+				task = _crTweenTasks[i];
+				if (task.update(delta)) {
+					_prvTweenTasks.push(task);
+					_crTweenTasks.splice(i, 1);
+				} else i++;
 			}
+			
+			if (_crTweenTasks.length == 0) nextNode();
 		}
 	}
 	
@@ -323,16 +340,22 @@ class TweenTimeline {
 				task.onUpdateCB = task._orgnUpdateCB == null ? tweenUpdateCB : task._orgnUpdateCB;
 		
 				task.initVars(false);
-				_crTweenTask = task;
+				_crTweenTasks.push(task);
 					
-			case BACKWARD_TWEEN(task):
-				if (_prvTweenTask == null) {
+			case BACKWARD_TWEEN(duration, ease, onUpdateCB):
+				if (_prvTweenTasks.length == 0) {
 					nextNode();
 					return;
 				}
 				
-				task.copyBackward(_prvTweenTask);
-				_crTweenTask = task;
+				var appendedIndex = _crTweenTasks.length;
+				var task:TweenTask;
+				while (_prvTweenTasks.length > 0) {
+					task = TweenTask.get();
+					task.init(null, null, duration, ease, onUpdateCB);
+					task.copyBackward(_prvTweenTasks.pop());
+					_crTweenTasks.insert(appendedIndex, task);
+				}
 				
 			case WAIT(duration):
 				waitTimeLeft = duration;
@@ -344,6 +367,14 @@ class TweenTimeline {
 				callback(this);
 				nextNode();
 			
+			case START_PARALLEL:
+				paralleling = true;
+				while (paralleling) nextNode();
+				
+				
+			case END_PARALLEL:
+				paralleling = false;
+				
 			case START_LOOP(times):
 				loopsLeft.push(times);
 				loopStartPos.push(pos + 1);
@@ -392,12 +423,14 @@ class TweenTimeline {
 enum TweenNode {
 	
 	TWEEN(task:TweenTask);
-	BACKWARD_TWEEN(task:TweenTask);
+	BACKWARD_TWEEN(duration:UInt, ease:EaseFunction, onUpdateCB:TweenTask->Void);
 	WAIT(duration:Int);
 	WAIT_EX(f:TweenTimeline->Int);
-	CALL(callback:TweenTimeline->Void);
+	CALL(callback:TweenTimeline-> Void);
+	START_PARALLEL;
+	END_PARALLEL;
 	START_LOOP(times:UInt);
-	END_LOOP();
+	END_LOOP;
 	JUMP(f:TweenTimeline-> Int);
 	SET(target:Dynamic, ease:EaseFunction);
 	
