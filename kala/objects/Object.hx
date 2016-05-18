@@ -278,7 +278,7 @@ class Object extends EventHandle implements IObject {
 		if (componentsReset) resetComponents();
 	}
 	
-	public function destroy(componentsDestroy:Bool = true):Void {
+	public function destroy(destroyComponents:Bool = true):Void {
 		position = null;
 
 		scale = null;
@@ -292,11 +292,11 @@ class Object extends EventHandle implements IObject {
 		
 		//
 		
-		for (callback in onDestroy) callback.cbFunction(this, componentsDestroy);
+		for (callback in onDestroy) callback.cbFunction(this, destroyComponents);
 
 		//
 		
-		if (componentsDestroy) destroyComponents();
+		if (destroyComponents) this.destroyComponents();
 		_components = null;
 		
 		destroyCBHandles();
