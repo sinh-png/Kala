@@ -22,7 +22,7 @@ interface IGroup extends IObject {
 	
 	private var _views:Array<View>;
 	
-	public function addView(view:View):Void;
+	public function addView(view:View, pos:Int = -1):Void;
 	public function removeView(view:View, splice:Bool = false):View;
 	
 }
@@ -172,14 +172,13 @@ class Group<T:Object> extends Object implements IGroup {
 		return _children.copy();
 	}
 	
-	public function add(obj:T):Void {
+	public function add(obj:T, pos:Int = -1):Void {
 		if (_children.indexOf(obj) != -1) return null;
-		_children.push(obj);
+		
+		if (pos == -1) _children.push(obj);
+		else _children.insert(pos, obj);
+		
 		obj._groups.push(this);
-	}
-	
-	public inline function addObjects(objects:Array<T>):Void {
-		for (obj in objects) add(obj);
 	}
 	
 	public function swap(swappedObj:T, obj:T):Bool {
@@ -212,14 +211,13 @@ class Group<T:Object> extends Object implements IGroup {
 		while (_children.length > 0)  _children.pop()._groups.remove(this);
 	}
 	
-	public function addView(view:View):Void {
+	public function addView(view:View, pos:Int = -1):Void {
 		if (_views.indexOf(view) != -1) return null;
-		_views.push(view);
+		
+		if (pos == -1) _views.push(view);
+		else _views.insert(pos, view);
+		
 		view._groups.push(this);
-	}
-	
-	public inline function addViews(views:Array<View>):Void {
-		for (view in views) addView(view);
 	}
 	
 	public function removeView(view:View, splice:Bool = false):View {
