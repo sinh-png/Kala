@@ -180,6 +180,8 @@ class Kala {
 		#end
 	
 		world.callUpdate(delta);
+		
+		Audio.update();
 	}
 	
 	static function set_updateRate(value:UInt):UInt {
