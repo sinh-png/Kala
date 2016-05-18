@@ -182,6 +182,19 @@ class Group<T:Object> extends Object implements IGroup {
 		for (obj in objects) add(obj);
 	}
 	
+	public function swap(swappedObj:T, obj:T):Bool {
+		var index = _children.indexOf(swappedObj);
+		
+		if (index == -1) return false;
+		
+		_children[index] = obj;
+		obj._groups.push(this);
+		
+		swappedObj._groups.remove(this);
+		
+		return true;
+	}
+	
 	public function remove(obj:T, splice:Bool = false):T {
 		var index = _children.indexOf(obj);
 		
