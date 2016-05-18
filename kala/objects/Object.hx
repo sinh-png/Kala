@@ -203,7 +203,7 @@ class Object extends EventHandle implements IObject {
 		
 	//
 
-	private var _firstFrameExecuted:Bool;
+	private var firstFrameExecuted:Bool;
 	
 	private var _crGroup:Object;
 	private var _groups:Array<Object> = [];
@@ -267,7 +267,7 @@ class Object extends EventHandle implements IObject {
 		
 		antialiasing = false;
 	
-		_firstFrameExecuted = false;
+		firstFrameExecuted = false;
 		
 		unloadGraphics();
 		bufferOriginX = bufferOriginY = 0;
@@ -498,9 +498,9 @@ class Object extends EventHandle implements IObject {
 	}
 	
 	inline function execFirstFrame():Void {
-		if (!_firstFrameExecuted) {
+		if (!firstFrameExecuted) {
 			for (callback in onFirstFrame) callback.cbFunction(this);
-			_firstFrameExecuted = true;
+			firstFrameExecuted = true;
 		}
 	}
 	
