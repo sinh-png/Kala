@@ -2,10 +2,11 @@ package kala;
 
 #if (debug || kala_debug)
 import kala.debug.Debugger;
-import kala.math.color.Color;
 import kha.Canvas;
 import kha.Framebuffer;
 #end
+
+import kala.math.color.Color;
 
 @:allow(kala.Kala)
 class Debug {
