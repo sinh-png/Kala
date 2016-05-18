@@ -183,11 +183,24 @@ class TweenTimeline {
 	}
 	
 	public function tween(
-		vars:Dynamic, duration:UInt, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void, ?target:Dynamic
+		target:Dynamic, vars:Dynamic, duration:UInt, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
 		var task = TweenTask.get();
 		task.init(target, vars, duration, ease, onUpdateCB);
 		nodes.push(TWEEN(task));
+		return this;
+	}
+	
+	public function tweenPos(
+		target:Dynamic, x:FastFloat, y:FastFloat, duration:UInt, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void
+	):TweenTimeline {
+		var task = TweenTask.get();
+		
+		var vars:Dynamic = { x: x, y: y };
+
+		task.init(target, vars, duration, ease, onUpdateCB);
+		nodes.push(TWEEN(task));
+		
 		return this;
 	}
 	
@@ -195,21 +208,6 @@ class TweenTimeline {
 		var task = TweenTask.get();
 		task.init(null, null, duration, ease, onUpdateCB);
 		nodes.push(BACKWARD_TWEEN(task));
-		return this;
-	}
-	
-	public function tweenPos(
-		?x:FastFloat, ?y:FastFloat, duration:UInt, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void, ?target:Dynamic
-	):TweenTimeline {
-		var task = TweenTask.get();
-		
-		var vars:Dynamic = { };
-		if (x != null) vars.x = x;
-		if (y != null) vars.y = y;
-		
-		task.init(target, vars, duration, ease, onUpdateCB);
-		nodes.push(TWEEN(task));
-		
 		return this;
 	}
 	
