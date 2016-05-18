@@ -289,11 +289,13 @@ class AssetLoader extends EventHandle {
 		return this;
 	}
 	
-	public inline function bunble(assets:Array<AssetLoadingInfo>):Void {
+	public inline function bunble(assets:Array<AssetLoadingInfo>):AssetLoader {
 		for (asset in assets) {
 			_queuingAssets.push(asset);
 			totalSize += asset.size;
 		}
+		
+		return this;
 	}
 	
 	public function load(?onProcessCallback:Dynamic->AssetLoadingInfo->AssetLoadingInfo->Bool):AssetLoadingInfo {
