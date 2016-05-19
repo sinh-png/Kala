@@ -87,7 +87,7 @@ class Group<T:Object> extends Object implements IGroup {
 			}
 
 			if (view.alive && view.active) view.callUpdate(this, delta);
-			
+
 			i++;
 		}
 	}
@@ -96,8 +96,6 @@ class Group<T:Object> extends Object implements IGroup {
 		var g2 = canvas.g2;
 		
 		if (transformEnable) {
-			data.antialiasing = antialiasing || data.antialiasing;
-			
 			if (data.transformation == null) data.transformation = _cachedDrawingMatrix = getMatrix();
 			else data.transformation = _cachedDrawingMatrix = data.transformation.multmat(getMatrix());
 		
@@ -108,9 +106,9 @@ class Group<T:Object> extends Object implements IGroup {
 			}
 			
 			g2.opacity = this.opacity * data.opacity;
-		} else {
-			data.antialiasing = false;
 		}
+		
+		if (antialiasing) data.antialiasing = true;
 		
 		var drawingData = new DrawingData(
 			data.antialiasing,
