@@ -50,11 +50,46 @@ class Tween extends Component<Object> {
 	}
 	
 	public inline function tween(
-		target:Dynamic, vars:Dynamic, duration:UInt, ?ease:EaseFunction, ?onFinishCB:TweenTimeline->Void, ?onUpdateCB:TweenTask->Void
+		target:Dynamic, vars:Dynamic, duration:UInt, ?ease:EaseFunction,
+		?onFinishCB:TweenTimeline->Void, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
 		var timeline = TweenTimeline.get().init(this, null, null, null).tween(target, vars, duration, ease, onUpdateCB);
 		if (onFinishCB != null) timeline.call(onFinishCB);
 		timeline.start();
+		
+		return timeline;
+	}
+	
+	public function tweenPos(
+		target:Dynamic, x:FastFloat, y:FastFloat, duration:UInt, ?ease:EaseFunction,
+		?onFinishCB:TweenTimeline->Void, ?onUpdateCB:TweenTask->Void
+	):TweenTimeline {
+		var timeline = TweenTimeline.get().init(this, null, null, null).tween(target, { x: x, y: y }, duration, ease, onUpdateCB);
+		if (onFinishCB != null) timeline.call(onFinishCB);
+		timeline.start();
+		
+		return timeline;
+	}
+	
+	public function tweenX(
+		target:Dynamic, x:FastFloat, duration:UInt, ?ease:EaseFunction,
+		?onFinishCB:TweenTimeline->Void, ?onUpdateCB:TweenTask->Void
+	):TweenTimeline {
+		var timeline = TweenTimeline.get().init(this, null, null, null).tween(target, { x: x }, duration, ease, onUpdateCB);
+		if (onFinishCB != null) timeline.call(onFinishCB);
+		timeline.start();
+		
+		return timeline;
+	}
+	
+	public function tweenY(
+		target:Dynamic, y:FastFloat, duration:UInt, ?ease:EaseFunction,
+		?onFinishCB:TweenTimeline->Void, ?onUpdateCB:TweenTask->Void
+	):TweenTimeline {
+		var timeline = TweenTimeline.get().init(this, null, null, null).tween(target, { y: y }, duration, ease, onUpdateCB);
+		if (onFinishCB != null) timeline.call(onFinishCB);
+		timeline.start();
+		
 		return timeline;
 	}
 	
