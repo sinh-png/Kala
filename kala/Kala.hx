@@ -64,8 +64,6 @@ class Kala {
 	 */
 	public static var height(default, null):Int = 0;
 
-	public static var antiAliasingSamples(default, null):UInt;
-	
 	/**
 	 * Background color.
 	 */
@@ -97,8 +95,6 @@ class Kala {
 		?updateRate:UInt = 60,
 		?loadAllAssets:Bool = true
 	):Void {
-		Kala.antiAliasingSamples = antiAliasingSamples;
-		
 		width = screenWidth;
 		height = screenHeight;
 		

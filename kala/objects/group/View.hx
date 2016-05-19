@@ -37,11 +37,11 @@ class View extends Object {
 	public var transparent:Bool;
 	
 	public function new(
-		viewX:FastFloat, viewY:FastFloat, viewWidth:UInt, viewHeight:UInt,
-		?antiAliasingSamples:UInt
+		viewX:FastFloat, viewY:FastFloat,
+		viewWidth:UInt, viewHeight:UInt,
+		?antiAliasingSamples:UInt = 1
 	) {
 		super();
-		if (antiAliasingSamples == null) antiAliasingSamples = Kala.antiAliasingSamples;
 		viewBuffer = Image.createRenderTarget(
 			Std.int(viewWidth), Std.int(viewHeight), null, 
 			DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples
