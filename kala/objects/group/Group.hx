@@ -104,6 +104,8 @@ class Group<T:Object> extends Object implements IGroup {
 			}
 			
 			g2.opacity = this.opacity * data.opacity;
+		} else {
+			data.antialiasing = false;
 		}
 		
 		var drawingData = new DrawingData(
