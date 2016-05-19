@@ -217,10 +217,6 @@ class Group<T:Object> extends Object implements IGroup {
 		return obj;
 	}
 	
-	public function removeAll():Void {
-		while (_children.length > 0)  _children.pop()._groups.remove(this);
-	}
-	
 	public function addView(view:View, pos:Int = -1):Void {
 		if (_views.indexOf(view) != -1) return null;
 		
@@ -244,10 +240,6 @@ class Group<T:Object> extends Object implements IGroup {
 		view.firstFrameExecuted = false;
 		
 		return view;
-	}
-	
-	public function removeAllViews():Void {
-		while (_views.length > 0) _views.pop()._groups.remove(this);
 	}
 	
 	public inline function iterator():Iterator<T> {
