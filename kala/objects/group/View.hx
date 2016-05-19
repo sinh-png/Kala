@@ -10,6 +10,7 @@ import kha.FastFloat;
 import kha.Image;
 import kha.graphics4.DepthStencilFormat;
 import kha.math.FastMatrix3;
+import kha.graphics2.ImageScaleQuality;
 
 @:access(kala.objects.group.Group)
 class View extends Object {
@@ -46,6 +47,8 @@ class View extends Object {
 			Std.int(viewWidth), Std.int(viewHeight), null, 
 			DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples
 		);
+		
+		viewBuffer.g2.imageScaleQuality = ImageScaleQuality.Low;
 		
 		viewPos = new Vec2T(viewX, viewY);
 		this.viewWidth = viewWidth;
