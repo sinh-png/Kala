@@ -7,10 +7,10 @@ import kala.math.color.Color;
 import kala.math.Rect;
 import kha.Canvas;
 import kha.FastFloat;
+import kha.graphics2.ImageScaleQuality;
 import kha.Image;
 import kha.graphics4.DepthStencilFormat;
 import kha.math.FastMatrix3;
-import kha.graphics2.ImageScaleQuality;
 
 @:access(kala.objects.group.Group)
 class View extends Object {
