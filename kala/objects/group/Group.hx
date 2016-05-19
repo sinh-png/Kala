@@ -50,8 +50,12 @@ class Group<T:Object> extends Object implements IGroup {
 		colorAlphaBlendMode = null;
 	}
 	
-	override public function destroy(componentsDestroy:Bool = true):Void {
-		super.destroy(componentsDestroy);
+	override public function destroy(destroyComponents:Bool = true):Void {
+		super.destroy(destroyComponents);
+		
+		while (_children.length > 0) _children.pop().destroy(destroyComponents);
+		while (_views.length > 0) _views.pop().destroy(destroyComponents);
+		
 		_children = null;
 		_views = null;
 	}
