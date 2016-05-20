@@ -1,7 +1,7 @@
 package kala.components.input;
 import kala.math.color.Color;
 
-#if (kala_mouse)
+#if kala_mouse
 
 import kala.components.collision.Collider;
 import kala.components.collision.CollisionShape;
@@ -37,8 +37,7 @@ class MouseInteraction extends Component<Object> {
 	private var _dragPointX:FastFloat;
 	private var _dragPointY:FastFloat;
 	
-	
-	public function new(?object:Object, ?collider:Collider, addObjectRect:Bool = false) {
+	public function new(?object:Object, ?collider:Collider, objectRectScale:FastFloat = 0) {
 		super(null);
 		
 		this.collider = collider == null ? new Collider() : collider;
@@ -50,7 +49,10 @@ class MouseInteraction extends Component<Object> {
 		
 		if (object != null) {
 			addTo(object);
-			if (addObjectRect) this.addObjectRect();
+			if (objectRectScale > 0) {
+				var rect = this.collider.addObjectRect();
+				rect.scale.set(objectRectScale, objectRectScale, object.width / 2, object.height / 2);
+			}
 		}
 	}
 	
