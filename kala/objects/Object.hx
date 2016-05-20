@@ -4,6 +4,7 @@ import kala.DrawingData;
 import kala.EventHandle;
 import kala.components.Component.IComponent;
 import kala.graphics.Shader;
+import kala.math.Collision;
 import kala.math.helpers.FastMatrix3Helper;
 import kala.math.Angle;
 import kala.math.color.Color;
@@ -154,7 +155,6 @@ class Object extends EventHandle implements IObject {
 	public var opacity:FastFloat;
 	
 	public var antialiasing:Bool;
-	
 	//
 	
 	/**
@@ -646,32 +646,32 @@ class Object extends EventHandle implements IObject {
 		return _height;
 	}
 	
-	function get_tWidth():FastFloat {
+	inline function get_tWidth():FastFloat {
 		return Math.abs(width * scale.x) + Math.abs(height * scale.y * Math.tan(skew.x * Angle.CONST_RAD));
 	}
 	
-	function get_tHeight():FastFloat {
+	inline function get_tHeight():FastFloat {
 		return Math.abs(height * scale.y) + Math.abs(width  * scale.x  * Math.tan(skew.y * Angle.CONST_RAD));
 	}
 	
-	function get_group():GenericGroup {
+	inline function get_group():GenericGroup {
 		return cast _crGroup;
 	}
 	
-	function get_x():FastFloat {
+	inline function get_x():FastFloat {
 		return position.x;
 	}
 	
-	function set_x(value:FastFloat):FastFloat {
+	inline function set_x(value:FastFloat):FastFloat {
 		return position.x = value;
 	}
 	
-	function get_y():FastFloat {
+	inline function get_y():FastFloat {
 		return position.y;
 	}
 	
-	function set_y(value:FastFloat):FastFloat {
+	inline function set_y(value:FastFloat):FastFloat {
 		return position.y = value;
 	}
-
+	
 }
