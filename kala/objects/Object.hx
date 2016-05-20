@@ -314,7 +314,10 @@ class Object extends EventHandle implements IObject {
 		//
 		
 		removefromGroups();
+		group = null;
 		_groups = null;
+		
+		pool = null;
 	}
 	
 	public function deepReset(componentsDeepReset:Bool = true):Void {
