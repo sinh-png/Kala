@@ -34,6 +34,14 @@ class Vec2 {
 	}
 	
 	@:extern
+	public inline function copy(vec:Vec2):Vec2 {
+		x = vec.x;
+		y = vec.y;
+		
+		return this;
+	}
+	
+	@:extern
 	public inline function toVector2():Vector2 {
 		return new Vector2(x, y);
 	}
