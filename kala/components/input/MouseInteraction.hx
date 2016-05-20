@@ -1,7 +1,7 @@
 package kala.components.input;
 import kala.math.color.Color;
 
-#if (debug || kala_debug || kala_mouse)
+#if (kala_mouse)
 
 import kala.components.collision.Collider;
 import kala.components.collision.CollisionShape;
