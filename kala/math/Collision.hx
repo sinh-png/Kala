@@ -6,6 +6,17 @@ import kha.FastFloat;
 
 class Collision {
 	
+	public inline static function pointVsRect(
+		pointX:FastFloat, pointY:FastFloat,
+		rectX:FastFloat, rectY:FastFloat,
+		rectWidth:FastFloat, rectHeight:FastFloat
+	):Bool {
+		return (
+			pointX >= rectX && rectX < rectX + rectWidth &&
+			pointY >= rectY && rectY < rectY + rectHeight
+		);
+	}
+	
 	public static function pointVsCircle(
 		pointX:FastFloat, pointY:FastFloat,
 		circleX:FastFloat, circleY:FastFloat, circleRadius:FastFloat
