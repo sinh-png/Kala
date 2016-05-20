@@ -121,6 +121,15 @@ class Kala {
 	public static inline function applyDelta(value:FastFloat):FastFloat {
 		return elapsedTime / perfectElapsedTime * value;
 	}
+	
+	
+	public static inline function openURL(url:String, ?target:String = "_blank"):Void {
+		#if js
+		js.Browser.window.open(url, target);
+		#elseif flash
+		flash.Lib.getURL(new flash.net.URLRequest(url), target);
+		#end
+	}
 
 	static function startWorld(updateRate:UInt):Void {
 		#if (debug || kala_debug || kala_keyboard)
