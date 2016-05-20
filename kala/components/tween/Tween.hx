@@ -42,6 +42,10 @@ class Tween extends Component<Object> {
 		super.remove();
 	}
 	
+	public function cancel():Void {
+		while (_tweens.length > 0) _tweens.pop().put();
+	}
+	
 	public function get(?target:Dynamic, ?ease:EaseFunction, ?onTweenUpdateCB:TweenTask->Void):TweenTimeline {
 		if (target == null) target = object;
 		if (ease == null) ease = Ease.none;
@@ -279,6 +283,18 @@ class TweenTimeline {
 		return this;
 	}
 	
+	public function cancel():Void {
+		if (_manager != null) {
+			_manager._tweens.remove(this);
+			_manager = null;
+		}
+		
+		if (parent != null) {
+			parent.children.remove(this);
+			parent = null;
+		}
+	}
+	
 	function init(
 		manager:Tween, 
 		target:Dynamic, ease:EaseFunction, tweenUpdateCB:TweenTask->Void
@@ -357,18 +373,6 @@ class TweenTimeline {
 		_crTweenTasks.splice(0, _crTweenTasks.length);
 		
 		pool.put(this);
-	}
-	
-	function cancel():Void {
-		if (_manager != null) {
-			_manager._tweens.remove(this);
-			_manager = null;
-		}
-		
-		if (parent != null) {
-			parent.children.remove(this);
-			parent = null;
-		}
 	}
 	
 	function update(delta:Int):Void {
