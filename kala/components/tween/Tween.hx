@@ -326,11 +326,12 @@ class TweenTimeline {
 	}
 	
 	function destroy():Void {
-		while (children.length > 0) children.pop().destroy();
-		
 		cancel();
 		
+		while (children.length > 0) children.pop().destroy();
+		
 		parent = null;
+		children = null;
 		
 		node = null;
 		nodes = null;
@@ -350,9 +351,9 @@ class TweenTimeline {
 	}
 	
 	function put():Void {
-		while (children.length > 0) children.pop().put();
-		
 		cancel();
+		
+		while (children.length > 0) children.pop().put();
 		
 		parent = null;
 		
