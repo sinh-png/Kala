@@ -63,7 +63,10 @@ interface IObject {
 	
 	//
 	
-	public var group(get, never):GenericGroup;
+	public var group(default, null):IGroup;
+	public var groups(get, never):Array<IGroup>;
+	private var _groups:Array<IGroup>;
+	
 	public var pool:ObjectPool;
 	
 	//
@@ -82,9 +85,6 @@ interface IObject {
 	//
 
 	private var firstFrameExecuted:Bool;
-	
-	private var _crGroup:Object;
-	private var _groups:Array<Object>;
 	
 	private var _components:Array<IComponent>;
 	
@@ -185,7 +185,13 @@ class Object extends EventHandle implements IObject {
 	
 	//
 	
-	public var group(get, never):GenericGroup;
+	/**
+	 * The current group updating / rendering this object.
+	 */
+	public var group(default, null):IGroup;
+	public var groups(get, never):Array<IGroup>;
+	var _groups:Array<IGroup> = new Array<IGroup>();
+	
 	public var pool:ObjectPool;
 	
 	//
@@ -204,10 +210,6 @@ class Object extends EventHandle implements IObject {
 	//
 
 	private var firstFrameExecuted:Bool;
-	
-	private var _crGroup:Object;
-	private var _groups:Array<Object> = [];
-	
 	private var _components:Array<IComponent> = new Array<IComponent>();
 	
 	//
@@ -440,7 +442,7 @@ class Object extends EventHandle implements IObject {
 	}
 	
 	public function getDrawingMatrix():FastMatrix3 {
-		var group:IGroup = cast _crGroup;
+		var group = this.group;
 		
 		while (true) {
 			if (group == null) {
@@ -449,7 +451,7 @@ class Object extends EventHandle implements IObject {
 				return group.getDrawingMatrix().multmat(getMatrix());
 			}
 			
-			group = cast group._crGroup;
+			group = cast group.group;
 		}
 	}
 	
@@ -465,14 +467,8 @@ class Object extends EventHandle implements IObject {
 		pool.put(this);
 	}
 	
-	public inline function getGroups():Array<Group<Object>> {
-		var array = new Array<Group<Object>>();
-		for (group in _groups) array.push(cast group);
-		return array;
-	}
-	
 	public inline function removefromGroups(splice:Bool = false):Void {
-		for (group in getGroups()) group.remove(this, splice);
+		for (group in _groups) group._remove(this, splice);
 	}
 	
 	public inline function getComponents():Array<IComponent> {
@@ -504,8 +500,8 @@ class Object extends EventHandle implements IObject {
 		}
 	}
 	
-	inline function callUpdate(?caller:Object, delta:Int):Void {
-		_crGroup = caller;
+	inline function callUpdate(?group:IGroup, delta:Int):Void {
+		this.group = group;
 		
 		execFirstFrame();
 		
@@ -517,8 +513,8 @@ class Object extends EventHandle implements IObject {
 		for (callback in onPostUpdate) callback.cbFunction(this, delta);
 	}
 	
-	function callDraw(?caller:Object, data:DrawingData, canvas:Canvas):Void {
-		_crGroup = caller;
+	function callDraw(?group:IGroup, data:DrawingData, canvas:Canvas):Void {
+		this.group = group;
 		
 		execFirstFrame();
 		
@@ -654,10 +650,6 @@ class Object extends EventHandle implements IObject {
 		return Math.abs(height * scale.y) + Math.abs(width  * scale.x  * Math.tan(skew.y * Angle.CONST_RAD));
 	}
 	
-	inline function get_group():GenericGroup {
-		return cast _crGroup;
-	}
-	
 	inline function get_x():FastFloat {
 		return position.x;
 	}
@@ -672,6 +664,10 @@ class Object extends EventHandle implements IObject {
 	
 	inline function set_y(value:FastFloat):FastFloat {
 		return position.y = value;
+	}
+	
+	inline function get_groups():Array<IGroup> {
+		return _groups.copy();
 	}
 	
 }

@@ -25,6 +25,8 @@ interface IGroup extends IObject {
 	public function addView(view:View, pos:Int = -1):Void;
 	public function removeView(view:View, splice:Bool = false):View;
 	
+	private function _add(obj:Object, pos:Int = -1):Void;
+	private function _remove(obj:Object, spilce:Bool = false):Void;
 }
 
 @:access(kala.math.color.Color)
@@ -194,7 +196,7 @@ class Group<T:Object> extends Object implements IGroup {
 		obj._groups.push(this);
 		
 		swappedObj._groups.remove(this);
-		if (swappedObj._crGroup == this) swappedObj._crGroup = null;
+		if (swappedObj.group == this) swappedObj.group = null;
 		
 		swappedObj.firstFrameExecuted = false;
 		
@@ -210,7 +212,7 @@ class Group<T:Object> extends Object implements IGroup {
 		else _children[index] = null;
 
 		obj._groups.remove(this);
-		if (obj._crGroup == this) obj._crGroup = null;
+		if (obj.group == this) obj.group = null;
 		
 		obj.firstFrameExecuted = false;
 		
@@ -235,11 +237,19 @@ class Group<T:Object> extends Object implements IGroup {
 		else _views[index] = null;
 		
 		view._groups.remove(this);
-		if (view._crGroup == this) view._crGroup = null;
+		if (view.group == this) view.group = null;
 		
 		view.firstFrameExecuted = false;
 		
 		return view;
+	}
+	
+	function _add(obj:Object, pos:Int = -1):Void {
+		add(cast obj, pos);
+	}
+	
+	function _remove(obj:Object, spilce:Bool = false):Void {
+		remove(cast obj, spilce);
 	}
 	
 	public inline function iterator():Iterator<T> {
