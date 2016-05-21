@@ -50,7 +50,7 @@ class Ease {
 	private static var ELASTIC_AMPLITUDE:FastFloat = 1;
 	private static var ELASTIC_PERIOD:FastFloat = 0.4;
 
-	public static inline function none(t:FastFloat):FastFloat {
+	public static inline function linear(t:FastFloat):FastFloat {
 		return t;
 	}
 	

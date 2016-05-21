@@ -17,12 +17,12 @@ class Tween extends Component<Object> {
 	
 	override public function reset():Void {
 		super.reset();
-		while (_tweens.length > 0) _tweens.pop().put();
+		cancel();
 	}
 	
 	override public function destroy():Void {
 		super.destroy();
-		while (_tweens.length > 0) _tweens.pop().put();
+		while (_tweens.length > 0) _tweens.pop().cancel();
 		_tweens = null;
 	}
 
@@ -42,55 +42,55 @@ class Tween extends Component<Object> {
 		super.remove();
 	}
 	
-	public function cancel():Void {
-		while (_tweens.length > 0) _tweens.pop().put();
+	public inline function cancel():Void {
+		while (_tweens.length > 0) _tweens.pop().cancel();
 	}
 	
-	public function get(?target:Dynamic, ?ease:EaseFunction, ?onTweenUpdateCB:TweenTask->Void):TweenTimeline {
+	public inline function get(?target:Dynamic, ?ease:EaseFunction, ?onTweenUpdateCB:TweenTask->Void):TweenTimeline {
 		if (target == null) target = object;
-		if (ease == null) ease = Ease.none;
+		if (ease == null) ease = Ease.linear;
 		
-		return TweenTimeline.get().init(this, target, ease, onTweenUpdateCB);
+		return TweenTimeline.get().init(this, null, target, ease, onTweenUpdateCB);
 	}
 	
 	public inline function tween(
 		target:Dynamic, vars:Dynamic, duration:UInt, ?ease:EaseFunction,
 		?onFinishCB:TweenTimeline->Void, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
-		var timeline = TweenTimeline.get().init(this, null, null, null).tween(target, vars, duration, ease, onUpdateCB);
+		var timeline = TweenTimeline.get().init(this, null, null, null, null).tween(target, vars, duration, ease, onUpdateCB);
 		if (onFinishCB != null) timeline.call(onFinishCB);
 		timeline.start();
 		
 		return timeline;
 	}
 	
-	public function tweenPos(
+	public inline function tweenPos(
 		target:Dynamic, x:FastFloat, y:FastFloat, duration:UInt, ?ease:EaseFunction,
 		?onFinishCB:TweenTimeline->Void, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
-		var timeline = TweenTimeline.get().init(this, null, null, null).tween(target, { x: x, y: y }, duration, ease, onUpdateCB);
+		var timeline = TweenTimeline.get().init(this, null, null, null, null).tween(target, { x: x, y: y }, duration, ease, onUpdateCB);
 		if (onFinishCB != null) timeline.call(onFinishCB);
 		timeline.start();
 		
 		return timeline;
 	}
 	
-	public function tweenX(
+	public inline function tweenX(
 		target:Dynamic, x:FastFloat, duration:UInt, ?ease:EaseFunction,
 		?onFinishCB:TweenTimeline->Void, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
-		var timeline = TweenTimeline.get().init(this, null, null, null).tween(target, { x: x }, duration, ease, onUpdateCB);
+		var timeline = TweenTimeline.get().init(this, null, null, null, null).tween(target, { x: x }, duration, ease, onUpdateCB);
 		if (onFinishCB != null) timeline.call(onFinishCB);
 		timeline.start();
 		
 		return timeline;
 	}
 	
-	public function tweenY(
+	public inline function tweenY(
 		target:Dynamic, y:FastFloat, duration:UInt, ?ease:EaseFunction,
 		?onFinishCB:TweenTimeline->Void, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
-		var timeline = TweenTimeline.get().init(this, null, null, null).tween(target, { y: y }, duration, ease, onUpdateCB);
+		var timeline = TweenTimeline.get().init(this, null, null, null, null).tween(target, { y: y }, duration, ease, onUpdateCB);
 		if (onFinishCB != null) timeline.call(onFinishCB);
 		timeline.start();
 		
@@ -99,7 +99,7 @@ class Tween extends Component<Object> {
 	
 	function update(obj:Object, delta:Int):Void {
 		for (tween in _tweens) {
-			tween.update(delta);
+			if (!tween.paused) tween.update(delta);
 		}
 	}
 	
@@ -120,13 +120,15 @@ class TweenTimeline {
 	
 	//
 	
+	public var manager(default, null):Tween;
+	
+	public var parent(default, null):TweenTimeline;
+	public var children(default, null):Array<TweenTimeline> = new Array<TweenTimeline>();
+	
 	public var nodes:Array<TweenNode> = new Array<TweenNode>();
 	
 	public var pos(default, null):Int;
 	public var node(default, null):TweenNode;
-	
-	public var parent(default, null):TweenTimeline;
-	public var children(default, null):Array<TweenTimeline> = new Array<TweenTimeline>();
 	
 	public var loopsLeft(default, null):Int;
 	
@@ -139,232 +141,160 @@ class TweenTimeline {
 	var _ease:EaseFunction;
 	var _tweenUpdateCB:TweenTask->Void;
 	
-	private var _paralleling(default, null):Bool;
+	public var paused(default, null):Bool;
+	
+	public var batching(default, null):Bool;
+	
+	private var _batchCalling:Bool;
 	
 	private var _prvTweenTasks:Array<TweenTask> = new Array<TweenTask>();
 	private var _crTweenTasks:Array<TweenTask> = new Array<TweenTask>();
 
-	private var _orgnTarget:Dynamic;
-	private var _orgnEase:EaseFunction;
-	private var _orgnTweenUpdateCB:TweenTask->Void;
-	
-	private var _manager:Tween;
 	
 	public function new() {
-		reset();
+	
 	}
 	
-	public function start(?manager:Tween):Void {
-		if (manager != null) _manager = manager;
-		
-		if (_manager == null) throw "Needs a manager to start.";
-		
-		_manager._tweens.push(this);
-		
+	public inline function start():Void {
+		manager._tweens.push(this);
 		nextNode();
 	}
 	
-	public function tween(
-		target:Dynamic, vars:Dynamic, duration:UInt, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void
+	public inline function tween(
+		target:Dynamic, vars:Dynamic, duration:UInt,
+		?ease:EaseFunction, ?backwardEase:EaseFunction, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
 		var task = TweenTask.get();
 		task.init(target, vars, duration, ease, onUpdateCB);
+		task.backwardEase = backwardEase;
 		nodes.push(TWEEN(task));
-		
 		return this;
 	}
 	
-	public function tweenPos(
-		target:Dynamic, x:FastFloat, y:FastFloat, duration:UInt, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void
+	public inline function tweenPos(
+		target:Object, x:FastFloat, y:FastFloat, duration:UInt,
+		?ease:EaseFunction, ?backwardEase:EaseFunction, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
-		var task = TweenTask.get();
-		task.init(target, { x: x, y: y }, duration, ease, onUpdateCB);
-		nodes.push(TWEEN(task));
-		
+		tween(target, { x: x, y: y }, duration, ease, backwardEase, onUpdateCB);
 		return this;
 	}
 	
-	public function tweenX(
-		target:Dynamic, x:FastFloat, duration:UInt, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void
+	public inline function tweenX(
+		target:Dynamic, x:FastFloat, duration:UInt,
+		?ease:EaseFunction, ?backwardEase:EaseFunction, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
-		var task = TweenTask.get();
-		task.init(target, { x: x }, duration, ease, onUpdateCB);
-		nodes.push(TWEEN(task));
-		
+		tween(target, { x: x }, duration, ease, backwardEase, onUpdateCB);
 		return this;
 	}
 	
-	public function tweenY(
-		target:Dynamic, y:FastFloat, duration:UInt, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void
+	public inline function tweenY(
+		target:Object, y:FastFloat, duration:UInt,
+		?ease:EaseFunction, ?backwardEase:EaseFunction, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
-		var task = TweenTask.get();
-		task.init(target, { y: y }, duration, ease, onUpdateCB);
-		nodes.push(TWEEN(task));
-		
+		tween(target, { y: y }, duration, ease, backwardEase, onUpdateCB);
 		return this;
 	}
 	
-	public function tweenAngle(
-		target:Object, ?fromAngle:FastFloat, toAngle:FastFloat, duration:UInt, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void
+	public inline function tweenAngle(
+		target:Object, ?fromAngle:FastFloat, toAngle:FastFloat, duration:UInt,
+		?ease:EaseFunction, ?backwardEase:EaseFunction, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
 		if (target == null) target = this.target;
 		if (fromAngle != null) target.rotation.angle = fromAngle;
-		
-		var task = TweenTask.get();
-		task.init(target.rotation, { angle: toAngle }, duration, ease, onUpdateCB);
-		nodes.push(TWEEN(task));
-		
+		tween(target.rotation, { angle: toAngle }, duration, ease, backwardEase, onUpdateCB);
 		return this;
 	}
 	
-	public function tweenOpacity(
-		target:Object, opacity:FastFloat, duration:UInt, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void
+	public inline function tweenOpacity(
+		target:Object, opacity:FastFloat, duration:UInt,
+		?ease:EaseFunction, ?backwardEase:EaseFunction, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
-		if (target == null) target = this.target;
-
-		var task = TweenTask.get();
-		task.init(target, { opacity: opacity }, duration, ease, onUpdateCB);
-		nodes.push(TWEEN(task));
-		
+		tween(target, { opacity: opacity }, duration, ease, backwardEase, onUpdateCB);
 		return this;
 	}
 	
-	public function tweenBack(?duration:UInt = 0, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void):TweenTimeline {
+	public inline function tweenBack(?duration:UInt = 0, ?ease:EaseFunction, ?onUpdateCB:TweenTask->Void):TweenTimeline {
 		nodes.push(BACKWARD_TWEEN(duration, ease, onUpdateCB));
 		return this;
 	}
 	
-	public function wait(duration:UInt):TweenTimeline {
+	/**
+	 * If duration is lesser or equal to 0, this timeline will be paused on this node until resume() is called.
+	 */
+	public inline function wait(duration:Int):TweenTimeline {
 		nodes.push(WAIT(duration));
 		return this;
 	}
 	
-	public function waitEx(f:TweenTimeline->Int):TweenTimeline {
+	public inline function waitEx(f:TweenTimeline->Int):TweenTimeline {
 		nodes.push(WAIT_EX(f));
 		return this;
 	}
 	
-	public function call(callback:TweenTimeline->Void):TweenTimeline {
+	public inline function call(callback:TweenTimeline->Void):TweenTimeline {
 		nodes.push(CALL(callback));
 		return this;
 	}
 	
-	public function startParallel(times:UInt = 0):TweenTimeline {
-		nodes.push(START_PARALLEL);
+	public inline function startBatch(times:UInt = 0):TweenTimeline {
+		nodes.push(START_BATCH);
 		return this;
 	}
 	
-	public function endParallel():TweenTimeline {
-		nodes.push(END_PARALLEL);
+	public inline function endBatch():TweenTimeline {
+		nodes.push(END_BATCH);
 		return this;
 	}
 	
-	public function startLoop(times:UInt = 0):TweenTimeline {
+	public inline function startLoop(times:UInt = 0):TweenTimeline {
 		var timeline = TweenTimeline.get();
-		timeline._manager = _manager;
-		timeline.parent = this;
+		timeline.init(manager, this, null, null, null);
 		timeline.loopsLeft = times - 1;
-		timeline.reset();
 		nodes.push(CHILD_TIMELINE(timeline));
 		return timeline;
 	}
 	
-	public function endLoop():TweenTimeline {
+	public inline function endLoop():TweenTimeline {
 		return parent;
 	}
 	
-	public function jump(f:TweenTimeline->Int):TweenTimeline {
+	public inline function jump(f:TweenTimeline->Int):TweenTimeline {
 		nodes.push(JUMP(f));
 		return this;
 	}
 	
-	public function set(target:Dynamic, ease:EaseFunction):TweenTimeline {
+	public inline function set(target:Dynamic, ?ease:EaseFunction):TweenTimeline {
 		nodes.push(SET(target, ease));
 		return this;
 	}
 	
+	public inline function pause():Void {
+		paused = true;
+	}
+	
+	public inline function resume():Void {
+		paused = false;
+	}
+	
+	/**
+	 * Cancel this timeline and put it into the recycling pool.
+	 * Do NOT do anything on this timeline after calling this method.
+	 */
 	public function cancel():Void {
-		if (_manager != null) {
-			_manager._tweens.remove(this);
-			_manager = null;
+		if (manager != null) {
+			manager._tweens.remove(this);
+			manager = null;
 		}
 		
 		if (parent != null) {
 			parent.children.remove(this);
 			parent = null;
 		}
-	}
-	
-	function init(
-		manager:Tween, 
-		target:Dynamic, ease:EaseFunction, tweenUpdateCB:TweenTask->Void
-	):TweenTimeline {
-		_manager = manager;
 		
-		_orgnTarget = target;
-		_orgnEase = ease;
-		_orgnTweenUpdateCB = tweenUpdateCB;
-		
-		reset();
-		
-		return this;
-	}
-	
-	function reset():Void {
-		while (children.length > 0) children.pop().put();
-		
-		nodes.splice(0, nodes.length);
-		
-		_paralleling = false;
-		
-		pos = -1;
-		node = null;
-		
-		_target = parent == null ? _orgnTarget : parent._orgnTarget;
-		_ease = parent == null ? _orgnEase : parent._orgnEase;
-		_tweenUpdateCB = parent == null ? _orgnTweenUpdateCB : parent._orgnTweenUpdateCB;
-	}
-	
-	function destroy():Void {
-		cancel();
-		
-		while (children.length > 0) children.pop().destroy();
-		
-		parent = null;
-		children = null;
-		
-		node = null;
-		nodes = null;
-		
-		_manager = null;
-		
-		_orgnTarget = null;
-		_orgnEase = null;
-		_orgnTweenUpdateCB = null;
-		
-		_target = null;
-		_ease = null;
-		_tweenUpdateCB = null;
-		
-		_prvTweenTasks = null;
-		_crTweenTasks = null;
-	}
-	
-	function put():Void {
-		cancel();
-		
-		while (children.length > 0) children.pop().put();
-		
-		parent = null;
+		while (children.length > 0) children.pop().cancel();
 		
 		node = null;
 		nodes.splice(0, nodes.length);
-		
-		_manager = null;
-		
-		_orgnTarget = null;
-		_orgnEase = null;
-		_orgnTweenUpdateCB = null;
 		
 		_target = null;
 		_ease = null;
@@ -376,39 +306,82 @@ class TweenTimeline {
 		pool.put(this);
 	}
 	
+	function init(
+		manager:Tween, parent:TweenTimeline,
+		target:Dynamic, ease:EaseFunction, tweenUpdateCB:TweenTask->Void
+	):TweenTimeline {
+		this.parent = parent;
+		this.manager = manager;
+		
+		_target = target;
+		_ease = ease;
+		_tweenUpdateCB = tweenUpdateCB;
+		
+		pos = -1;
+		_batchCalling = false;
+		
+		paused = false;
+		
+		return this;
+	}
+	
+	/*function destroy():Void {
+		if (manager != null) {
+			manager._tweens.remove(this);
+			manager = null;
+		}
+		
+		if (parent != null) {
+			parent.children.remove(this);
+			parent = null;
+		}
+		
+		while (children.length > 0) children.pop().destroy();
+		children = null;
+		
+		node = null;
+		nodes = null;
+		
+		manager = null;
+		
+		_target = null;
+		_ease = null;
+		_tweenUpdateCB = null;
+		
+		_prvTweenTasks = null;
+		_crTweenTasks = null;
+	}*/
+	
 	function update(delta:Int):Void {
-		for (child in children) child.update(delta);
-
 		if (waitTimeLeft > 0) {
-			if (Kala.deltaTiming) {
-				waitTimeLeft -= delta;
-			} else {
-				waitTimeLeft--;
-			}
+			if (Kala.deltaTiming) waitTimeLeft -= delta;
+			else waitTimeLeft--;
+		}
+		
+		if (waitTimeLeft <= 0 || batching) {
+			for (child in children) child.update(delta);
 			
-			if (waitTimeLeft <= 0) nextNode();
-			
-		} else {
 			var i = 0;
 			var task:TweenTask;
 			while (i < _crTweenTasks.length) {
 				task = _crTweenTasks[i];
 				if (task.update(delta)) {
-					if (!task.paralleling) _prvTweenTasks.splice(0, _prvTweenTasks.length);
+					if (!batching) _prvTweenTasks.splice(0, _prvTweenTasks.length);
 					_prvTweenTasks.push(task);
 					_crTweenTasks.splice(i, 1);
 				} else i++;
 			}
-			
+		}
+		
+		if (waitTimeLeft <= 0 && _crTweenTasks.length == 0 && children.length == 0) {
+			batching = false;
 			nextNode();
 		}
 	}
 	
 	function nextNode():Void {
-		if (!_paralleling && (_crTweenTasks.length > 0 || children.length > 0)) return;
-		
 		if (pos == nodes.length - 1) {
-			if (loopsLeft == 0) put();
+			if (loopsLeft == 0) cancel();
 			else {
 				loopsLeft--;
 				setPos(0);
@@ -431,49 +404,53 @@ class TweenTimeline {
 		switch(node) {
 			
 			case TWEEN(task):
-				task.target = task._orgnTarget == null ? target : task._orgnTarget;
-				task.ease = task._orgnEase == null ? ease : task._orgnEase;
-				task.onUpdateCB = task._orgnUpdateCB == null ? tweenUpdateCB : task._orgnUpdateCB;
-				task.paralleling = _paralleling;
-				task.initVars(false);
+				if (task.target == null) task.target = target;
+				if (task.ease == null) task.ease = ease;
+				if (task.onUpdateCB == null) task.onUpdateCB = tweenUpdateCB;
+				task.initVars();
 				_crTweenTasks.push(task);
 					
 			case BACKWARD_TWEEN(duration, ease, onUpdateCB):
 				if (_prvTweenTasks.length == 0) {
-					nextNode();
+					if (_batchCalling || children.length == 0) nextNode();
 					return;
 				}
 				
+				if (_prvTweenTasks.length > 1) batching = true;
+				
 				var appendedIndex = _crTweenTasks.length;
-				var task:TweenTask;
+				var task:TweenTask = null;
 				while (_prvTweenTasks.length > 0) {
 					task = TweenTask.get();
 					task.init(null, null, duration, ease, onUpdateCB);
-					task.paralleling = _paralleling;
 					task.copyBackward(_prvTweenTasks.pop());
 					_crTweenTasks.insert(appendedIndex, task);
 				}
 				
 			case WAIT(duration):
-				waitTimeLeft = duration;
+				if (duration <= 0) paused = true;
+				else waitTimeLeft = duration;
+				
 				
 			case WAIT_EX(f):
-				waitTimeLeft = f(this);	
+				var duration = f(this);
+				if (duration <= 0) paused = true;
+				else waitTimeLeft = duration;
 				
 			case CALL(callback):
 				callback(this);
 				nextNode();
 			
-			case START_PARALLEL:
-				_paralleling = true;
-				while (_paralleling) nextNode();
+			case START_BATCH:
+				batching = _batchCalling = true;
+				while (_batchCalling) nextNode();
 				
-			case END_PARALLEL:
-				_paralleling = false;
+			case END_BATCH:
+				_batchCalling = false;
 				
 			case CHILD_TIMELINE(child):
 				children.push(child);
-				nextNode();
+				if (_batchCalling) nextNode();
 			
 			case JUMP(f):
 				var index = f(this);
@@ -533,8 +510,8 @@ enum TweenNode {
 	WAIT(duration:Int);
 	WAIT_EX(f:TweenTimeline->Int);
 	CALL(callback:TweenTimeline-> Void);
-	START_PARALLEL;
-	END_PARALLEL;
+	START_BATCH;
+	END_BATCH;
 	CHILD_TIMELINE(child:TweenTimeline);
 	JUMP(f:TweenTimeline-> Int);
 	SET(target:Dynamic, ease:EaseFunction);
@@ -559,23 +536,20 @@ class TweenTask {
 	public var target(default, null):Dynamic;
 	public var vars(default, null):Dynamic;
 	
-	public var duration(default, null):UInt;
-	public var elapsed(default, null):UInt;
 	public var percent(default, null):FastFloat;
+	public var duration(default, null):UInt;
+	public var elapsed:UInt;
 	
-	public var ease(default, null):EaseFunction;
+	public var backward(default, null):Bool;
 	
-	public var paralleling(default, null):Bool;
+	public var ease:EaseFunction;
+	public var backwardEase:EaseFunction;
 	
 	public var onUpdateCB:TweenTask->Void;
 	
 	private var _varNames:Array<String>;
 	private var _varStartValues:Array<FastFloat>;
 	private var _varRanges:Array<FastFloat>;
-	
-	private var _orgnTarget:Dynamic;
-	private var _orgnEase:EaseFunction;
-	private var _orgnUpdateCB:TweenTask->Void;
 	
 	public function new() {
 		
@@ -584,17 +558,16 @@ class TweenTask {
 	function init(
 		target:Dynamic, vars:Dynamic, duration:UInt, ease:EaseFunction, onUpdateCB:TweenTask->Void
 	):Void {
+		this.target = target;
 		this.vars = vars;
 		this.duration = duration;
+		this.ease = ease;
+		this.onUpdateCB = onUpdateCB;
 		
-		paralleling = false;
-		
-		_orgnTarget = target;
-		_orgnEase = ease;
-		_orgnUpdateCB = onUpdateCB;
+		backward = false;
 	}
 	
-	function initVars(backward:Bool):Void {
+	function initVars():Void {
 		percent = 0;
 		
 		if (!Reflect.isObject(vars)) {
@@ -627,16 +600,48 @@ class TweenTask {
 			
 			_varNames.push(name);
 			
-			if (backward) {
-				_varStartValues.push(destValue);
-				_varRanges.push(startValue - destValue);
-			} else {
-				_varStartValues.push(startValue);
-				_varRanges.push(destValue - startValue);
-			}
+
+			_varStartValues.push(startValue);
+			_varRanges.push(destValue - startValue);
 		}
 		
 		elapsed = 0;
+	}
+	
+	function copyBackward(task:TweenTask):Void {
+		target = task.target;
+		vars = task.vars;
+		
+		if (duration == 0) duration = task.duration;
+		
+		if (ease == null) {
+			ease = task.backwardEase == null ? task.ease : task.backwardEase;
+		}
+		
+		backwardEase = task.ease;
+		
+		if (onUpdateCB == null) onUpdateCB = task.onUpdateCB;
+		
+		_varNames = new Array<String>();
+		_varStartValues = new Array<FastFloat>();
+		_varRanges = new Array<FastFloat>();
+		
+		for (i in 0...task._varNames.length) {
+			_varNames.push(task._varNames[i]);
+			_varStartValues.push(task._varStartValues[i] + task._varRanges[i]);
+			_varRanges.push(-task._varRanges[i]);
+		}
+
+		elapsed = 0;
+		backward = true;
+	}
+	
+	function put():Void {
+		_varNames.splice(0, _varNames.length);
+		_varStartValues.splice(0, _varStartValues.length);
+		_varRanges.splice(0, _varRanges.length);
+	
+		pool.put(this);
 	}
 	
 	function update(delta:Int):Bool {
@@ -660,36 +665,6 @@ class TweenTask {
 		if (elapsed >= duration) return true;
 		
 		return false;
-	}
-	
-	function copyBackward(task:TweenTask):Void {
-		target = task.target;
-		vars = task.vars;
-		
-		if (duration == 0) duration = task.duration;
-		
-		ease = _orgnEase == null ? task.ease : _orgnEase;
-		onUpdateCB = _orgnUpdateCB == null ? task.onUpdateCB : _orgnUpdateCB;
-		
-		_varNames = new Array<String>();
-		_varStartValues = new Array<FastFloat>();
-		_varRanges = new Array<FastFloat>();
-		
-		for (i in 0...task._varNames.length) {
-			_varNames.push(task._varNames[i]);
-			_varStartValues.push(task._varStartValues[i] + task._varRanges[i]);
-			_varRanges.push(-task._varRanges[i]);
-		}
-
-		elapsed = 0;
-	}
-	
-	function put():Void {
-		_varNames.splice(0, _varNames.length);
-		_varStartValues.splice(0, _varStartValues.length);
-		_varRanges.splice(0, _varRanges.length);
-	
-		pool.put(this);
 	}
 	
 }
