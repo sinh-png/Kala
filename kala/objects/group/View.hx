@@ -128,7 +128,7 @@ class View extends Object {
 		canvas.g2.drawImage(viewBuffer, 0, 0);
 	}
 	
-	public function setAlignScaleMode(halign:FastFloat, valign:FastFloat, scaleMode:ScaleMode):View {
+	public inline function setAlignScaleMode(halign:FastFloat, valign:FastFloat, scaleMode:ScaleMode):View {
 		this.scaleMode = scaleMode;
 		this.halign = halign;
 		this.valign = valign;
@@ -136,7 +136,7 @@ class View extends Object {
 		return this;
 	}
 	
-	public function setCenterScaleMode(scaleMode:ScaleMode):View {
+	public inline function setCenterScaleMode(scaleMode:ScaleMode):View {
 		this.scaleMode = scaleMode;
 		halign = 0.5;
 		valign = 0.5;
