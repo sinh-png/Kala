@@ -407,7 +407,7 @@ class Debugger {
 		
 		//
 		if (Keyboard.BACKSPACE.pressed) {
-			_backspacePressingTime += Kala.elapsedTime;
+			_backspacePressingTime += Kala.delta;
 			if (_backspacePressingTime >= 0.25 && _command.length > 0) {
 				_command = _command.substr(0, _command.length - 1);
 			}

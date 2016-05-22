@@ -1,6 +1,7 @@
 package kala.input;
 import kala.math.Vec2;
 import kala.objects.group.View;
+import kha.FastFloat;
 
 #if kala_touch
 
@@ -55,8 +56,8 @@ class Touch {
 		for (callback in onMove) callback.cbFunction(touch);
 	}
 	
-	static inline function update(delta:Int):Void {
-		touches.update(delta);
+	static inline function update(elapsed:FastFloat):Void {
+		touches.update(elapsed);
 	}
 	
 	//
@@ -66,7 +67,7 @@ class Touch {
 	public var x(default, null):Int;
 	public var y(default, null):Int;
 	
-	public var duration(default, null):Int;
+	public var duration(default, null):FastFloat;
 	
 	public var justStarted(get, never):Bool;
 	
@@ -123,10 +124,7 @@ class TouchHandle {
 		return null;
 	}
 	
-	function update(delta:Int):Void {
-		var e = 1;
-		if (Kala.deltaTiming) e = delta;
-		
+	function update(elapsed:FastFloat):Void {
 		var i = 0;
 		var touch:Touch;
 		while (_capturedTouches.length > 0) {
@@ -140,7 +138,7 @@ class TouchHandle {
 		var touch:Touch;
 		while (i-- > 0) {
 			touch = _registeredTouches[i];
-			touch.duration += e;
+			touch.duration += elapsed;
 			
 			if (touch._ending) {
 				_registeredTouches.splice(i, 1);

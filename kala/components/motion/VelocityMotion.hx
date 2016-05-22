@@ -45,7 +45,7 @@ class VelocityMotion extends Component<Object> {
 		super.remove();
 	}
 	
-	function update(obj:Object, delta:Int):Void {
+	function update(obj:Object, elapsed:FastFloat):Void {
 		if (Kala.deltaTiming) {
 			
 			if (accel.x != 0) velocity.x += Kala.applyDelta(accel.x);

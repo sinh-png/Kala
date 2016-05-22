@@ -32,24 +32,19 @@ class Kala {
 	public static var drawRate(get, null):Int;
 	
 	public static var fps(default, null):UInt;
-	
+
 	/**
-	 * delta in seconds.
+	 * Delta value when the game runs in perfect framerate.
 	 */
-	public static var elapsedTime:FastFloat = 0;
-	
-	/**
-	 * Elapsed time of successive frames in seconds when the game runs in perfect framerate.
-	 */
-	public static var perfectElapsedTime:FastFloat;
+	public static var perfectDelta:FastFloat;
 	 
 	/**
-	 * The last calculated delta / elapsed time of successive frames in milliseconds.
+	 * Elapsed time of two last successive frames in seconds.
 	 */
-	public static var delta:Int = 0;
+	public static var delta:FastFloat = 0;
 	
 	/**
-	 * If true, use milliseconds as timing unit otherwise use frames.
+	 * If true, use seconds as timing unit otherwise use frames.
 	 * DEFAULT: false
 	 */
 	public static var deltaTiming:Bool = false;
@@ -77,7 +72,7 @@ class Kala {
 	//
 	
 	private static var _updateTaskID:Null<Int>;
-	private static var _lastUpdateTime:FastFloat = 0;
+	private static var _prvUpdateTime:FastFloat = 0;
 	
 	/**
 	 * Start the game.
@@ -119,7 +114,7 @@ class Kala {
 	 * Return a new value relative to the current game framerate.
 	 */
 	public static inline function applyDelta(value:FastFloat):FastFloat {
-		return elapsedTime / perfectElapsedTime * value;
+		return delta / perfectDelta * value;
 	}
 	
 	
@@ -165,32 +160,32 @@ class Kala {
 	
 	static function updateWorld():Void {
 		var time = Scheduler.time();
-		elapsedTime = time - _lastUpdateTime;
-		_lastUpdateTime = time;
+		delta = time - _prvUpdateTime;
+		_prvUpdateTime = time;
 		
-		fps = Math.round(1 / elapsedTime);
+		fps = Math.round(1 / delta);
 
-		delta = Std.int(elapsedTime * 1000);
+		var elapsed = deltaTiming ? delta : 1;
 		
 		#if (debug || kala_debug || kala_keyboard)
-		Keyboard.update(delta);
+		Keyboard.update(elapsed);
 		#end
 		
 		#if (debug || kala_debug || kala_mouse)
-		Mouse.update(delta);
+		Mouse.update(elapsed);
 		#end
 		
 		#if kala_touch
-		Touch.update(delta);
+		Touch.update(elapsed);
 		#end
 	
-		world.callUpdate(delta);
+		world.callUpdate(elapsed);
 		
 		Audio.update();
 	}
 	
 	static function set_updateRate(value:UInt):UInt {
-		perfectElapsedTime = 1 / value;
+		perfectDelta = 1 / value;
 		
 		if (_updateTaskID != null) {
 			Scheduler.removeTimeTask(_updateTaskID);

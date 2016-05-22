@@ -124,16 +124,13 @@ class MouseInteraction extends Component<Object> {
 		return this;
 	}
 	
-	function update(obj:Object, delta:Int):Void {
+	function update(obj:Object, elapsed:FastFloat):Void {
 		var m:Vec2;
 		
 		if (view == null) m = new Vec2(Mouse.x, Mouse.y);
 		else m = view.project(Mouse.x, Mouse.y);
 	
 		if (collider.testPoint(m.x, m.y)) {
-			var e = 1;
-			if (Kala.deltaTiming) e = delta;
-			
 			if (!hovered) {
 				hovered = true;
 				for (callback in onRollOver) callback.cbFunction(this);
@@ -144,7 +141,7 @@ class MouseInteraction extends Component<Object> {
 					left.duration = 0;
 					left.clicked = Mouse.LEFT.justPressed;
 				} else {
-					left.duration += e;
+					left.duration += elapsed;
 					left.clicked = false;
 				}
 				
@@ -169,7 +166,7 @@ class MouseInteraction extends Component<Object> {
 					right.duration = 0;
 					right.clicked = Mouse.RIGHT.justPressed;
 				} else {
-					right.duration += e;
+					right.duration += elapsed;
 					right.clicked = false;
 				}
 				
@@ -194,7 +191,7 @@ class MouseInteraction extends Component<Object> {
 					middle.duration = 0;
 					middle.clicked = Mouse.MIDDLE.justPressed;
 				} else {
-					middle.duration += e;
+					middle.duration += elapsed;
 					middle.clicked = false;
 				}
 				
@@ -272,7 +269,7 @@ class MouseInteractionInput {
 	/**
 	 * The time the button has been pressed on the component.
 	 */
-	public var duration(default, null):Int = -1;
+	public var duration(default, null):FastFloat = -1;
 	
 	/**
 	 * Whether to reset duration when cursor is moving out of the component or not.

@@ -97,9 +97,9 @@ class Tween extends Component<Object> {
 		return timeline;
 	}
 	
-	function update(obj:Object, delta:Int):Void {
+	function update(obj:Object, elapsed:FastFloat):Void {
 		for (tween in _tweens) {
-			if (!tween.paused) tween.update(delta);
+			if (!tween.paused) tween.update(elapsed);
 		}
 	}
 	
@@ -132,7 +132,7 @@ class TweenTimeline {
 	
 	public var loopsLeft(default, null):Int;
 	
-	public var waitTimeLeft(default, null):Int;
+	public var waitTimeLeft(default, null):FastFloat;
 	
 	public var target(get, set):Dynamic;
 	public var ease(get, set):EaseFunction;
@@ -352,20 +352,17 @@ class TweenTimeline {
 		_crTweenTasks = null;
 	}*/
 	
-	function update(delta:Int):Void {
-		if (waitTimeLeft > 0) {
-			if (Kala.deltaTiming) waitTimeLeft -= delta;
-			else waitTimeLeft--;
-		}
+	function update(elapsed:FastFloat):Void {
+		if (waitTimeLeft > 0) waitTimeLeft -= elapsed;
 		
 		if (waitTimeLeft <= 0 || batching) {
-			for (child in children) child.update(delta);
+			for (child in children) child.update(elapsed);
 			
 			var i = 0;
 			var task:TweenTask;
 			while (i < _crTweenTasks.length) {
 				task = _crTweenTasks[i];
-				if (task.update(delta)) {
+				if (task.update(elapsed)) {
 					if (!batching) _prvTweenTasks.splice(0, _prvTweenTasks.length);
 					_prvTweenTasks.push(task);
 					_crTweenTasks.splice(i, 1);
@@ -538,7 +535,7 @@ class TweenTask {
 	
 	public var percent(default, null):FastFloat;
 	public var duration(default, null):UInt;
-	public var elapsed:UInt;
+	public var elapsed:FastFloat;
 	
 	public var backward(default, null):Bool;
 	
@@ -644,14 +641,10 @@ class TweenTask {
 		pool.put(this);
 	}
 	
-	function update(delta:Int):Bool {
-		if (Kala.deltaTiming) {
-			elapsed += delta;
-		} else {
-			elapsed++;
-		}
+	function update(elapsed:FastFloat):Bool {
+		this.elapsed += elapsed;
 		
-		percent = elapsed /  duration;
+		percent = this.elapsed /  duration;
 		
 		for (i in 0..._varNames.length) {
 			Reflect.setProperty(
@@ -662,7 +655,7 @@ class TweenTask {
 		
 		if (onUpdateCB != null) onUpdateCB(this);
 
-		if (elapsed >= duration) return true;
+		if (this.elapsed >= duration) return true;
 		
 		return false;
 	}

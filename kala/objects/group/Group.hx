@@ -20,6 +20,8 @@ interface IGroup extends IObject {
 	public var colorBlendMode:BlendMode;
 	public var colorAlphaBlendMode:BlendMode;
 	
+	public var timeScale:FastFloat;
+	
 	private var _views:Array<View>;
 	
 	public function addView(view:View, pos:Int = -1):Void;
@@ -36,7 +38,7 @@ class Group<T:Object> extends Object implements IGroup {
 	
 	public var colorBlendMode:BlendMode;
 	public var colorAlphaBlendMode:BlendMode;
-
+	
 	private var _children:Array<T> = new Array<T>();
 	private var _views:Array<View> = new Array<View>();
 	
@@ -62,7 +64,7 @@ class Group<T:Object> extends Object implements IGroup {
 		_views = null;
 	}
 	
-	override public function update(delta:Int):Void {
+	override public function update(elapsed:FastFloat):Void {
 		var i = 0;
 		var child:T;
 		while (i < _children.length) {
@@ -73,7 +75,7 @@ class Group<T:Object> extends Object implements IGroup {
 				continue;
 			}
 			
-			if (child.alive && child.active) child.callUpdate(this, delta);
+			if (child.alive && child.active) child.callUpdate(this, elapsed);
 			
 			i++;
 		}
@@ -88,7 +90,7 @@ class Group<T:Object> extends Object implements IGroup {
 				continue;
 			}
 
-			if (view.alive && view.active) view.callUpdate(this, delta);
+			if (view.alive && view.active) view.callUpdate(this, elapsed);
 
 			i++;
 		}

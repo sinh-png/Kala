@@ -131,8 +131,8 @@ class Mouse {
 		MIDDLE 		= _handle.addButton(MouseButton.MIDDLE);
 	}
 	
-	static inline function update(delta:Int):Void {
-		_handle.update(delta);
+	static inline function update(elapsed:FastFloat):Void {
+		_handle.update(elapsed);
 		
 		if (_wheel != 0) {
 			if (_wheelRegistered) _wheel = 0;

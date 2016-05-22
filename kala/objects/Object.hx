@@ -71,11 +71,15 @@ interface IObject {
 	
 	//
 	
+	public var timeScale:FastFloat;
+	
+	//
+	
 	public var onDestroy:CallbackHandle<Object->Bool->Void>;
 	public var onReset:CallbackHandle<Object->Bool->Void>;
 	
-	public var onPreUpdate:CallbackHandle<Object->Int->Bool>;
-	public var onPostUpdate:CallbackHandle<Object->Int->Void>;
+	public var onPreUpdate:CallbackHandle<Object->FastFloat->Bool>;
+	public var onPostUpdate:CallbackHandle<Object->FastFloat->Void>;
 	
 	public var onPreDraw:CallbackHandle<Object->DrawingData->Canvas->Bool>;
 	public var onPostDraw:CallbackHandle<Object->DrawingData->Canvas->Void>;
@@ -104,7 +108,7 @@ interface IObject {
 	public function reset(componentsReset:Bool = false):Void;
 	public function destroy(componentsDestroy:Bool = true):Void;
 	public function deepReset(componentsDeepReset:Bool = true):Void;
-	public function update(delta:Int):Void;
+	public function update(elapsed:FastFloat):Void;
 	public function draw(data:DrawingData, canvas:Canvas):Void;
 	public function drawBuffer(data:DrawingData, canvas:Canvas):Void;
 	public function isVisible():Bool;
@@ -196,11 +200,15 @@ class Object extends EventHandle implements IObject {
 	
 	//
 	
+	public var timeScale:FastFloat;
+	
+	//
+	
 	public var onDestroy:CallbackHandle<Object->Bool->Void>;
 	public var onReset:CallbackHandle<Object->Bool->Void>;
 	
-	public var onPreUpdate:CallbackHandle<Object->Int->Bool>;
-	public var onPostUpdate:CallbackHandle<Object->Int->Void>;
+	public var onPreUpdate:CallbackHandle<Object->FastFloat->Bool>;
+	public var onPostUpdate:CallbackHandle<Object->FastFloat->Void>;
 	
 	public var onPreDraw:CallbackHandle<Object->DrawingData->Canvas->Bool>;
 	public var onPostDraw:CallbackHandle<Object->DrawingData->Canvas->Void>;
@@ -229,8 +237,8 @@ class Object extends EventHandle implements IObject {
 		onDestroy = addCBHandle(new CallbackHandle<Object->Bool->Void>());
 		onReset = addCBHandle(new CallbackHandle<Object->Bool->Void>());
 		
-		onPreUpdate = addCBHandle(new CallbackHandle<Object->Int->Bool>());
-		onPostUpdate = addCBHandle(new CallbackHandle<Object->Int->Void>());
+		onPreUpdate = addCBHandle(new CallbackHandle<Object->FastFloat->Bool>());
+		onPostUpdate = addCBHandle(new CallbackHandle<Object->FastFloat->Void>());
 		
 		onPreDraw = addCBHandle(new CallbackHandle<Object->DrawingData->Canvas->Bool>());
 		onPostDraw = addCBHandle(new CallbackHandle<Object->DrawingData->Canvas->Void>());
@@ -274,6 +282,8 @@ class Object extends EventHandle implements IObject {
 		unloadGraphics();
 		bufferOriginX = bufferOriginY = 0;
 		_shaders.splice(0, _shaders.length);
+		
+		timeScale = 1;
 		
 		for (callback in onReset) callback.cbFunction(this, componentsReset);
 
@@ -327,7 +337,7 @@ class Object extends EventHandle implements IObject {
 		removefromGroups();
 	}
 	
-	public function update(delta:Int):Void {
+	public function update(elapsed:FastFloat):Void {
 
 	}
 	
@@ -503,17 +513,19 @@ class Object extends EventHandle implements IObject {
 		}
 	}
 	
-	inline function callUpdate(?group:IGroup, delta:Int):Void {
+	inline function callUpdate(?group:IGroup, elapsed:FastFloat):Void {
+		elapsed *= timeScale;
+		
 		this.group = group;
 		
 		execFirstFrame();
 		
 		var updatePrevented = false;
-		for (callback in onPreUpdate) if (callback.cbFunction(this, delta)) updatePrevented = true;
+		for (callback in onPreUpdate) if (callback.cbFunction(this, elapsed)) updatePrevented = true;
 		
-		if (!updatePrevented) update(delta);
+		if (!updatePrevented) update(elapsed);
 		
-		for (callback in onPostUpdate) callback.cbFunction(this, delta);
+		for (callback in onPostUpdate) callback.cbFunction(this, elapsed);
 	}
 	
 	function callDraw(?group:IGroup, data:DrawingData, canvas:Canvas):Void {

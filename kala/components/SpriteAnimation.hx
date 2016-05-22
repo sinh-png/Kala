@@ -19,7 +19,7 @@ class SpriteAnimation extends Component<Sprite> {
 	
 	private var _animations:StringMap<SpriteAnimationData> = new StringMap<SpriteAnimationData>();
 	
-	private var _timeLeft:Int;
+	private var _timeLeft:FastFloat;
 	
 	private var _lastAddedKey:String;
 	
@@ -92,7 +92,7 @@ class SpriteAnimation extends Component<Sprite> {
 	/**
 	 * Add a new animation.
 	 * 
-	 * @param	key				String key used to access animation.
+	 * @param	key				Key used to access animation.
 	 * @param	image			Source image contains sprite sheet. If set to null, will use the current image of the owner sprite (set by sprite.loadImage or most preview calling of addAnim). If this argument is null and the component wasn't added to a sprite or the sprite image is null, this method will do nothing and return null.
 	 * @param	sheetX			X position of sprite sheet. If set to smaller than 0, will use the current frame x of the owner sprite (set by sprite.loadImage or most preview calling of addAnim). If this argument is set to smaller than 0 and the component wasn't added to a sprite, this method will do nothing and return null.
 	 * @param	sheetY			Y position of sprite sheet. If set to smaller than 0, will use the current frame y of the owner sprite (set by sprite.loadImage or most preview calling of addAnim). If this argument is set to to smaller than 0 and the component wasn't added to a sprite, this method will do nothing and return null.
@@ -100,7 +100,7 @@ class SpriteAnimation extends Component<Sprite> {
 	 * @param	frameHeight		Frame height. If set to 0, will use the current frame height of the owner sprite (set by sprite.loadImage or most preview calling of addAnim). If this argument is set to 0 and the component wasn't added to a sprite, this method will do nothing and return null.
 	 * @param	totalFrames		Total number of frames in sprite sheet.
 	 * @param	framesPerRow	Number of frames per row. (Last row may have less frames.)
-	 * @param	delay			Delay time between frames. In milliseconds or frames  depends on the value of Kala.deltaTiming.
+	 * @param	delay			Delay time between frames. In seconds if Kala.deltaTiming is set to true otherwise in frames.
 	 * 
 	 * @return					Return this component if success otherwise return null.
 	 */
@@ -200,13 +200,9 @@ class SpriteAnimation extends Component<Sprite> {
 		for (key in _animations.keys()) _animations.remove(key);
 	}
 	
-	function update(obj:Object, delta:Int):Void {
+	function update(obj:Object, elapsed:FastFloat):Void {
 		if (anim != null && anim.delay > -1) {
-			if (Kala.deltaTiming) {
-				_timeLeft -= delta;
-			} else {
-				_timeLeft--;
-			}
+			_timeLeft -= elapsed;
 			
 			if (_timeLeft <= 0) {
 				_timeLeft = anim.delay;
@@ -243,7 +239,7 @@ class SpriteAnimationData {
 	public var key(default, null):String;
 	public var image:Image;
 	public var frames:Array<RectI>;
-	public var delay:Int;
+	public var delay:FastFloat;
 	public var reversed:Bool;
 	
 	public inline function new(key:String, image:Image, delay:UInt) {

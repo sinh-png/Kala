@@ -27,14 +27,11 @@ class ButtonInputHandle<T:EnumValue> {
 		return input;
 	}
 
-	public function update(delta:Int):Void {
+	public function update(elapsed:FastFloat):Void {
 		if (activeInputs.length == 0) {
 			inputAny.duration = -1;
 			return;
 		}
-		
-		var e = 1;
-		if (Kala.deltaTiming) e = delta;
 		
 		var i = activeInputs.length;
 		var input:ButtonInput<T>;
@@ -56,12 +53,12 @@ class ButtonInputHandle<T:EnumValue> {
 					continue;
 				}
 				
-				input.duration += e;
+				input.duration += elapsed;
 			}
 		}
 		
 		if (inputAny.duration == -1) inputAny.duration = 0;
-		else inputAny.duration += e;
+		else inputAny.duration += elapsed;
 	}
 	
 	public function checkAnyPressed(buttons:Array<T>):Bool {
@@ -194,11 +191,11 @@ class ButtonInput<T:EnumValue> {
 	
 	/**
 	 * The time this button has been pressed.
-	 * In milliseconds if Kala.deltaTiming is set to true otherwise use frames.
+	 * In seconds if Kala.deltaTiming is set to true otherwise use frames.
 	 * 0 means the button was just pressed.
 	 * -1 means the button is not pressed.
 	 */
-	public var duration(default, null):Int = -1;
+	public var duration(default, null):FastFloat = -1;
 	
 	public var pressed(get, never):Bool;
 	public var justPressed(get, never):Bool;

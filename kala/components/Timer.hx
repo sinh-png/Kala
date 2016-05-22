@@ -76,12 +76,7 @@ class Timer extends Component<Object> {
 		return task;
 	}
 	
-	function update(obj:Object, delta:Int):Void {
-		var elapsed  = 1;
-		if (Kala.deltaTiming) {
-			elapsed = delta;
-		}
-
+	function update(obj:Object, elapsed:FastFloat):Void {
 		for (cdID in _coolingDownIDs.copy()) {
 			cdID.b -= elapsed ;
 			if (cdID.b <= 0) _coolingDownIDs.remove(cdID);
@@ -118,8 +113,8 @@ class LoopTask {
 	public var onExecCB(default, null):LoopTask->Void;
 	public var onCompleteCB(default, null):LoopTask->Void;
 	
-	public var duration:Int;
-	public var elapsedTime(default, null):Int;
+	public var duration:FastFloat;
+	public var elapsedTime(default, null):FastFloat;
 	
 	public var totalExecutions:UInt;
 	public var elapsedExecutions(default, null):UInt;
@@ -170,9 +165,9 @@ class TimerEx extends Timer {
 		_tween.object = null;
 	}
 	
-	override function update(obj:Object, delta:Int):Void {
-		super.update(obj, delta);
-		_tween.update(obj, delta);
+	override function update(obj:Object, elapsed:FastFloat):Void {
+		super.update(obj, elapsed);
+		_tween.update(obj, elapsed);
 	}
 	
 	public function timeline(

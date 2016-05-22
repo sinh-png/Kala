@@ -183,8 +183,8 @@ class Keyboard {
 		#end
 	}
 	
-	static inline function update(delta:Int):Void {
-		_handle.update(delta);
+	static inline function update(elapsed:FastFloat):Void {
+		_handle.update(elapsed);
 	}
 	
 	static function keyDownListener(key:kha.Key, char:String):Void {
