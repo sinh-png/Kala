@@ -1,5 +1,6 @@
 package kala.components.input;
 import kala.math.color.Color;
+import kala.objects.group.View;
 
 #if kala_mouse
 
@@ -33,6 +34,8 @@ class MouseInteraction extends Component<Object> {
 	public var dragable:Bool;
 	public var dragButtons:Array<MouseButton> = [MouseButton.LEFT];
 	public var dragging:Bool;
+	
+	public var view:View;
 	
 	private var _dragPointX:FastFloat;
 	private var _dragPointY:FastFloat;
@@ -76,6 +79,8 @@ class MouseInteraction extends Component<Object> {
 		onButtonInput = null;
 		onRollOver = null;
 		onRollOut = null;
+		
+		view = null;
 	}
 	
 	override public function addTo(object:Object):MouseInteraction {
@@ -120,10 +125,12 @@ class MouseInteraction extends Component<Object> {
 	}
 	
 	function update(obj:Object, delta:Int):Void {
-		var mx = Mouse.x;
-		var my = Mouse.y;
+		var m:Vec2;
+		
+		if (view == null) m = new Vec2(Mouse.x, Mouse.y);
+		else m = view.project(Mouse.x, Mouse.y);
 	
-		if (collider.testPoint(mx, my)) {
+		if (collider.testPoint(m.x, m.y)) {
 			var e = 1;
 			if (Kala.deltaTiming) e = delta;
 			
@@ -212,8 +219,8 @@ class MouseInteraction extends Component<Object> {
 			}
 			
 			if (dragButtons != null && Mouse.checkAnyJustPressed(dragButtons)) {
-				_dragPointX = mx - obj.x;
-				_dragPointY = my - obj.y;
+				_dragPointX = m.x - obj.x;
+				_dragPointY = m.y - obj.y;
 				dragging = true;
 			}
 		} else {
@@ -232,8 +239,8 @@ class MouseInteraction extends Component<Object> {
 		}
 		
 		if (dragable && dragging && dragButtons != null &&  Mouse.checkAnyPressed(dragButtons)) {
-			obj.x = mx - _dragPointX;
-			obj.y = my - _dragPointY;
+			obj.x = m.x - _dragPointX;
+			obj.y = m.y - _dragPointY;
 		} else {
 			dragging = false;
 		}
