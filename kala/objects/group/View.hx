@@ -132,7 +132,7 @@ class View extends Object {
 	
 	/**
 	 * Project a point from this view to its viewport.
-	 * Only works when this view is being drawn.
+	 * Only works when this view is visible.
 	 */
 	public inline function project(x:FastFloat, y:FastFloat):Vec2 {
 		return new Vec2(x, y).transformBy(_cachedDrawingMatrix.inverse());

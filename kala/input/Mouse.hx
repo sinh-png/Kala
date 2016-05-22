@@ -98,6 +98,7 @@ class Mouse {
 	
 	/**
 	 * Project the cursor position from the input view to its viewport.
+	 * Only works when the view is visible.
 	 */
 	public static inline function project(view:View):Vec2 {
 		return view.project(x, y);
