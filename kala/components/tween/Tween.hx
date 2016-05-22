@@ -317,6 +317,8 @@ class TweenTimeline {
 		_ease = ease;
 		_tweenUpdateCB = tweenUpdateCB;
 		
+		waitTimeLeft = 0;
+		
 		pos = -1;
 		_batchCalling = false;
 		
