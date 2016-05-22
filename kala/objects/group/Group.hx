@@ -140,12 +140,12 @@ class Group<T:Object> extends Object implements IGroup {
 				
 				if (data.transformation == null) {
 					drawingData.transformation = FastMatrix3.translation(
-						-view.viewPos.x + view.viewPos.ox,
-						-view.viewPos.y + view.viewPos.oy
+						-view.viewport.x,
+						-view.viewport.y
 					);
 				} else {
 					drawingData.transformation = data.transformation.multmat(
-						FastMatrix3.translation( -view.viewPos.x + view.viewPos.ox, -view.viewPos.y + view.viewPos.oy)
+						FastMatrix3.translation( -view.viewport.x, -view.viewport.y)
 					);
 				}
 

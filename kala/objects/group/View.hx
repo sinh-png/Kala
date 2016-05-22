@@ -18,10 +18,7 @@ class View extends Object {
 
 	public var viewBuffer(default, null):Image;
 	
-	public var viewPos:Vec2T;
-	
-	public var viewWidth(default, null):UInt;
-	public var viewHeight(default, null):UInt;
+	public var viewport(default, null):Rect;
 	
 	public var halign:Null<FastFloat>;
 	public var valign:Null<FastFloat>;
@@ -51,9 +48,8 @@ class View extends Object {
 		
 		viewBuffer.g2.imageScaleQuality = ImageScaleQuality.Low;
 		
-		viewPos = new Vec2T(viewX, viewY);
-		this.viewWidth = viewWidth;
-		this.viewHeight = viewHeight;
+		
+		viewport = new Rect(viewX, viewY, viewWidth, viewHeight);
 	}
 	
 	override public function reset(componentsReset:Bool = false):Void {
@@ -68,15 +64,15 @@ class View extends Object {
 		viewBuffer.unload();
 		viewBuffer = null;
 		
-		viewPos = null;
+		viewport = null;
 	}
 	
 	override public function draw(data:DrawingData, canvas:Canvas):Void {
 		var cw = canvas.width;
 		var ch = canvas.height;
 		
-		var w:FastFloat = viewBuffer.width;
-		var h:FastFloat = viewBuffer.height;
+		var w:FastFloat = viewport.width = viewBuffer.width;
+		var h:FastFloat = viewport.height = viewBuffer.height;
 		
 		if (scaleMode != null) {
 			switch(scaleMode) {
