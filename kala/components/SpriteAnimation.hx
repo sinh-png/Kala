@@ -65,10 +65,28 @@ class SpriteAnimation extends Component<Sprite> {
 		super.remove();
 	}
 	
-	public function play(?key:String, ?delay:UInt, ?reversed:Bool):SpriteAnimation {
+	/**
+	 * Play an animation.
+	 * 
+	 * @param	key				The key used to add the animation.
+	 * @param	delay			Delay time between frames. Left null to use the current setting.
+	 * @param	reversed		Whether to play the animation in reverse or not. Left null to use the current setting.
+	 * @param	forceReplay		Whether to force replay the animation if it is already playing with the same settings.
+	 * 
+	 * @return 					This component.
+	 */
+	public function play(?key:String, ?delay:UInt, ?reversed:Bool, forceReplay:Bool = false):SpriteAnimation {
 		if (key == null) {
 			if (_lastAddedKey == null) return null;
 			key = _lastAddedKey;
+		}
+		
+		if (
+			anim != null && key == anim.key && !forceReplay &&
+			(delay == null || delay == anim.delay) &&
+			(reversed == null || reversed == anim.reversed)
+		) {
+			return this;
 		}
 		
 		anim = _animations.get(key);
