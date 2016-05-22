@@ -1,4 +1,6 @@
 package kala.input;
+import kala.math.Vec2;
+import kala.objects.group.View;
 
 #if (debug || kala_debug || kala_mouse)
 
@@ -92,6 +94,10 @@ class Mouse {
 
 	public static inline function didRightClickRect(rect:Rect):Bool {
 		return RIGHT.justPressed && isHoveringRect(rect);
+	}
+	
+	public static inline function project(view:View):Vec2 {
+		return view.project(x, y);
 	}
 	
 	//
