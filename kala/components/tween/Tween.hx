@@ -64,7 +64,7 @@ class Tween extends Component<Object> {
 		return timeline;
 	}
 	
-	public inline function tweenPos(
+	public inline function tweenXY(
 		target:Dynamic, x:FastFloat, y:FastFloat, duration:UInt, ?ease:EaseFunction,
 		?onFinishCB:TweenTimeline->Void, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
@@ -171,7 +171,7 @@ class TweenTimeline {
 		return this;
 	}
 	
-	public inline function tweenPos(
+	public inline function tweenXY(
 		target:Object, x:FastFloat, y:FastFloat, duration:UInt,
 		?ease:EaseFunction, ?backwardEase:EaseFunction, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
