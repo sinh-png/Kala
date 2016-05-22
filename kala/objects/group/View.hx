@@ -114,20 +114,21 @@ class View extends Object {
 			}
 		}
 		
+		applyDrawingData(data, canvas);
+		
 		if (halign != null) {
-			if (data.transformation == null) data.transformation = FastMatrix3.translation(0, 0);
-			data.transformation._20 += (cw - w) * halign;
+			canvas.g2.transformation._20 = (cw - w) * halign;
 		}
 		
 		if (valign != null) {
-			if (data.transformation == null) data.transformation = FastMatrix3.translation(0, 0);
-			data.transformation._21 += (ch - h) * valign;
+			canvas.g2.transformation._21 = (ch - h) * valign;
 		}
 		
-		applyDrawingData(data, canvas);
+		_cachedDrawingMatrix = canvas.g2.transformation;
+		
 		canvas.g2.drawImage(viewBuffer, 0, 0);
 	}
-	
+
 	public inline function setAlignScaleMode(halign:FastFloat, valign:FastFloat, scaleMode:ScaleMode):View {
 		this.scaleMode = scaleMode;
 		this.halign = halign;
