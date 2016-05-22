@@ -62,6 +62,9 @@ class Touch {
 		_ending = false;
 	}
 	
+	/**
+	 * Project the touch position from the input view to its viewport.
+	 */
 	public inline function project(view:View):Vec2 {
 		return view.project(x, y);
 	}
