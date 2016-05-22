@@ -1,4 +1,6 @@
 package kala.input;
+import kala.math.Vec2;
+import kala.objects.group.View;
 
 #if kala_touch
 
@@ -58,6 +60,10 @@ class Touch {
 		this.y = y;
 		duration = 0;
 		_ending = false;
+	}
+	
+	public inline function project(view:View):Vec2 {
+		return view.project(x, y);
 	}
 	
 	@:extern
