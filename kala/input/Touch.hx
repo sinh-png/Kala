@@ -18,12 +18,23 @@ class Touch {
 	
 	public static var touches(default, never):TouchHandle = new TouchHandle();
 	
+	/**
+	 * When set will automatically project touch position from the view to its viewport.
+	 */
+	public static var view:View;
+	
 	static function init():Void {
 		var surface = Surface.get();
 		if (surface != null) surface.notify(touchStartListener, touchEndListener, touchMoveListener);
 	}
 	
 	static function touchStartListener(id:Int, x:Int, y:Int):Void {
+		if (view != null) {
+			var p = view.project(x, y);
+			x = Std.int(p.x);
+			y = Std.int(p.y);
+		}
+		
 		touches._capturedTouches.push(new Touch(id, x, y));
 	}
 	
@@ -32,9 +43,16 @@ class Touch {
 	}
 	
 	static function touchMoveListener(id:Int, x:Int, y:Int):Void {
+		if (view != null) {
+			var p = view.project(x, y);
+			x = Std.int(p.x);
+			y = Std.int(p.y);
+		}
+		
 		var touch = touches.findTouch(id);
-		for (callback in onMove) callback.cbFunction(touch);
 		touch.setPos(x, y);
+		
+		for (callback in onMove) callback.cbFunction(touch);
 	}
 	
 	static inline function update(delta:Int):Void {

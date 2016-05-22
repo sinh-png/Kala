@@ -33,6 +33,13 @@ class Mouse {
 	
 	//
 	
+	/**
+	 * When set will automatically project cursor position from the view to its viewport.
+	 */
+	public static var view:View;
+	
+	//
+	
 	private static var _wheel:Int;
 	private static var _wheelRegistered:Bool = false;
 	
@@ -142,8 +149,14 @@ class Mouse {
 	}
 	
 	static function mouseMoveListener(x:Int, y:Int, _:Int, _:Int):Void {
-		Mouse.x = x;
-		Mouse.y = y;
+		if (view == null) {
+			Mouse.x = x;
+			Mouse.y = y;
+		} else {
+			var p = view.project(x, y);
+			Mouse.x = Std.int(p.x);
+			Mouse.y = Std.int(p.y);
+		}
 	}
 	
 	static function onWheel(amount:Int):Void {
