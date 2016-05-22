@@ -71,6 +71,8 @@ interface IObject {
 	
 	//
 	
+	public var data:Dynamic;
+	
 	public var timeScale:FastFloat;
 	
 	//
@@ -86,9 +88,9 @@ interface IObject {
 	
 	public var onFirstFrame:CallbackHandle<Object->Void>;
 		
+	public var firstFrameExecuted:Bool;
+	
 	//
-
-	private var firstFrameExecuted:Bool;
 	
 	private var _components:Array<IComponent>;
 	
@@ -200,6 +202,8 @@ class Object extends EventHandle implements IObject {
 	
 	//
 	
+	public var data:Dynamic;
+	
 	public var timeScale:FastFloat;
 	
 	//
@@ -215,9 +219,10 @@ class Object extends EventHandle implements IObject {
 	
 	public var onFirstFrame:CallbackHandle<Object->Void>;
 		
+	public var firstFrameExecuted:Bool;
+	
 	//
-
-	private var firstFrameExecuted:Bool;
+	
 	private var _components:Array<IComponent> = new Array<IComponent>();
 	
 	//
@@ -283,6 +288,8 @@ class Object extends EventHandle implements IObject {
 		bufferOriginX = bufferOriginY = 0;
 		_shaders.splice(0, _shaders.length);
 		
+		data = null;
+		
 		timeScale = 1;
 		
 		for (callback in onReset) callback.cbFunction(this, componentsReset);
@@ -328,6 +335,8 @@ class Object extends EventHandle implements IObject {
 		_groups = null;
 		
 		pool = null;
+		
+		data = null;
 	}
 	
 	public function deepReset(componentsDeepReset:Bool = true):Void {
