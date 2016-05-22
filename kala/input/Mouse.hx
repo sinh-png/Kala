@@ -96,6 +96,9 @@ class Mouse {
 		return RIGHT.justPressed && isHoveringRect(rect);
 	}
 	
+	/**
+	 * Project the cursor position from the input view to its viewport.
+	 */
 	public static inline function project(view:View):Vec2 {
 		return view.project(x, y);
 	}
