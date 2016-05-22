@@ -48,6 +48,8 @@ class Kala {
 	 * DEFAULT: false
 	 */
 	public static var deltaTiming:Bool = false;
+	
+	public static var timeScale:FastFloat = 1;
 
 	/**
 	 * The current screen width.
@@ -165,7 +167,7 @@ class Kala {
 		
 		fps = Math.round(1 / delta);
 
-		var elapsed = deltaTiming ? delta : 1;
+		var elapsed = deltaTiming ? delta * timeScale : timeScale;
 		
 		#if (debug || kala_debug || kala_keyboard)
 		Keyboard.update(elapsed);
