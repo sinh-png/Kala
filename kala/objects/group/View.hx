@@ -131,7 +131,7 @@ class View extends Object {
 	}
 	
 	/**
-	 * Take a point on this view when being drawn and return a new point relatively to the viewport.
+	 * Project a point from this view to its viewport.
 	 * Only works when this view is being drawn.
 	 */
 	public inline function project(x:FastFloat, y:FastFloat):Vec2 {
