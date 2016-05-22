@@ -1,6 +1,7 @@
 package kala.objects.group;
 
 import kala.DrawingData;
+import kala.math.Vec2;
 import kala.math.Vec2T;
 import kala.objects.Object;
 import kala.math.color.Color;
@@ -127,6 +128,14 @@ class View extends Object {
 		_cachedDrawingMatrix = canvas.g2.transformation;
 		
 		canvas.g2.drawImage(viewBuffer, 0, 0);
+	}
+	
+	/**
+	 * Take a point on this view when being drawn and return a new point relatively to the viewport.
+	 * Only works when this view is being drawn.
+	 */
+	public inline function project(x:FastFloat, y:FastFloat):Vec2 {
+		return new Vec2(x, y).transformBy(_cachedDrawingMatrix.inverse());
 	}
 
 	public inline function setAlignScaleMode(halign:FastFloat, valign:FastFloat, scaleMode:ScaleMode):View {
