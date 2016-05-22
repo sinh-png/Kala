@@ -61,7 +61,7 @@ class SheetData {
 		
 		spriteData = _frames.get(key);
 		
-		if (spriteData == null) throw "key not found";
+		if (spriteData == null) throw 'key "$key" not found. If the sprite data is an animation, remember to add "/" at the end of key.';
 		
 		spriteData = spriteData.clone();
 		spriteData.image = image;
