@@ -5,11 +5,11 @@ import kala.components.SpriteAnimation.SpriteAnimationData;
 import kala.EventHandle.CallbackHandle;
 import kala.math.Rect.RectI;
 import kala.objects.Object;
-import kala.objects.Sprite;
+import kala.objects.sprite.Sprite;
 import kha.FastFloat;
 import kha.Image;
 
-@:access(kala.objects.Sprite)
+@:access(kala.objects.sprite.Sprite)
 class SpriteAnimation extends Component<Sprite> {
 
 	public var anim(default, null):SpriteAnimationData;

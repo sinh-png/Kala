@@ -5,7 +5,7 @@ import kala.Assets.AssetLoader;
 import kala.components.SpriteAnimation;
 import kala.EventHandle.CallbackHandle;
 import kala.math.Rect.RectI;
-import kala.objects.Sprite.SpriteData;
+import kala.objects.sprite.Sprite.SpriteData;
 import kha.Assets.BlobList;
 import kha.Assets.FontList;
 import kha.Assets.ImageList;
