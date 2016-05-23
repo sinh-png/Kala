@@ -77,16 +77,16 @@ interface IObject {
 	
 	//
 	
-	public var onDestroy:CallbackHandle<Object->Bool->Void>;
-	public var onReset:CallbackHandle<Object->Bool->Void>;
+	public var onDestroy(default, null):CallbackHandle<Object->Bool->Void>;
+	public var onReset(default, null):CallbackHandle<Object->Bool->Void>;
 	
-	public var onPreUpdate:CallbackHandle<Object->FastFloat->Bool>;
-	public var onPostUpdate:CallbackHandle<Object->FastFloat->Void>;
+	public var onPreUpdate(default, null):CallbackHandle<Object->FastFloat->Bool>;
+	public var onPostUpdate(default, null):CallbackHandle<Object->FastFloat->Void>;
 	
-	public var onPreDraw:CallbackHandle<Object->DrawingData->Canvas->Bool>;
-	public var onPostDraw:CallbackHandle<Object->DrawingData->Canvas->Void>;
+	public var onPreDraw(default, null):CallbackHandle<Object->DrawingData->Canvas->Bool>;
+	public var onPostDraw(default, null):CallbackHandle<Object->DrawingData->Canvas->Void>;
 	
-	public var onFirstFrame:CallbackHandle<Object->Void>;
+	public var onFirstFrame(default, null):CallbackHandle<Object->Void>;
 		
 	public var firstFrameExecuted:Bool;
 	
@@ -208,16 +208,16 @@ class Object extends EventHandle implements IObject {
 	
 	//
 	
-	public var onDestroy:CallbackHandle<Object->Bool->Void>;
-	public var onReset:CallbackHandle<Object->Bool->Void>;
+	public var onDestroy(default, null):CallbackHandle<Object->Bool->Void>;
+	public var onReset(default, null):CallbackHandle<Object->Bool->Void>;
 	
-	public var onPreUpdate:CallbackHandle<Object->FastFloat->Bool>;
-	public var onPostUpdate:CallbackHandle<Object->FastFloat->Void>;
+	public var onPreUpdate(default, null):CallbackHandle<Object->FastFloat->Bool>;
+	public var onPostUpdate(default, null):CallbackHandle<Object->FastFloat->Void>;
 	
-	public var onPreDraw:CallbackHandle<Object->DrawingData->Canvas->Bool>;
-	public var onPostDraw:CallbackHandle<Object->DrawingData->Canvas->Void>;
+	public var onPreDraw(default, null):CallbackHandle<Object->DrawingData->Canvas->Bool>;
+	public var onPostDraw(default, null):CallbackHandle<Object->DrawingData->Canvas->Void>;
 	
-	public var onFirstFrame:CallbackHandle<Object->Void>;
+	public var onFirstFrame(default, null):CallbackHandle<Object->Void>;
 		
 	public var firstFrameExecuted:Bool;
 	

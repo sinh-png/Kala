@@ -10,8 +10,8 @@ class ButtonInputHandle<T:EnumValue> {
 	
 	public var inputAny:ButtonInput<T>;
 	
-	public var  onStartPressing:CallbackHandle<T->Void>;
-	public var  onRelease:CallbackHandle<T->Void>;
+	public var  onStartPressing(default, null):CallbackHandle<T->Void>;
+	public var  onRelease(default, null):CallbackHandle<T->Void>;
 	
 	public function new(onStartPressing:CallbackHandle<T->Void>, onRelease:CallbackHandle<T->Void>):Void {
 		this.onStartPressing = onStartPressing;

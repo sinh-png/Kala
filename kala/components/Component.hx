@@ -18,10 +18,10 @@ class Component<T:Object> extends EventHandle implements IComponent {
 	
 	//
 	
-	public var onDestroy:CallbackHandle<Component<T>->Void>;
-	public var onReset:CallbackHandle<Component<T>->Void>;
-	public var onAdd:CallbackHandle<Component<T>->Void>;
-	public var onRemove:CallbackHandle<Component<T>->Void>;
+	public var onDestroy(default, null):CallbackHandle<Component<T>->Void>;
+	public var onReset(default, null):CallbackHandle<Component<T>->Void>;
+	public var onAdd(default, null):CallbackHandle<Component<T>->Void>;
+	public var onRemove(default, null):CallbackHandle<Component<T>->Void>;
 	
 	public function new(?object:T) {
 		super();

@@ -26,10 +26,10 @@ class MouseInteraction extends Component<Object> {
 	public var right(default, null):MouseInteractionInput = new MouseInteractionInput(MouseButton.RIGHT);
 	public var middle(default, null):MouseInteractionInput = new MouseInteractionInput(MouseButton.MIDDLE);
 	
-	public var onButtonInput:CallbackHandle<MouseInteraction->MouseInteractionInput->Void>;
-	public var onWheel:CallbackHandle<MouseInteraction->Int->Void>;
-	public var onOver:CallbackHandle<MouseInteraction->Void>;
-	public var onOut:CallbackHandle<MouseInteraction->Void>;
+	public var onButtonInput(default, null):CallbackHandle<MouseInteraction->MouseInteractionInput->Void>;
+	public var onWheel(default, null):CallbackHandle<MouseInteraction->Int->Void>;
+	public var onOver(default, null):CallbackHandle<MouseInteraction->Void>;
+	public var onOut(default, null):CallbackHandle<MouseInteraction->Void>;
 	
 	public var dragable:Bool;
 	public var dragButtons:Array<MouseButton> = [MouseButton.LEFT];

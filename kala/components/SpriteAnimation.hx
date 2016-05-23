@@ -15,7 +15,7 @@ class SpriteAnimation extends Component<Sprite> {
 	public var anim(default, null):SpriteAnimationData;
 	public var frame(default, set):Int;
 	
-	public var onAnimComplete:CallbackHandle<SpriteAnimation->Void>;
+	public var onAnimComplete(default, null):CallbackHandle<SpriteAnimation->Void>;
 	
 	private var _animations:StringMap<SpriteAnimationData> = new StringMap<SpriteAnimationData>();
 	

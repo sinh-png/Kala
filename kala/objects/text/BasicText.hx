@@ -22,7 +22,7 @@ class BasicText extends Object {
 	public var italic:Bool;
 	public var underlined:Bool;
 	
-	public var onTextChanged:CallbackHandle<BasicText->Void>;
+	public var onTextChanged(default, null):CallbackHandle<BasicText->Void>;
 	
 	public function new(?text:String, ?font:Font, ?size:UInt = 24) {
 		super();
