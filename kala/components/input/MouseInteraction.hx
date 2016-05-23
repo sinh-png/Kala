@@ -28,8 +28,8 @@ class MouseInteraction extends Component<Object> {
 	
 	public var onButtonInput:CallbackHandle<MouseInteraction->MouseInteractionInput->Void>;
 	public var onWheel:CallbackHandle<MouseInteraction->Int->Void>;
-	public var onRollOver:CallbackHandle<MouseInteraction->Void>;
-	public var onRollOut:CallbackHandle<MouseInteraction->Void>;
+	public var onOver:CallbackHandle<MouseInteraction->Void>;
+	public var onOut:CallbackHandle<MouseInteraction->Void>;
 	
 	public var dragable:Bool;
 	public var dragButtons:Array<MouseButton> = [MouseButton.LEFT];
@@ -47,8 +47,8 @@ class MouseInteraction extends Component<Object> {
 		
 		onButtonInput = addCBHandle(new CallbackHandle<MouseInteraction->MouseInteractionInput->Void>());
 		onWheel = addCBHandle(new CallbackHandle<MouseInteraction->Int->Void>());
-		onRollOver = addCBHandle(new CallbackHandle<MouseInteraction->Void>());
-		onRollOut = addCBHandle(new CallbackHandle<MouseInteraction->Void>());
+		onOver = addCBHandle(new CallbackHandle<MouseInteraction->Void>());
+		onOut = addCBHandle(new CallbackHandle<MouseInteraction->Void>());
 		
 		if (object != null) {
 			addTo(object);
@@ -77,8 +77,8 @@ class MouseInteraction extends Component<Object> {
 		
 		destroyCBHandles();
 		onButtonInput = null;
-		onRollOver = null;
-		onRollOut = null;
+		onOver = null;
+		onOut = null;
 		
 		view = null;
 	}
@@ -133,7 +133,7 @@ class MouseInteraction extends Component<Object> {
 		if (collider.testPoint(m.x, m.y)) {
 			if (!hovered) {
 				hovered = true;
-				for (callback in onRollOver) callback.cbFunction(this);
+				for (callback in onOver) callback.cbFunction(this);
 			}
 			
 			if (Mouse.LEFT.pressed) {
@@ -222,9 +222,9 @@ class MouseInteraction extends Component<Object> {
 			}
 		} else {
 			if (hovered) {
-				for (callback in onRollOver) {
+				for (callback in onOver) {
 					hovered = false;
-					for (callback in onRollOut) callback.cbFunction(this);
+					for (callback in onOut) callback.cbFunction(this);
 				}
 			}
 			
