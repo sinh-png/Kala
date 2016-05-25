@@ -22,6 +22,16 @@ class Timer extends Component<Object> {
 		_loopTasks.splice(0, _loopTasks.length);
 	}
 	
+	override public function destroy():Void {
+		super.destroy();
+		
+		_coolingDownIDs = null;
+		_coolingDownFunctions = null;
+		
+		while (_loopTasks.length > 0) _loopTasks.pop().destroy();
+		_loopTasks = null;
+	}
+	
 	override public function addTo(object:Object):Timer {
 		super.addTo(object);
 		object.onPostUpdate.notifyPrivateCB(this, update);
@@ -110,14 +120,14 @@ class Timer extends Component<Object> {
 @:access(kala.components.Timer)
 class LoopTask {
 
-	public var onExecCB(default, null):LoopTask->Void;
-	public var onCompleteCB(default, null):LoopTask->Void;
-	
 	public var duration:FastFloat;
 	public var elapsedTime(default, null):FastFloat;
 	
 	public var totalExecutions:UInt;
 	public var elapsedExecutions(default, null):UInt;
+	
+	public var onExecCB(default, null):LoopTask->Void;
+	public var onCompleteCB(default, null):LoopTask->Void;
 	
 	private var _manager:Timer;
 	
@@ -132,13 +142,20 @@ class LoopTask {
 		elapsedTime = 0;
 		elapsedExecutions = 0;
 	}
-	
+
 	@:extern
 	public inline function cancel():Void {
 		_manager._loopTasks.remove(this);
 		_manager = null;
 	}
 
+	@:extern
+	inline function destroy():Void {
+		onExecCB = null;
+		onCompleteCB = null;
+		_manager = null;
+	}
+	
 }
 
 //
@@ -152,6 +169,11 @@ class TimerEx extends Timer {
 		super();
 		
 		_tween = new Tween();
+	}
+	
+	override public function destroy():Void {
+		super.destroy();
+		_tween = null;
 	}
 	
 	override public function addTo(object:Object):TimerEx {

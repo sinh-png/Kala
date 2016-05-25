@@ -12,12 +12,19 @@ using kha.graphics2.GraphicsExtension;
 
 class Polygon extends Shape {
 
-	public var vertices(default, set):Array<Vec2>;
+	public var vertices(get, set):Array<Vec2>;
+	var _vertices:Array<Vec2>;
 	public var vector2Array(default, null):Array<Vector2>;
 	
 	public function new(vertices:Array<Vec2>, fill:Bool = true, outline:Bool = false) {
 		super(fill, outline);
 		this.vertices = vertices;
+	}
+	
+	override public function destroy(destroyComponents:Bool = true):Void {
+		super.destroy(destroyComponents);
+		vector2Array = null;
+		_vertices = null;
 	}
 	
 	override public function draw(data:DrawingData, canvas:Canvas):Void {
@@ -38,8 +45,12 @@ class Polygon extends Shape {
 		return verts;
 	}
 	
+	inline function get_vertices():Array<Vec2> {
+		return _vertices;
+	}
+	
 	function set_vertices(value:Array<Vec2>):Array<Vec2> {
-		vertices = value;
+		_vertices = value;
 		vector2Array = Vec2.toVector2Array(vertices);
 		
 		var minX:FastFloat = 0;

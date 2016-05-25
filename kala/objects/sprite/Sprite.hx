@@ -28,10 +28,11 @@ class Sprite extends Object {
 		if (animated) new SpriteAnimation().addTo(this);
 	}
 
-	override public function destroy(componentsDestroy:Bool = true):Void {
-		super.destroy(componentsDestroy);
+	override public function destroy(destroyComponents:Bool = true):Void {
+		super.destroy(destroyComponents);
 		image = null;
 		frameRect = null;
+		animation = null;
 	}
 	
 	override public function draw(data:DrawingData, canvas:Canvas):Void {

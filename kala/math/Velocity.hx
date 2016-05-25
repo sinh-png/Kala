@@ -19,7 +19,7 @@ class Velocity {
 	private var _angleUpdated:Bool;
 	private var _speedUpdated:Bool;
 	
-	public function new(x:FastFloat = 0, y:FastFloat = 0) {
+	public inline function new(x:FastFloat = 0, y:FastFloat = 0) {
 		_x = x;
 		_y = y;
 		

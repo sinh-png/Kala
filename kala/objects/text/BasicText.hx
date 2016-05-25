@@ -22,7 +22,7 @@ class BasicText extends Object {
 	public var italic:Bool;
 	public var underlined:Bool;
 	
-	public var onTextChanged(default, null):CallbackHandle<BasicText->Void>;
+	public var onTextChange(default, null):CallbackHandle<BasicText->Void>;
 	
 	public function new(?text:String, ?font:Font, ?size:UInt = 24) {
 		super();
@@ -32,7 +32,7 @@ class BasicText extends Object {
 		this.size = size;
 		this.font = font;
 		
-		onTextChanged = addCBHandle(new CallbackHandle<BasicText->Void>());
+		onTextChange = addCBHandle(new CallbackHandle<BasicText->Void>());
 	}
 
 	override public function reset(componentsReset:Bool = false):Void {
@@ -46,7 +46,7 @@ class BasicText extends Object {
 	override public function destroy(componentsDestroy:Bool = true):Void {
 		super.destroy(componentsDestroy);
 		font = null;
-		onTextChanged = null;
+		onTextChange = null;
 	}
 	
 	override public function draw(data:DrawingData, canvas:Canvas):Void {
@@ -76,7 +76,7 @@ class BasicText extends Object {
 	function set_text(value:String):String {
 		//value = value.replace('\r', "").replace('\n', "");
 		_text = value;
-		for (callback in onTextChanged) callback.cbFunction(this);
+		for (callback in onTextChange) callback.cbFunction(this);
 		return value;
 	}
 	

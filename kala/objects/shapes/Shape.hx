@@ -37,22 +37,22 @@ class Shape extends Object {
 		if (outline) lineOpacity = 1; else lineOpacity = 0;
 	}
 	
-	override public function reset(componentsReset:Bool = false):Void {
-		super.reset(componentsReset);
+	override public function reset(resetComponents:Bool = false):Void {
+		super.reset(resetComponents);
 	
 		color = Color.WHITE;
 		
 		lineStrenght = 1;
 		lineColor = Color.WHITE;
-		
 		fillColor = Color.WHITE;
 		
 		colorBlendMode = BlendMode.MULTI_2X;
 		colorAlphaBlendMode = null;
 	}
 	
-	override public function destroy(componentsDestroy:Bool = true):Void {
-		super.destroy(componentsDestroy);
+	override public function destroy(destroyComponents:Bool = true):Void {
+		super.destroy(destroyComponents);
+		_canvas = null;
 	}
 	
 	override public function isVisible():Bool {

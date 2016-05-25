@@ -75,8 +75,11 @@ class MouseInteraction extends Component<Object> {
 		
 		left = right = middle = null;
 		
+		dragButtons = null;
+		
 		destroyCBHandles();
 		onButtonInput = null;
+		onWheel = null;
 		onOver = null;
 		onOut = null;
 		

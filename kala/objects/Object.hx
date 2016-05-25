@@ -298,8 +298,11 @@ class Object extends EventHandle implements IObject {
 	}
 	
 	public function destroy(destroyComponents:Bool = true):Void {
+		for (callback in onDestroy) callback.cbFunction(this, destroyComponents);
+		
+		//
+		
 		position = null;
-
 		scale = null;
 		skew = null;
 		rotation = null;
@@ -308,18 +311,15 @@ class Object extends EventHandle implements IObject {
 		
 		unloadGraphics();
 		_shaders = null;
-		
-		//
-		
-		for (callback in onDestroy) callback.cbFunction(this, destroyComponents);
 
 		//
 		
 		if (destroyComponents) this.destroyComponents();
 		_components = null;
 		
-		destroyCBHandles();
+		//
 		
+		destroyCBHandles();
 		onDestroy = null;
 		onReset = null;
 		onPreUpdate = null;
@@ -334,9 +334,13 @@ class Object extends EventHandle implements IObject {
 		group = null;
 		_groups = null;
 		
+		//
+		
 		pool = null;
 		
 		data = null;
+		
+		_cachedDrawingMatrix = null;
 	}
 	
 	public function deepReset(componentsDeepReset:Bool = true):Void {

@@ -198,7 +198,7 @@ class Kala {
 		return updateRate = value;
 	}
 	
-	static function get_drawRate():UInt {
+	static inline function get_drawRate():UInt {
 		return System.refreshRate;
 	}
 	

@@ -285,7 +285,7 @@ class Text extends BasicText {
 		_htmlText = null;
 		_text = value;
 		
-		for (callback in onTextChanged) callback.cbFunction(this);
+		for (callback in onTextChange) callback.cbFunction(this);
 		
 		return value;
 	}

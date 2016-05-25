@@ -11,6 +11,8 @@ class Vec2 {
 		return [for (vec in vectors) new Vector2(vec.x, vec.y)];
 	}
 	
+	//
+	
 	public var x:FastFloat;
 	public var y:FastFloat;
 	public var length(get, set):FastFloat;
