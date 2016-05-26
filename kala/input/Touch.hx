@@ -19,19 +19,14 @@ class Touch {
 	
 	public static var touches(default, never):TouchHandle = new TouchHandle();
 	
-	/**
-	 * When set will automatically project touch position from the view to its viewport.
-	 */
-	public static var view:View;
-	
 	static function init():Void {
 		var surface = Surface.get();
 		if (surface != null) surface.notify(touchStartListener, touchEndListener, touchMoveListener);
 	}
 	
 	static function touchStartListener(id:Int, x:Int, y:Int):Void {
-		if (view != null) {
-			var p = view.project(x, y);
+		if (Kala.defaultView != null) {
+			var p = Kala.defaultView.project(x, y);
 			x = Std.int(p.x);
 			y = Std.int(p.y);
 		}
@@ -44,8 +39,8 @@ class Touch {
 	}
 	
 	static function touchMoveListener(id:Int, x:Int, y:Int):Void {
-		if (view != null) {
-			var p = view.project(x, y);
+		if (Kala.defaultView != null) {
+			var p = Kala.defaultView.project(x, y);
 			x = Std.int(p.x);
 			y = Std.int(p.y);
 		}

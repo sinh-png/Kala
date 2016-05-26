@@ -5,6 +5,7 @@ import kala.input.Keyboard;
 import kala.input.Mouse;
 import kala.input.Touch;
 import kala.math.color.Color;
+import kala.objects.group.View;
 import kala.objects.Object;
 import kala.objects.group.Group;
 import kha.FastFloat;
@@ -70,6 +71,12 @@ class Kala {
 	 * Default font used for text rendering.
 	 */
 	public static var defaultFont(default, set):Font;
+	
+	
+	/**
+	 * Default view used to calculate mouse & touch position.
+	 */
+	public static var defaultView:View;
 	
 	//
 	
