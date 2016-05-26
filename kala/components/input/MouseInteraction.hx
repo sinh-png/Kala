@@ -52,10 +52,7 @@ class MouseInteraction extends Component<Object> {
 		
 		if (object != null) {
 			addTo(object);
-			if (objectRectScale > 0) {
-				var rect = this.collider.addObjectRect();
-				rect.scale.set(objectRectScale, objectRectScale, object.width / 2, object.height / 2);
-			}
+			if (objectRectScale > 0) addObjectRectMask(objectRectScale);
 		}
 	}
 	
@@ -117,8 +114,9 @@ class MouseInteraction extends Component<Object> {
 		return this;
 	}
 	
-	public inline function addObjectRectMask():MouseInteraction {
-		collider.addObjectRect();
+	public inline function addObjectRectMask(scale:FastFloat = 1):MouseInteraction {
+		var rect = collider.addObjectRect();
+		rect.scale.set(scale, scale, object.width / 2, object.height / 2);
 		return this;
 	}
 	
