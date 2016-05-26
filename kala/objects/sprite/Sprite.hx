@@ -25,7 +25,7 @@ class Sprite extends Object {
 		super();
 		if (image != null) loadImage(image, frameX, frameY, frameWidth, frameHeight);
 		
-		if (animated) new SpriteAnimation().addTo(this);
+		if (animated) new SpriteAnimation(this);
 	}
 
 	override public function destroy(destroyComponents:Bool = true):Void {
