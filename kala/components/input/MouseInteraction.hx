@@ -102,27 +102,27 @@ class MouseInteraction extends Component<Object> {
 		super.remove();
 	}
 	
-	public inline function addCircle(x:FastFloat, y:FastFloat, radius:FastFloat):MouseInteraction {
+	public inline function addCircleMask(x:FastFloat, y:FastFloat, radius:FastFloat):MouseInteraction {
 		collider.addCircle(x, y, radius);
 		return this;
 	}
 	
-	public inline function addRect(x:FastFloat, y:FastFloat, width:FastFloat, height:FastFloat):MouseInteraction {
+	public inline function addRectMask(x:FastFloat, y:FastFloat, width:FastFloat, height:FastFloat):MouseInteraction {
 		collider.addRect(x, y, width, height);
 		return this;
 	}
 	
-	public inline function addPolygon(x:FastFloat, y:FastFloat, vertices:Array<Vec2>, concave:Bool = false):MouseInteraction {
+	public inline function addPolygonMask(x:FastFloat, y:FastFloat, vertices:Array<Vec2>, concave:Bool = false):MouseInteraction {
 		collider.addPolygon(x, y, vertices, concave);
 		return this;
 	}
 	
-	public inline function addObjectRect():MouseInteraction {
+	public inline function addObjectRectMask():MouseInteraction {
 		collider.addObjectRect();
 		return this;
 	}
 	
-	public inline function addShape(shape:CollisionShape):MouseInteraction {
+	public inline function addShapeMask(shape:CollisionShape):MouseInteraction {
 		collider.addShape(shape);
 		return this;
 	}
