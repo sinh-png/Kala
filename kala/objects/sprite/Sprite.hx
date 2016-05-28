@@ -20,7 +20,7 @@ class Sprite extends Object {
 		?image:Image, 
 		?frameX:Int, ?frameY:Int, 
 		?frameWidth:Int, ?frameHeight:Int,
-		?animated:Bool = false
+		animated:Bool = false
 	) {
 		super();
 		if (image != null) loadImage(image, frameX, frameY, frameWidth, frameHeight);
