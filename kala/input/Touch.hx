@@ -1,11 +1,12 @@
 package kala.input;
-import kala.math.Vec2;
-import kala.objects.group.View;
-import kha.FastFloat;
 
 #if kala_touch
 
 import kala.EventHandle.CallbackHandle;
+import kala.math.Rect.RectI;
+import kala.math.Vec2;
+import kala.objects.group.View;
+import kha.FastFloat;
 import kha.input.Surface;
 
 @:allow(kala.Kala)
@@ -99,7 +100,7 @@ class Touch {
 
 class TouchHandle {
 	
-	public var lenght(get, never):Int;
+	public var count(get, never):Int;
 	
 	private var _registeredTouches:Array<Touch> = new Array<Touch>();
 	private var _capturedTouches:Array<Touch> = new Array<Touch>();
@@ -118,6 +119,41 @@ class TouchHandle {
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Return:
+	 * 0 if having no touch.
+	 * 1 if having touches only on the left or upper side.
+	 * 2 if having touches only on the right or lower side.
+	 * 3 if having touches both sides.
+	 */
+	public function getSide(?vertical:Bool = false, ?middlePoint:FastFloat):Int {
+		if (middlePoint == null) middlePoint = vertical ? Kala.height / 2 : Kala.width / 2;
+		
+		var leftUpperTouched = false;
+		var rightLowerTouched = false;
+		
+		if (vertical) {
+			for (touch in _registeredTouches) {
+				if (touch.y < middlePoint) leftUpperTouched = true;
+				else rightLowerTouched = true;
+			}
+		} else {
+			for (touch in _registeredTouches) {
+				if (touch.x < middlePoint) leftUpperTouched = true;
+				else rightLowerTouched = true;
+			}
+		}	
+		
+		if (leftUpperTouched && rightLowerTouched) return 3;
+		if (rightLowerTouched) return 2;
+		if (leftUpperTouched) return 1;
+		return 0;
+	}
+	
+	public function iterator():Iterator<Touch> {
+		return _registeredTouches.iterator();
 	}
 	
 	function update(elapsed:FastFloat):Void {
@@ -145,11 +181,7 @@ class TouchHandle {
 		}
 	}
 	
-	public function iterator():Iterator<Touch> {
-		return _registeredTouches.iterator();
-	}
-	
-	inline function get_lenght():Int {
+	inline function get_count():Int {
 		return _registeredTouches.length;
 	}
 	
