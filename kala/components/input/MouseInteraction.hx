@@ -99,30 +99,26 @@ class MouseInteraction extends Component<Object> {
 		super.remove();
 	}
 	
-	public inline function addCircleMask(x:FastFloat, y:FastFloat, radius:FastFloat):MouseInteraction {
-		collider.addCircle(x, y, radius);
-		return this;
+	public inline function addCircleMask(x:FastFloat, y:FastFloat, radius:FastFloat):CollisionCircle {
+		return collider.addCircle(x, y, radius);
 	}
 	
-	public inline function addRectMask(x:FastFloat, y:FastFloat, width:FastFloat, height:FastFloat):MouseInteraction {
-		collider.addRect(x, y, width, height);
-		return this;
+	public inline function addRectMask(x:FastFloat, y:FastFloat, width:FastFloat, height:FastFloat):CollisionPolygon {
+		return collider.addRect(x, y, width, height);
 	}
 	
-	public inline function addPolygonMask(x:FastFloat, y:FastFloat, vertices:Array<Vec2>, concave:Bool = false):MouseInteraction {
-		collider.addPolygon(x, y, vertices, concave);
-		return this;
+	public inline function addPolygonMask(x:FastFloat, y:FastFloat, vertices:Array<Vec2>, concave:Bool = false):Array<CollisionPolygon> {
+		return collider.addPolygon(x, y, vertices, concave);
 	}
 	
-	public inline function addObjectRectMask(scale:FastFloat = 1):MouseInteraction {
+	public inline function addObjectRectMask(scale:FastFloat = 1):CollisionPolygon {
 		var rect = collider.addObjectRect();
 		rect.scale.set(scale, scale, object.width / 2, object.height / 2);
-		return this;
+		return rect;
 	}
 	
-	public inline function addShapeMask(shape:CollisionShape):MouseInteraction {
-		collider.addShape(shape);
-		return this;
+	public inline function addShapeMask(shape:CollisionShape):CollisionShape {
+		return collider.addShape(shape);
 	}
 	
 	function update(obj:Object, elapsed:FastFloat):Void {
