@@ -111,10 +111,8 @@ class MouseInteraction extends Component<Object> {
 		return collider.addPolygon(x, y, vertices, concave);
 	}
 	
-	public inline function addObjectRectMask(scale:FastFloat = 1):CollisionPolygon {
-		var rect = collider.addObjectRect();
-		rect.scale.set(scale, scale, object.width / 2, object.height / 2);
-		return rect;
+	public inline function addObjectRectMask():CollisionPolygon {
+		return collider.addObjectRect();
 	}
 	
 	public inline function addShapeMask(shape:CollisionShape):CollisionShape {
