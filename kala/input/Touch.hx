@@ -65,6 +65,7 @@ class Touch {
 	public var duration(default, null):FastFloat;
 	
 	public var justStarted(get, never):Bool;
+	public var justEnded(default, null):Bool;
 	
 	private var _ending:Bool;
 	
@@ -136,7 +137,9 @@ class TouchHandle {
 			touch.duration += elapsed;
 			
 			if (touch._ending) {
-				_registeredTouches.splice(i, 1);
+				if (touch.justEnded) _registeredTouches.splice(i, 1);
+				else touch.justEnded = true;
+				
 				for (callback in Touch.onEnd) callback.cbFunction(touch);
 			}
 		}
