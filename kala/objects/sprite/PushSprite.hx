@@ -30,6 +30,10 @@ class PushSprite extends Sprite {
 	public var onOver(default, null):CallbackHandle<PushSprite->Void>;
 	public var onOut(default, null):CallbackHandle<PushSprite->Void>;
 	
+	#if js
+	public var disableMouseOnMobile:Bool;
+	#end
+	
 	private var _mouseHovered:Bool;
 	private var _touched:Bool;
 	
@@ -51,7 +55,12 @@ class PushSprite extends Sprite {
 	
 	override public function reset(componentsReset:Bool = false):Void {
 		super.reset(componentsReset);
+		
 		hovered = _mouseHovered = _touched = false;
+		
+		#if js
+		disableMouseOnMobile = true;
+		#end
 	}
 	
 	override public function destroy(destroyComponents:Bool = true):Void {
@@ -67,7 +76,11 @@ class PushSprite extends Sprite {
 	
 	override public function update(elapsed:FastFloat):Void {
 		#if kala_mouse
-		updateMouse();
+			#if js
+			if (!disableMouseOnMobile || !Kala.html5.mobile) updateMouse();
+			#else
+			updateMouse();
+			#end
 		#end
 		
 		#if kala_touch
@@ -75,8 +88,8 @@ class PushSprite extends Sprite {
 		#end
 		
 		if (hovered && !_touched && !_mouseHovered) {
-			for (callback in onOut) callback.cbFunction(this);
 			hovered = false;
+			for (callback in onOut) callback.cbFunction(this);
 		}
 	}
 	
