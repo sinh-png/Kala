@@ -46,29 +46,17 @@ class VelocityMotion extends Component<Object> {
 	}
 	
 	function update(obj:Object, elapsed:FastFloat):Void {
-		if (Kala.deltaTiming) {
-			
-			if (accel.x != 0) velocity.x += Kala.applyDelta(accel.x);
-			if (accel.y != 0) velocity.y += Kala.applyDelta(accel.y);
-			
-			turnSpeed += Kala.applyDelta(turnAccel);
-			if (turnSpeed != 0) velocity.angle += Kala.applyDelta(turnSpeed);
-			
-			obj.x += Kala.applyDelta(velocity.x);
-			obj.y += Kala.applyDelta(velocity.y);
-			
-		} else {
-			
-			if (accel.x != 0) velocity.x += accel.x;
-			if (accel.y != 0) velocity.y += accel.y;
-			
-			turnSpeed += turnAccel;
-			if (turnSpeed != 0) velocity.angle += turnSpeed;
-			
-			obj.x += velocity.x;
-			obj.y += velocity.y;
-			
-		}
+		var factor = elapsed;
+		if (Kala.deltaTiming) factor /= Kala.perfectDelta;
+		
+		if (accel.x != 0) velocity.x += accel.x * factor;
+		if (accel.y != 0) velocity.y += accel.y * factor;
+		
+		turnSpeed += turnAccel * factor;
+		if (turnSpeed != 0) velocity.angle += turnSpeed * factor;
+		
+		obj.x += velocity.x * factor;
+		obj.y += velocity.y * factor;
 	}
 	
 }
