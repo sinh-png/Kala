@@ -8,11 +8,13 @@ import kala.math.color.Color;
 import kala.objects.group.View;
 import kala.objects.Object;
 import kala.objects.group.Group;
+import kala.system.HTML5;
 import kha.FastFloat;
 import kha.Font;
 import kha.Framebuffer;
 import kha.Scheduler;
 import kha.System;
+import kha.SystemImpl;
 
 class Kala {
 	
@@ -50,6 +52,9 @@ class Kala {
 	 */
 	public static var deltaTiming:Bool = false;
 	
+	/**
+	 * Scale factor to calculate elapsed time. This affects all built-in timing processes of objects and components. 
+	 */
 	public static var timeScale:FastFloat = 1;
 
 	/**
@@ -77,6 +82,12 @@ class Kala {
 	 * Default view used to calculate mouse & touch position.
 	 */
 	public static var defaultView:View;
+	
+	//
+	
+	#if js
+	public static var html5(default, never):HTML5 = new HTML5();
+	#end
 	
 	//
 	
@@ -213,5 +224,5 @@ class Kala {
 		if (value == null) return null;
 		return defaultFont = value;
 	}
-
+	
 }
