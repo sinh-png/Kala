@@ -29,7 +29,11 @@ class ButtonInputHandle<T:EnumValue> {
 
 	public function update(elapsed:FastFloat):Void {
 		if (activeInputs.length == 0) {
-			inputAny.duration = -1;
+			if (inputAny._state == 2) inputAny._state = 0;
+			else if (inputAny.duration > -1) {
+				inputAny._state = 2;
+				inputAny.duration = -1;
+			}
 			return;
 		}
 		
@@ -42,12 +46,12 @@ class ButtonInputHandle<T:EnumValue> {
 				if (input._state == 1) {
 					input.duration = 0;
 					for (callback in onStartPressing) callback.cbFunction(input.button);
+				} else if (input._state == 2) {
+					activeInputs.splice(i, 1);
+					input._state = 0;
 				}
-				
-				input._state = 0;
 			} else {
 				if (input._state == 2) {
-					activeInputs.splice(i, 1);
 					input.duration = -1;
 					for (callback in onRelease) callback.cbFunction(input.button);
 					continue;
