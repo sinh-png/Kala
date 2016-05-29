@@ -29,13 +29,18 @@ class ButtonInputHandle<T:EnumValue> {
 
 	public function update(elapsed:FastFloat):Void {
 		if (activeInputs.length == 0) {
-			if (inputAny._state == 2) inputAny._state = 0;
-			else if (inputAny.duration > -1) {
-				inputAny._state = 2;
+			if (inputAny.duration > -1) {
+				inputAny.justReleased = true;
 				inputAny.duration = -1;
+			} else {
+				inputAny.justReleased = false;
 			}
+			
 			return;
 		}
+		
+		if (inputAny.duration == -1) inputAny.duration = 0;
+		else inputAny.duration += elapsed;
 		
 		var i = activeInputs.length;
 		var input:ButtonInput<T>;
@@ -46,23 +51,21 @@ class ButtonInputHandle<T:EnumValue> {
 				if (input._state == 1) {
 					input.duration = 0;
 					for (callback in onStartPressing) callback.cbFunction(input.button);
-				} else if (input._state == 2) {
+				} else if (input.justReleased) {
 					activeInputs.splice(i, 1);
-					input._state = 0;
+					input.justReleased = false;
 				}
 			} else {
 				if (input._state == 2) {
 					input.duration = -1;
+					input._state = 0;
+					input.justReleased = true;
 					for (callback in onRelease) callback.cbFunction(input.button);
-					continue;
+				} else {
+					input.duration += elapsed;
 				}
-				
-				input.duration += elapsed;
 			}
 		}
-		
-		if (inputAny.duration == -1) inputAny.duration = 0;
-		else inputAny.duration += elapsed;
 	}
 	
 	public function checkAnyPressed(buttons:Array<T>):Bool {
@@ -203,7 +206,7 @@ class ButtonInput<T:EnumValue> {
 	
 	public var pressed(get, never):Bool;
 	public var justPressed(get, never):Bool;
-	public var justReleased(get, never):Bool;
+	public var justReleased(default, null):Bool;
 	
 	private var _state:Int = 0; // 1 - waiting to be registered, 2 - waiting to be released
 	
@@ -229,10 +232,6 @@ class ButtonInput<T:EnumValue> {
 	
 	inline function get_justPressed():Bool {
 		return duration == 0;
-	}
-	
-	inline function get_justReleased():Bool {
-		return duration == -1 && _state == 2;
 	}
 	
 }
