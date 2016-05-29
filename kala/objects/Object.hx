@@ -192,7 +192,7 @@ class Object extends EventHandle implements IObject {
 	//
 	
 	/**
-	 * The current group updating / rendering this object.
+	 * The current group updating or rendering this object.
 	 */
 	public var group(default, null):IGroup;
 	public var groups(get, never):Array<IGroup>;
@@ -204,6 +204,9 @@ class Object extends EventHandle implements IObject {
 	
 	public var data:Dynamic;
 	
+	/**
+	 * Scale factor to calculate elapsed time. This affects all built-in timing processes of objects and components. 
+	 */
 	public var timeScale:FastFloat;
 	
 	//
