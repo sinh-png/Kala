@@ -477,11 +477,11 @@ class Object extends EventHandle implements IObject {
 		}
 	}
 	
-	public inline function kill():Void {
+	public function kill():Void {
 		alive = false;
 	}
 	
-	public inline function revive():Void {
+	public function revive():Void {
 		alive = true;
 	}
 	
