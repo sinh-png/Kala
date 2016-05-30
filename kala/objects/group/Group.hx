@@ -39,12 +39,15 @@ class Group<T:Object> extends Object implements IGroup {
 	public var colorBlendMode:BlendMode;
 	public var colorAlphaBlendMode:BlendMode;
 	
+	public var factoryFunction:Void->T;
+	
 	private var _children:Array<T> = new Array<T>();
 	private var _views:Array<View> = new Array<View>();
 	
-	public function new(transformEnable:Bool = false) {
+	public function new(transformEnable:Bool = false, ?factoryFunction:Void->T) {
 		super();
 		this.transformEnable = transformEnable;
+		this.factoryFunction = factoryFunction;
 	}
 	
 	override public function reset(componentsReset:Bool = false):Void {
@@ -178,6 +181,23 @@ class Group<T:Object> extends Object implements IGroup {
 	
 	public inline function getChildren():Array<T> {
 		return _children.copy();
+	}
+	
+	public function createAlive():T {
+		for (obj in _children) {
+			if (!obj.alive) {
+				obj.revive();
+				return obj;
+			}
+		}
+		
+		if (factoryFunction != null) {
+			var obj = factoryFunction();
+			add(obj);
+			return obj;
+		}
+		
+		return null;
 	}
 	
 	public function add(obj:T, pos:Int = -1):Void {
