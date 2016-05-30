@@ -266,16 +266,18 @@ class Group<T:Object> extends Object implements IGroup {
 		return view;
 	}
 	
+	public inline function iterator():Iterator<T> {
+		return _children.iterator();
+	}
+	
+	//
+	
 	function _add(obj:Object, pos:Int = -1):Void {
 		add(cast obj, pos);
 	}
 	
 	function _remove(obj:Object, spilce:Bool = false):Void {
 		remove(cast obj, spilce);
-	}
-	
-	public inline function iterator():Iterator<T> {
-		return _children.iterator();
 	}
 	
 }
