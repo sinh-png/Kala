@@ -15,7 +15,7 @@ typedef GenericGroup = Group<Object>;
 
 interface IGroup extends IObject {
 	
-	public var transformEnable:Bool;
+	public var transformationEnable:Bool;
 	
 	public var colorBlendMode:BlendMode;
 	public var colorAlphaBlendMode:BlendMode;
@@ -34,7 +34,7 @@ interface IGroup extends IObject {
 @:access(kala.math.color.Color)
 class Group<T:Object> extends Object implements IGroup {
 	
-	public var transformEnable:Bool;
+	public var transformationEnable:Bool;
 	
 	public var colorBlendMode:BlendMode;
 	public var colorAlphaBlendMode:BlendMode;
@@ -44,9 +44,9 @@ class Group<T:Object> extends Object implements IGroup {
 	private var _children:Array<T> = new Array<T>();
 	private var _views:Array<View> = new Array<View>();
 	
-	public function new(transformEnable:Bool = false, ?factoryFunction:Void->T) {
+	public function new(transformationEnable:Bool = false, ?factoryFunction:Void->T) {
 		super();
-		this.transformEnable = transformEnable;
+		this.transformationEnable = transformationEnable;
 		this.factoryFunction = factoryFunction;
 	}
 	
@@ -102,7 +102,7 @@ class Group<T:Object> extends Object implements IGroup {
 	override public function draw(data:DrawingData, canvas:Canvas):Void {
 		var g2 = canvas.g2;
 		
-		if (transformEnable) {
+		if (transformationEnable) {
 			if (data.transformation == null) data.transformation = _cachedDrawingMatrix = getMatrix();
 			else data.transformation = _cachedDrawingMatrix = data.transformation.multmat(getMatrix());
 		

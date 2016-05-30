@@ -478,7 +478,7 @@ class Object extends EventHandle implements IObject {
 		while (true) {
 			if (group == null) {
 				return getMatrix();
-			} else if (!group.transformEnable) {
+			} else if (!group.transformationEnable) {
 				return group.getDrawingMatrix().multmat(getMatrix());
 			}
 			
