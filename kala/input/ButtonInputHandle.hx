@@ -198,7 +198,7 @@ class ButtonInput<T:EnumValue> {
 	
 	/**
 	 * The time this button has been pressed.
-	 * In seconds if Kala.deltaTiming is set to true otherwise use frames.
+	 * In seconds if Kala.deltaTiming is set to true otherwise in frames.
 	 * 0 means the button was just pressed.
 	 * -1 means the button is not pressed.
 	 */
