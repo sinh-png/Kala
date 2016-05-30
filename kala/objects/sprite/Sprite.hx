@@ -64,7 +64,7 @@ class Sprite extends Object {
 	public function loadSpriteData(data:SpriteData, ?image:Image, ?animKey:String, ?animDelay:Int = -1):Sprite {
 		if (image == null) image = data.image;
 		
-		if (data.frames.length == 1) {
+		if (data.frames.length == 1 && animKey == null) {
 			var frame = data.frames[0];
 			return loadImage(image, frame.x, frame.y, frame.width, frame.height);
 		}
