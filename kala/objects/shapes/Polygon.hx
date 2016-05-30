@@ -58,7 +58,7 @@ class Polygon extends Shape {
 		var minY:FastFloat = 0;
 		var maxY:FastFloat = 0;
 		
-		for (v in vertices) {
+		for (v in _vertices) {
 			if (v.x < minX) minX = v.x;
 			else if (v.x > maxX) maxX = v.x;
 			

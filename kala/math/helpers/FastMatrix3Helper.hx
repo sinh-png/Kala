@@ -2,6 +2,7 @@ package kala.math.helpers;
 
 import kala.math.Rotation;
 import kala.math.Vec2T;
+import kha.FastFloat;
 import kha.math.FastMatrix3;
 
 class FastMatrix3Helper {
@@ -27,10 +28,8 @@ class FastMatrix3Helper {
 	//
 	
 	@:extern
-	public static inline function getTransformMatrix(
-		position:Vec2T, 
-		scale:Vec2T, skew:Vec2T, rotation:Rotation,
-		flipX:Bool, flipY:Bool
+	public static inline function getTransformation(
+		position:Vec2T, scale:Vec2T, skew:Vec2T, rotation:Rotation
 	):FastMatrix3 {
 			var x = position.x - position.ox;
 			var y = position.y - position.oy;
@@ -39,33 +38,42 @@ class FastMatrix3Helper {
 			var matrix = FastMatrix3.translation(x, y);
 			
 			// Scaling
-			var centerX = x + scale.ox;
-			var centerY = y + scale.oy;
+			var ox = x + scale.ox;
+			var oy = y + scale.oy;
 			
-			matrix = FastMatrix3.translation(centerX, centerY)
-					.multmat(FastMatrix3.scale(scale.x * (flipX ? -1 : 1), scale.y * (flipY ? -1 : 1)))
-					.multmat(FastMatrix3.translation( -centerX, -centerY))
+			matrix = FastMatrix3.translation(ox, oy)
+					.multmat(FastMatrix3.scale(scale.x, scale.y))
+					.multmat(FastMatrix3.translation( -ox, -oy))
 					.multmat(matrix);
 					
 			// Skewing
-			centerX = x + skew.ox;
-			centerY = y + skew.oy;
+			ox = x + skew.ox;
+			oy = y + skew.oy;
 			
-			matrix = FastMatrix3.translation(centerX, centerY)
+			matrix = FastMatrix3.translation(ox, oy)
 					.multmat(new FastMatrix3(1, Math.tan(skew.x * Angle.CONST_RAD), 0, Math.tan(skew.y * Angle.CONST_RAD), 1, 0, 0, 0, 1))
-					.multmat(FastMatrix3.translation( -centerX, -centerY))
+					.multmat(FastMatrix3.translation( -ox, -oy))
 					.multmat(matrix);
 			
 			// Rotating
-			centerX = x + rotation.px;
-			centerY = y + rotation.py;
+			ox = x + rotation.px;
+			oy = y + rotation.py;
 			
-			matrix = FastMatrix3.translation(centerX, centerY)
+			matrix = FastMatrix3.translation(ox, oy)
 					.multmat(FastMatrix3.rotation(rotation.rad))
-					.multmat(FastMatrix3.translation( -centerX, -centerY))
+					.multmat(FastMatrix3.translation( -ox, -oy))
 					.multmat(matrix);
-			
+				
 			return matrix;
+	}
+	
+	public static inline function flip(
+		matrix:FastMatrix3, flipX:Bool, flipY:Bool, ox:FastFloat, oy:FastFloat
+	):FastMatrix3 {
+		return FastMatrix3.translation(ox, oy)
+				.multmat(FastMatrix3.scale(flipX ? -1 : 1, flipY ? -1 : 1))
+				.multmat(FastMatrix3.translation( -ox, -oy))
+				.multmat(matrix);
 	}
 
 }

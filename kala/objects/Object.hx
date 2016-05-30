@@ -142,11 +142,11 @@ class Object extends EventHandle implements IObject {
 	public var position:Vec2T = new Vec2T();
 	
 	/**
-	 * Flip scale.x
+	 * Horizontal flip this object at its center.
 	 */
 	public var flipX:Bool;
 	/**
-	 * Flip scale.y
+	 * Vertically flip this object at its center.
 	 */
 	public var flipY:Bool;
 	
@@ -460,7 +460,16 @@ class Object extends EventHandle implements IObject {
 	}
 
 	public inline function getMatrix():FastMatrix3 {
-		return FastMatrix3Helper.getTransformMatrix(position, scale, skew, rotation, flipX, flipY);
+		var matrix = FastMatrix3Helper.getTransformation(position, scale, skew, rotation);
+		
+		if (flipX || flipY) {
+			return FastMatrix3Helper.flip(
+				matrix, flipX, flipY,
+				position.x - position.ox + width / 2, position.y - position.oy + height / 2
+			);
+		}
+		
+		return matrix;
 	}
 	
 	public function getDrawingMatrix():FastMatrix3 {

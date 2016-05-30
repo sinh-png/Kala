@@ -33,6 +33,9 @@ class CollisionShape {
 
 	public var matrix(default, null):FastMatrix3;
 	
+	public var width(get, never):FastFloat;
+	public var height(get, never):FastFloat;
+	
 	private var _vertices:Array<Vec2> = new Array<Vec2>();
 
 	public function new() {
@@ -65,11 +68,21 @@ class CollisionShape {
 		
 	}
 	
-	public function updateMatrix():CollisionShape {
-		matrix = collider._matrix.multmat(
-			FastMatrix3Helper.getTransformMatrix(position, scale, skew, rotation, flipX, flipY)
-		);
+	public inline function getMatrix():FastMatrix3 {
+		var matrix = FastMatrix3Helper.getTransformation(position, scale, skew, rotation);
 		
+		if (flipX || flipY) {
+			return FastMatrix3Helper.flip(
+				matrix, flipX, flipY,
+				position.x - position.ox + width / 2, position.y - position.oy + height / 2
+			);
+		}
+		
+		return matrix;
+	}
+	
+	public function updateMatrix():CollisionShape {
+		matrix = collider._matrix.multmat(getMatrix());
 		return this;
 	}
 	
@@ -102,6 +115,14 @@ class CollisionShape {
 	
 	public function testPoint(pointX:FastFloat, pointY:FastFloat):Bool {
 		return false;
+	}
+	
+	function get_width():FastFloat {
+		return 0;
+	}
+	
+	function get_height():FastFloat {
+		return 0;
 	}
 	
 }
@@ -279,11 +300,22 @@ class CollisionCircle extends CollisionShape {
 		return segments = value;
 	}
 	
+	override function get_width():FastFloat {
+		return radius * 2;
+	}
+	
+	override function get_height():FastFloat {
+		return radius * 2;
+	}
+	
 }
 
 class CollisionPolygon extends CollisionShape {
 	
 	public static var pool(default, never) = new Pool<CollisionPolygon>(create);
+	
+	var _width:FastFloat;
+	var _height:FastFloat;
 	
 	public static inline function get():CollisionPolygon {
 		var polygon = pool.get();
@@ -337,7 +369,33 @@ class CollisionPolygon extends CollisionShape {
 	}
 	
 	function set_vertices(value:Array<Vec2>):Array<Vec2> {
-		return _vertices = value;
+		_vertices = value;
+		
+		var minX:FastFloat = 0;
+		var maxX:FastFloat = 0;
+		var minY:FastFloat = 0;
+		var maxY:FastFloat = 0;
+		
+		for (v in _vertices) {
+			if (v.x < minX) minX = v.x;
+			else if (v.x > maxX) maxX = v.x;
+			
+			if (v.y < minY) minY = v.y;
+			else if (v.y > maxY) maxY = v.y;
+		}
+		
+		_width = Math.abs(maxX - minX);
+		_height = Math.abs(maxY - minY);
+		
+		return _vertices;
+	}
+	
+	override function get_width():FastFloat {
+		return _width;
+	}
+	
+	override function get_height():FastFloat {
+		return _height;
 	}
 	
 }
