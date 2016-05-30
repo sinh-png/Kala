@@ -272,10 +272,12 @@ class Group<T:Object> extends Object implements IGroup {
 	
 	//
 	
+	@:noCompletion 
 	function _add(obj:Object, pos:Int = -1):Void {
 		add(cast obj, pos);
 	}
 	
+	@:noCompletion 
 	function _remove(obj:Object, spilce:Bool = false):Void {
 		remove(cast obj, spilce);
 	}
