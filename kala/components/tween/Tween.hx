@@ -6,7 +6,7 @@ import kala.components.tween.Ease.EaseFunction;
 import kala.components.tween.Tween.TweenTask;
 import kala.components.tween.Tween.TweenTimeline;
 import kala.objects.Object;
-import kala.pool.Pool;
+import kala.util.pool.Pool;
 import kala.util.types.Trio;
 import kha.FastFloat;
 
@@ -303,7 +303,7 @@ class TweenTimeline {
 		_prvTweenTasks.splice(0, _prvTweenTasks.length);
 		_crTweenTasks.splice(0, _crTweenTasks.length);
 		
-		pool.put(this);
+		pool.putUnsafe(this);
 	}
 	
 	function init(
@@ -640,7 +640,7 @@ class TweenTask {
 		_varStartValues.splice(0, _varStartValues.length);
 		_varRanges.splice(0, _varRanges.length);
 	
-		pool.put(this);
+		pool.putUnsafe(this);
 	}
 	
 	function update(elapsed:FastFloat):Bool {

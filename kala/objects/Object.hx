@@ -12,7 +12,6 @@ import kala.math.Rect;
 import kala.math.Rotation;
 import kala.math.Vec2T;
 import kala.math.Vec2;
-import kala.pool.ObjectPool;
 import kala.objects.group.Group;
 import kha.Canvas;
 import kha.FastFloat;
@@ -66,8 +65,6 @@ interface IObject {
 	public var group(default, null):IGroup;
 	public var groups(get, never):Array<IGroup>;
 	private var _groups:Array<IGroup>;
-	
-	public var pool:ObjectPool;
 	
 	//
 	
@@ -197,8 +194,6 @@ class Object extends EventHandle implements IObject {
 	public var group(default, null):IGroup;
 	public var groups(get, never):Array<IGroup>;
 	var _groups:Array<IGroup> = new Array<IGroup>();
-	
-	public var pool:ObjectPool;
 	
 	//
 	
@@ -338,8 +333,6 @@ class Object extends EventHandle implements IObject {
 		_groups = null;
 		
 		//
-		
-		pool = null;
 		
 		data = null;
 		
@@ -490,10 +483,6 @@ class Object extends EventHandle implements IObject {
 	
 	public inline function revive():Void {
 		alive = true;
-	}
-	
-	public inline function put():Void {
-		pool.put(this);
 	}
 	
 	public inline function removefromGroups(splice:Bool = false):Void {

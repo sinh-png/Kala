@@ -9,7 +9,7 @@ import kala.math.Rotation;
 import kala.math.Vec2;
 import kala.math.Vec2T;
 import kala.math.helpers.FastMatrix3Helper;
-import kala.pool.Pool;
+import kala.util.pool.Pool;
 import kala.util.types.Trio;
 import kha.FastFloat;
 import kha.math.FastMatrix3;
@@ -108,18 +108,16 @@ class CollisionShape {
 
 class CollisionCircle extends CollisionShape {
 	
-	public static var pool(default, never) = new Pool<CollisionCircle>(create, init);
+	public static var pool(default, never) = new Pool<CollisionCircle>(create);
 	
 	public static inline function get():CollisionCircle {
-		return pool.get();
+		var circle = pool.get();
+		circle.reset();
+		return circle;
 	}
 	
 	static function create():CollisionCircle {
-		return new CollisionCircle()	;
-	}
-	
-	static function init(shape:CollisionCircle):Void {
-		shape.reset();
+		return new CollisionCircle();
 	}
 	
 	//
@@ -140,7 +138,7 @@ class CollisionCircle extends CollisionShape {
 	}
 	
 	override public function put():Void {
-		pool.put(this);
+		pool.putUnsafe(this);
 	}
 	
 	override public function testCircle(circle:CollisionCircle):CollisionResult {
@@ -285,18 +283,16 @@ class CollisionCircle extends CollisionShape {
 
 class CollisionPolygon extends CollisionShape {
 	
-	public static var pool(default, never) = new Pool<CollisionPolygon>(create, init);
+	public static var pool(default, never) = new Pool<CollisionPolygon>(create);
 	
 	public static inline function get():CollisionPolygon {
-		return pool.get();
+		var polygon = pool.get();
+		polygon.reset();
+		return polygon;
 	}
 	
 	static function create():CollisionPolygon {
 		return new CollisionPolygon()	;
-	}
-	
-	static function init(shape:CollisionPolygon):Void {
-		shape.reset();
 	}
 	
 	//
@@ -309,7 +305,7 @@ class CollisionPolygon extends CollisionShape {
 	}
 	
 	override public function put():Void {
-		pool.put(this);
+		pool.putUnsafe(this);
 	}
 
 	override public function testCircle(circle:CollisionCircle):CollisionResult {
