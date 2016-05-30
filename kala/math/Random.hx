@@ -18,6 +18,10 @@ abstract Random(kha.math.Random) from kha.math.Random to kha.math.Random {
 		return instance.getFast(min, max);
 	}
 	
+	public static inline function bool(chance:Float = 50):Bool {
+		return float(0, 100) < 50;
+	}
+	
 	//
 	
 
