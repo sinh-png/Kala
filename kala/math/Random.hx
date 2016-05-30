@@ -19,14 +19,14 @@ abstract Random(kha.math.Random) from kha.math.Random to kha.math.Random {
 	}
 	
 	public static inline function bool(chance:Float = 50):Bool {
-		return float(0, 100) < 50;
+		return int(0, 100) < 50;
 	}
 	
 	/**
 	 *	Randomly return 1 or -1 based on the input chance.
 	 */
 	public static inline function roll(chance:Float = 50):Int {
-		if (float(0, 1) == 0) return -1;
+		if (int(0, 1) == 0) return -1;
 		return 1;
 	}
 	
