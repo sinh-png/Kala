@@ -22,6 +22,14 @@ abstract Random(kha.math.Random) from kha.math.Random to kha.math.Random {
 		return float(0, 100) < 50;
 	}
 	
+	/**
+	 *	Randomly return 1 or -1 based on the input chance.
+	 */
+	public static inline function roll(chance:Float = 50):Int {
+		if (float(0, 1) == 0) return -1;
+		return 1;
+	}
+	
 	//
 	
 
