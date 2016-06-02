@@ -47,6 +47,20 @@ class Collision {
 		return true;
 	}
 	
+	/**
+	 * Test two circles without getting collision data.
+	 */
+	public static inline function fastCircleVsCircle(
+		circleAX:FastFloat, circleAY:FastFloat, circleARadius:FastFloat,
+		circleBX:FastFloat, circleBY:FastFloat, circleBRadius:FastFloat
+	):Bool {
+		var totalRadius = circleARadius + circleBRadius;
+		return (
+			(circleAX - circleBX) * (circleAX - circleBX) + (circleAY - circleBY) * (circleAY - circleBY) <
+			totalRadius * totalRadius
+		);
+	}
+	
 	// The codes below are copied and modified from: 
 	// https://github.com/underscorediscovery/differ/blob/master/differ/sat/SAT2D.hx
 	
