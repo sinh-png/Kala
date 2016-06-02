@@ -250,6 +250,18 @@ class CollisionCircle extends CollisionShape {
 		return super.getTransformedVertices();
 	}
 	
+	/**
+	 * Test this circle with another cirlce using only position & radius data, ignore other transformations.
+	 */
+	public function testCircleNoTransform(circle:CollisionCircle):CollisionData {
+		updateMatrix();
+		circle.updateMatrix();
+		return Collision.circleVsCircle(
+			matrix._20, matrix._21, radius,
+			circle.matrix._20, circle.matrix._21, circle.radius
+		);
+	}
+	
 	public function updateVertices():Void {
 		var segments = this.segments;
 		if (segments <= 0) {
