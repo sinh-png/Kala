@@ -251,12 +251,13 @@ class CollisionCircle extends CollisionShape {
 	}
 	
 	/**
-	 * Test this circle with another cirlce using only position & radius data, ignore other transformations.
+	 * Test this circle with another cirlce using only position & radius data,
+	 * ignore other transformations and collision data.
 	 */
-	public function testCircleNoTransform(circle:CollisionCircle):CollisionData {
+	public function testCircleNoTransform(circle:CollisionCircle):Bool {
 		updateMatrix();
 		circle.updateMatrix();
-		return Collision.circleVsCircle(
+		return Collision.fastCircleVsCircle(
 			matrix._20, matrix._21, radius,
 			circle.matrix._20, circle.matrix._21, circle.radius
 		);
