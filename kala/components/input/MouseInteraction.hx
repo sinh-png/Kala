@@ -1,6 +1,4 @@
 package kala.components.input;
-import kala.math.color.Color;
-import kala.objects.group.View;
 
 #if kala_mouse
 
@@ -8,8 +6,10 @@ import kala.components.collision.Collider;
 import kala.components.collision.CollisionShape;
 import kala.components.Component;
 import kala.EventHandle.CallbackHandle;
-import kala.input.Mouse;
+import kala.math.color.Color;
 import kala.math.Vec2;
+import kala.input.Mouse;
+import kala.objects.group.View;
 import kala.objects.Object;
 import kha.FastFloat;
 
@@ -41,7 +41,7 @@ class MouseInteraction extends Component<Object> {
 	private var _dragPointY:FastFloat;
 	
 	public function new(?object:Object, ?collider:Collider, objectRectScale:FastFloat = 0) {
-		super(null);
+		super();
 		
 		this.collider = collider == null ? new Collider() : collider;
 		
