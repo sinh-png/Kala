@@ -590,7 +590,7 @@ class Object extends EventHandle implements IObject {
 		} else if (g2.imageScaleQuality != ImageScaleQuality.Low) {
 			g2.imageScaleQuality = ImageScaleQuality.Low;
 		}
-	
+		
 		if (data.transformation == null) g2.transformation = _cachedDrawingMatrix = getMatrix();
 		else g2.transformation = _cachedDrawingMatrix = data.transformation.multmat(getMatrix());
 		

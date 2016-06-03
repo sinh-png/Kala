@@ -102,21 +102,6 @@ class Group<T:Object> extends Object implements IGroup {
 	override public function draw(data:DrawingData, canvas:Canvas):Void {
 		var g2 = canvas.g2;
 		
-		if (transformationEnable) {
-			if (data.transformation == null) data.transformation = _cachedDrawingMatrix = getMatrix();
-			else data.transformation = _cachedDrawingMatrix = data.transformation.multmat(getMatrix());
-		
-			if (data.color == null) {
-				data.color = color;
-			} else {
-				data.color = Color.getBlendColor(color, data.color, data.colorBlendMode, data.colorAlphaBlendMode);
-			}
-			
-			g2.opacity = this.opacity * data.opacity;
-		}
-		
-		if (antialiasing) data.antialiasing = true;
-		
 		var drawingData = new DrawingData(
 			data.antialiasing,
 			data.transformation,
@@ -124,10 +109,25 @@ class Group<T:Object> extends Object implements IGroup {
 			data.opacity
 		);
 		
+		if (transformationEnable) {
+			if (data.transformation == null) drawingData.transformation = _cachedDrawingMatrix = getMatrix();
+			else drawingData.transformation = _cachedDrawingMatrix = data.transformation.multmat(getMatrix());
+		
+			if (drawingData.color == null) {
+				drawingData.color = color;
+			} else {
+				drawingData.color = Color.getBlendColor(color, data.color, data.colorBlendMode, data.colorAlphaBlendMode);
+			}
+			
+			g2.opacity = this.opacity * data.opacity;
+		}
+		
+		if (antialiasing) data.antialiasing = true;
+		
 		if (_views.length == 0) {
 			for (child in _children) {
 				if (child == null) continue;
-				
+	
 				if (child.alive && child.isVisible()) {
 					child.callDraw(this, drawingData, canvas);
 				}
