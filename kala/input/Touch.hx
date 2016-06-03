@@ -26,13 +26,12 @@ class Touch {
 	}
 	
 	static function touchStartListener(id:Int, x:Int, y:Int):Void {
-		if (Kala.defaultView != null) {
+		if (Kala.defaultView == null) {
+			touches._capturedTouches.push(new Touch(id, x, y, x, y));
+		} else {
 			var p = Kala.defaultView.project(x, y);
-			x = Std.int(p.x);
-			y = Std.int(p.y);
+			touches._capturedTouches.push(new Touch(id, Std.int(p.x), Std.int(p.y), x, y));
 		}
-		
-		touches._capturedTouches.push(new Touch(id, x, y));
 	}
 	
 	static function touchEndListener(id:Int, x:Int, y:Int):Void {
@@ -40,15 +39,8 @@ class Touch {
 	}
 	
 	static function touchMoveListener(id:Int, x:Int, y:Int):Void {
-		if (Kala.defaultView != null) {
-			var p = Kala.defaultView.project(x, y);
-			x = Std.int(p.x);
-			y = Std.int(p.y);
-		}
-		
 		var touch = touches.findTouch(id);
 		touch.setPos(x, y);
-		
 		for (callback in onMove) callback.cbFunction(touch);
 	}
 	
@@ -63,6 +55,9 @@ class Touch {
 	public var x(default, null):Int;
 	public var y(default, null):Int;
 	
+	public var realX(default, null):Int;
+	public var realY(default, null):Int;
+	
 	public var duration(default, null):FastFloat;
 	
 	public var justStarted(get, never):Bool;
@@ -70,26 +65,39 @@ class Touch {
 	
 	private var _ending:Bool;
 	
-	public inline function new(id:Int, x:Int, y:Int) {
+	public inline function new(id:Int, x:Int, y:Int, realX:Int, realY:Int) {
 		this.id = id;
+		
 		this.x = x;
 		this.y = y;
+		this.realX = realX;
+		this.realY = realY;
+		
 		duration = 0;
 		_ending = false;
 	}
 	
 	/**
-	 * Project the touch position from the input view to its viewport.
+	 * Project the touch real position from the input view to its viewport.
 	 * Only works when the view is visible.
 	 */
 	public inline function project(view:View):Vec2 {
-		return view.project(x, y);
+		return view.project(realX, realY);
 	}
 	
 	@:extern
 	inline function setPos(x:Int, y:Int):Void {
-		this.x = x;
-		this.y = y;
+		if (Kala.defaultView == null) {
+			this.x = realX = x;
+			this.y = realY = y;
+		} else {
+			realX = x;
+			realY = y;
+			
+			var p = Kala.defaultView.project(x, y);
+			x = Std.int(p.x);
+			y = Std.int(p.y);
+		}
 	}
 	
 	inline function get_justStarted():Bool {

@@ -22,6 +22,9 @@ class Mouse {
 	public static var x(default, null):Int = 0;
 	public static var y(default, null):Int = 0;
 	
+	public static var realX(default, null):Int = 0;
+	public static var realY(default, null):Int = 0;
+	
 	public static var wheel(get, null):Int;
 	
 	//
@@ -97,11 +100,11 @@ class Mouse {
 	}
 	
 	/**
-	 * Project the cursor position from the input view to its viewport.
+	 * Project the cursor real position from the input view to its viewport.
 	 * Only works when the view is visible.
 	 */
 	public static inline function project(view:View):Vec2 {
-		return view.project(x, y);
+		return view.project(realX, realY);
 	}
 	
 	//
@@ -143,9 +146,12 @@ class Mouse {
 	
 	static function mouseMoveListener(x:Int, y:Int, _:Int, _:Int):Void {
 		if (Kala.defaultView == null) {
-			Mouse.x = x;
-			Mouse.y = y;
+			Mouse.x = realX = x;
+			Mouse.y = realY = y;
 		} else {
+			realX = x;
+			realY = y;
+			
 			var p = Kala.defaultView.project(x, y);
 			Mouse.x = Std.int(p.x);
 			Mouse.y = Std.int(p.y);
