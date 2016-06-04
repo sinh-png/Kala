@@ -16,17 +16,9 @@ class Pool<T> {
 	}
 	
 	public function get():T {
-		var obj:T = null;
-		
-		if (_objects.length > 0) {
-			obj = _objects.pop();
-		} else {
-			if (factoryFunction != null) {
-				obj = factoryFunction();
-			}
-		}
-		
-		return obj;
+		if (_objects.length > 0) return _objects.pop();
+		if (factoryFunction != null) return factoryFunction();
+		return null;
 	}
 	
 	/**
