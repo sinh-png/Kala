@@ -201,7 +201,7 @@ class Group<T:Object> extends Object implements IGroup {
 	}
 	
 	public function add(obj:T, pos:Int = -1):Void {
-		if (_children.indexOf(obj) != -1) return null;
+		if (_children.indexOf(obj) != -1) return;
 		
 		if (pos == -1) _children.push(obj);
 		else _children.insert(pos, obj);
