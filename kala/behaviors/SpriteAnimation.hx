@@ -1,7 +1,7 @@
-package kala.components;
+package kala.behaviors;
 
 import haxe.ds.StringMap;
-import kala.components.SpriteAnimation.SpriteAnimationData;
+import kala.behaviors.SpriteAnimation.SpriteAnimationData;
 import kala.EventHandle.CallbackHandle;
 import kala.math.Rect.RectI;
 import kala.objects.Object;
@@ -10,7 +10,7 @@ import kha.FastFloat;
 import kha.Image;
 
 @:access(kala.objects.sprite.Sprite)
-class SpriteAnimation extends Component<Sprite> {
+class SpriteAnimation extends Behavior<Sprite> {
 
 	public var anim(default, null):SpriteAnimationData;
 	public var frame(default, set):Int;
@@ -73,7 +73,7 @@ class SpriteAnimation extends Component<Sprite> {
 	 * @param	reversed		Whether to play the animation in reverse or not. Left null to use the current setting.
 	 * @param	forceReplay		Whether to force replay the animation if it is already playing with the same settings.
 	 * 
-	 * @return 					This component.
+	 * @return 					This behavior.
 	 */
 	public function play(?key:String, ?delay:UInt, ?reversed:Bool, forceReplay:Bool = false):SpriteAnimation {
 		if (key == null) {
@@ -111,16 +111,16 @@ class SpriteAnimation extends Component<Sprite> {
 	 * Add a new animation.
 	 * 
 	 * @param	key				Key used to access animation.
-	 * @param	image			Source image contains sprite sheet. If set to null, will use the current image of the owner sprite (set by sprite.loadImage or most preview calling of addAnim). If this argument is null and the component wasn't added to a sprite or the sprite image is null, this method will do nothing and return null.
-	 * @param	sheetX			X position of sprite sheet. If set to smaller than 0, will use the current frame x of the owner sprite (set by sprite.loadImage or most preview calling of addAnim). If this argument is set to smaller than 0 and the component wasn't added to a sprite, this method will do nothing and return null.
-	 * @param	sheetY			Y position of sprite sheet. If set to smaller than 0, will use the current frame y of the owner sprite (set by sprite.loadImage or most preview calling of addAnim). If this argument is set to to smaller than 0 and the component wasn't added to a sprite, this method will do nothing and return null.
-	 * @param	frameWidth		Frame width. If set to 0, will use the current frame width of the owner sprite (set by sprite.loadImage or most preview calling of addAnim). If this argument is set to 0 and the component wasn't added to a sprite, this method will do nothing and return null.
-	 * @param	frameHeight		Frame height. If set to 0, will use the current frame height of the owner sprite (set by sprite.loadImage or most preview calling of addAnim). If this argument is set to 0 and the component wasn't added to a sprite, this method will do nothing and return null.
+	 * @param	image			Source image contains sprite sheet. If set to null, will use the current image of the owner sprite (set by sprite.loadImage or most preview calling of addAnim). If this argument is null and the behavior wasn't added to a sprite or the sprite image is null, this method will do nothing and return null.
+	 * @param	sheetX			X position of sprite sheet. If set to smaller than 0, will use the current frame x of the owner sprite (set by sprite.loadImage or most preview calling of addAnim). If this argument is set to smaller than 0 and the behavior wasn't added to a sprite, this method will do nothing and return null.
+	 * @param	sheetY			Y position of sprite sheet. If set to smaller than 0, will use the current frame y of the owner sprite (set by sprite.loadImage or most preview calling of addAnim). If this argument is set to to smaller than 0 and the behavior wasn't added to a sprite, this method will do nothing and return null.
+	 * @param	frameWidth		Frame width. If set to 0, will use the current frame width of the owner sprite (set by sprite.loadImage or most preview calling of addAnim). If this argument is set to 0 and the behavior wasn't added to a sprite, this method will do nothing and return null.
+	 * @param	frameHeight		Frame height. If set to 0, will use the current frame height of the owner sprite (set by sprite.loadImage or most preview calling of addAnim). If this argument is set to 0 and the behavior wasn't added to a sprite, this method will do nothing and return null.
 	 * @param	totalFrames		Total number of frames in sprite sheet.
 	 * @param	framesPerRow	Number of frames per row. (Last row may have less frames.)
 	 * @param	delay			Delay time between frames. In seconds if Kala.deltaTiming is set to true otherwise in frames.
 	 * 
-	 * @return					Return this component if success otherwise return null.
+	 * @return					Return this behavior if success otherwise return null.
 	 */
 	public function addAnim(
 		key:String,

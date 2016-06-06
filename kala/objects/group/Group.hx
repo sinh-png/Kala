@@ -50,18 +50,18 @@ class Group<T:Object> extends Object implements IGroup {
 		this.factoryFunction = factoryFunction;
 	}
 	
-	override public function reset(componentsReset:Bool = false):Void {
-		super.reset(componentsReset);
+	override public function reset(resetBehaviors:Bool = false):Void {
+		super.reset(resetBehaviors);
 		color = Color.WHITE;
 		colorBlendMode = BlendMode.MULTI_2X;
 		colorAlphaBlendMode = null;
 	}
 	
-	override public function destroy(destroyComponents:Bool = true):Void {
-		super.destroy(destroyComponents);
+	override public function destroy(destroyBehaviors:Bool = true):Void {
+		super.destroy(destroyBehaviors);
 		
-		while (_children.length > 0) _children.pop().destroy(destroyComponents);
-		while (_views.length > 0) _views.pop().destroy(destroyComponents);
+		while (_children.length > 0) _children.pop().destroy(destroyBehaviors);
+		while (_views.length > 0) _views.pop().destroy(destroyBehaviors);
 		
 		_children = null;
 		_views = null;

@@ -20,13 +20,13 @@ class Circle extends Shape {
 		this.radius = radius;
 	}
 	
-	override public function reset(resetComponents:Bool = false):Void {
-		super.reset(resetComponents);
+	override public function reset(resetBehaviors:Bool = false):Void {
+		super.reset(resetBehaviors);
 		segments = 0;
 	}
 	
-	override public function destroy(destroyComponents:Bool = true):Void {
-		super.destroy(destroyComponents);
+	override public function destroy(destroyBehaviors:Bool = true):Void {
+		super.destroy(destroyBehaviors);
 		_vertices = null;
 	}
 	

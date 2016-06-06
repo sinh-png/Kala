@@ -37,8 +37,8 @@ class Shape extends Object {
 		if (outline) lineOpacity = 1; else lineOpacity = 0;
 	}
 	
-	override public function reset(resetComponents:Bool = false):Void {
-		super.reset(resetComponents);
+	override public function reset(resetBehaviors:Bool = false):Void {
+		super.reset(resetBehaviors);
 	
 		color = Color.WHITE;
 		
@@ -50,8 +50,8 @@ class Shape extends Object {
 		colorAlphaBlendMode = null;
 	}
 	
-	override public function destroy(destroyComponents:Bool = true):Void {
-		super.destroy(destroyComponents);
+	override public function destroy(destroyBehaviors:Bool = true):Void {
+		super.destroy(destroyBehaviors);
 		_canvas = null;
 	}
 	

@@ -1,4 +1,4 @@
-package kala.components.tween;
+package kala.behaviors.tween;
 
 import kha.FastFloat;
 

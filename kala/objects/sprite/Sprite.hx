@@ -1,7 +1,7 @@
 package kala.objects.sprite;
 
 import kala.DrawingData;
-import kala.components.SpriteAnimation;
+import kala.behaviors.SpriteAnimation;
 import kala.math.color.Color;
 import kala.math.Rect;
 import kha.Canvas;
@@ -28,8 +28,8 @@ class Sprite extends Object {
 		if (animated) new SpriteAnimation(this);
 	}
 
-	override public function destroy(destroyComponents:Bool = true):Void {
-		super.destroy(destroyComponents);
+	override public function destroy(destroyBehaviors:Bool = true):Void {
+		super.destroy(destroyBehaviors);
 		image = null;
 		frameRect = null;
 		animation = null;

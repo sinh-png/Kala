@@ -1,4 +1,4 @@
-package kala.components.collision;
+package kala.behaviors.collision;
 
 import kala.math.Collision.CollisionData;
 import kala.math.Vec2;

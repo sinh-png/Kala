@@ -1,13 +1,14 @@
-package kala.components;
+package kala.behaviors;
+import kala.behaviors.tween.Ease;
 
-import kala.components.tween.Ease.EaseFunction;
-import kala.components.tween.Tween;
-import kala.components.Component;
+import kala.behaviors.tween.Ease.EaseFunction;
+import kala.behaviors.tween.Tween;
+import kala.behaviors.Behavior;
 import kala.objects.Object;
 import kala.util.types.Pair;
 import kha.FastFloat;
 
-class Timer extends Component<Object> {
+class Timer extends Behavior<Object> {
 	
 	private var _coolingDownIDs:Array<Pair<Int, Int>> = new Array<Pair<Int, Int>>();
 	private var _coolingDownFunctions:Array<Pair<Void->Void, Int>> = new Array<Pair<Void->Void, Int>>();
@@ -116,8 +117,8 @@ class Timer extends Component<Object> {
 	
 }
 
-@:allow(kala.components.Timer)
-@:access(kala.components.Timer)
+@:allow(kala.behaviors.Timer)
+@:access(kala.behaviors.Timer)
 class LoopTask {
 
 	public var duration:FastFloat;
@@ -160,7 +161,7 @@ class LoopTask {
 
 //
 
-@:access(kala.components.tween.Tween)
+@:access(kala.behaviors.tween.Tween)
 class TimerEx extends Timer {
 
 	public var _tween:Tween;

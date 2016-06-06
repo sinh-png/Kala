@@ -35,16 +35,16 @@ class BasicText extends Object {
 		onTextChange = addCBHandle(new CallbackHandle<BasicText->Void>());
 	}
 
-	override public function reset(componentsReset:Bool = false):Void {
+	override public function reset(resetBehaviors:Bool = false):Void {
 		bold = false;
 		italic = false;
 		underlined = false;
 		
-		super.reset(componentsReset);
+		super.reset(resetBehaviors);
 	}
 	
-	override public function destroy(componentsDestroy:Bool = true):Void {
-		super.destroy(componentsDestroy);
+	override public function destroy(destroyBehaviors:Bool = true):Void {
+		super.destroy(destroyBehaviors);
 		font = null;
 		onTextChange = null;
 	}

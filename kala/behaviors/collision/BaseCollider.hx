@@ -1,8 +1,8 @@
-package kala.components.collision;
+package kala.behaviors.collision;
 
 import kala.DrawingData;
-import kala.components.Component;
-import kala.components.collision.CollisionShape;
+import kala.behaviors.Behavior;
+import kala.behaviors.collision.CollisionShape;
 import kala.math.color.Color;
 import kala.math.Vec2;
 import kala.objects.Object;
@@ -17,7 +17,7 @@ import kala.Debug.DebugDrawCall;
 using kha.graphics2.GraphicsExtension;
 using kala.math.helpers.FastMatrix3Helper;
 
-interface ICollider extends IComponent {
+interface ICollider extends IBehavior {
 	
 	public var postDrawUpdate(default, set):Bool;
 	public var shapes:Array<CollisionShape>;
@@ -29,8 +29,8 @@ interface ICollider extends IComponent {
 }
 
 @:access(kala.objects.Object)
-@:allow(kala.components.collision.CollisionShape)
-class BaseCollider<T:Object> extends Component<T> implements ICollider {
+@:allow(kala.behaviors.collision.CollisionShape)
+class BaseCollider<T:Object> extends Behavior<T> implements ICollider {
 	
 	#if (debug || kala_debug)
 	private static var _debugDrawCalls:Array<DebugDrawCall> = Debug.addDrawLayer();

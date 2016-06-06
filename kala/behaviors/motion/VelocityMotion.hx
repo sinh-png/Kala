@@ -1,6 +1,6 @@
-package kala.components.motion;
+package kala.behaviors.motion;
 
-import kala.components.Component;
+import kala.behaviors.Behavior;
 import kala.math.Vec2;
 import kala.math.Velocity;
 import kala.objects.Object;
@@ -8,7 +8,7 @@ import kha.FastFloat;
 
 using kala.math.Angle;
 
-class VelocityMotion extends Component<Object> {
+class VelocityMotion extends Behavior<Object> {
 
 	public var velocity:Velocity = new Velocity();
 	public var accel:Velocity = new Velocity();

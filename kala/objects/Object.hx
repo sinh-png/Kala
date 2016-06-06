@@ -1,8 +1,9 @@
 package kala.objects;
 
+import kala.behaviors.Behavior;
 import kala.DrawingData;
 import kala.EventHandle;
-import kala.components.Component.IComponent;
+import kala.behaviors.Behavior.IBehavior;
 import kala.graphics.Shader;
 import kala.math.Collision;
 import kala.math.helpers.FastMatrix3Helper;
@@ -89,7 +90,7 @@ interface IObject {
 	
 	//
 	
-	private var _components:Array<IComponent>;
+	private var _behaviors:Array<IBehavior>;
 	
 	//
 	
@@ -104,9 +105,9 @@ interface IObject {
 	
 	//
 	
-	public function reset(componentsReset:Bool = false):Void;
-	public function destroy(componentsDestroy:Bool = true):Void;
-	public function deepReset(componentsDeepReset:Bool = true):Void;
+	public function reset(resetBehaviors:Bool = false):Void;
+	public function destroy(destroyBehaviors:Bool = true):Void;
+	public function deepReset(deepResetBehaviors:Bool = true):Void;
 	public function update(elapsed:FastFloat):Void;
 	public function draw(data:DrawingData, canvas:Canvas):Void;
 	public function drawBuffer(data:DrawingData, canvas:Canvas):Void;
@@ -119,7 +120,7 @@ interface IObject {
 
 
 @:allow(kala.Kala)
-@:allow(kala.components.Component)
+@:allow(kala.behaviors.Behavior)
 @:access(kala.objects.group.IGroup)
 @:access(kala.math.color.Color)
 class Object extends EventHandle implements IObject {
@@ -200,7 +201,7 @@ class Object extends EventHandle implements IObject {
 	public var data:Dynamic;
 	
 	/**
-	 * Scale factor to calculate elapsed time. This affects all built-in timing processes of objects and components. 
+	 * Scale factor to calculate elapsed time. This affects all built-in timing processes of objects and behaviors. 
 	 */
 	public var timeScale:FastFloat;
 	
@@ -221,7 +222,7 @@ class Object extends EventHandle implements IObject {
 	
 	//
 	
-	private var _components:Array<IComponent> = new Array<IComponent>();
+	private var _behaviors:Array<IBehavior> = new Array<IBehavior>();
 	
 	//
 	
@@ -252,18 +253,18 @@ class Object extends EventHandle implements IObject {
 	}
 	
 	override public function clearCBHandles():Void {
-		removeComponents();
+		removeBehaviors();
 		super.clearCBHandles();
 	}
 	
 	/**
 	 * Reset properties to their values when this object was created. 
 	 * This won't remove the object from its groups.
-	 * This won't remove added callbacks and components.
+	 * This won't remove added callbacks and behaviors.
 	 * 
-	 * @param	componentsReset		If true will also reset components. 
+	 * @param	resetBehaviors		If true will also reset behaviors. 
 	 */
-	public function reset(componentsReset:Bool = false):Void {
+	public function reset(resetBehaviors:Bool = false):Void {
 		alive = true;
 		active = true;
 		visible = true;
@@ -290,13 +291,13 @@ class Object extends EventHandle implements IObject {
 		
 		timeScale = 1;
 		
-		for (callback in onReset) callback.cbFunction(this, componentsReset);
+		for (callback in onReset) callback.cbFunction(this, resetBehaviors);
 
-		if (componentsReset) resetComponents();
+		if (resetBehaviors) this.resetBehaviors();
 	}
 	
-	public function destroy(destroyComponents:Bool = true):Void {
-		for (callback in onDestroy) callback.cbFunction(this, destroyComponents);
+	public function destroy(destroyBehaviors:Bool = true):Void {
+		for (callback in onDestroy) callback.cbFunction(this, destroyBehaviors);
 		
 		//
 		
@@ -312,8 +313,8 @@ class Object extends EventHandle implements IObject {
 
 		//
 		
-		if (destroyComponents) this.destroyComponents();
-		_components = null;
+		if (destroyBehaviors) this.destroyBehaviors();
+		_behaviors = null;
 		
 		//
 		
@@ -339,9 +340,9 @@ class Object extends EventHandle implements IObject {
 		_cachedDrawingMatrix = null;
 	}
 	
-	public function deepReset(componentsDeepReset:Bool = true):Void {
+	public function deepReset(deepResetBehaviors:Bool = true):Void {
 		reset(false);
-		if (componentsDeepReset) deepResetComponents();
+		if (deepResetBehaviors) this.deepResetBehaviors();
 		clearCBHandles();
 		removefromGroups();
 	}
@@ -498,26 +499,26 @@ class Object extends EventHandle implements IObject {
 		for (group in _groups) group._remove(this, splice);
 	}
 	
-	public inline function getComponents():Array<IComponent> {
-		return _components.copy();
+	public inline function getBehaviors():Array<IBehavior> {
+		return _behaviors.copy();
 	}
 	
-	public inline function removeComponents():Void {
-		for (component in _components) component.remove();
+	public inline function removeBehaviors():Void {
+		for (behavior in _behaviors) behavior.remove();
 	}
 	
-	public inline function destroyComponents():Void {
-		while (_components.length > 0) {
-			_components.pop().destroy();
+	public inline function destroyBehaviors():Void {
+		while (_behaviors.length > 0) {
+			_behaviors.pop().destroy();
 		}
 	}
 	
-	public inline function resetComponents():Void {
-		for (component in _components) component.reset();
+	public inline function resetBehaviors():Void {
+		for (behavior in _behaviors) behavior.reset();
 	}
 	
-	public inline function deepResetComponents():Void {
-		for (component in _components) component.deepReset();
+	public inline function deepResetBehaviors():Void {
+		for (behavior in _behaviors) behavior.deepReset();
 	}
 	
 	inline function execFirstFrame():Void {

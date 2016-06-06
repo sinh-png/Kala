@@ -65,8 +65,8 @@ class Text extends BasicText {
 		if (text != null) refreshText();
 	}
 	
-	override public function reset(componentsReset:Bool = false):Void {
-		super.reset(componentsReset);
+	override public function reset(resetBehaviors:Bool = false):Void {
+		super.reset(resetBehaviors);
 		
 		_htmlText = null;
 		
@@ -95,8 +95,8 @@ class Text extends BasicText {
 		colorAlphaBlendMode = null;
 	}
 	
-	override public function destroy(componentsDestroy:Bool = true):Void {
-		super.destroy(componentsDestroy);
+	override public function destroy(destroyBehaviors:Bool = true):Void {
+		super.destroy(destroyBehaviors);
 		padding = null;
 		_lines = null;
 	}

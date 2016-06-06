@@ -1,9 +1,10 @@
-package kala.components.collision;
+package kala.behaviors.collision;
 
-import kala.components.collision.BaseCollider.ICollider;
-import kala.components.collision.CollisionResult;
-import kala.components.collision.CollisionShape.CollisionCircle;
-import kala.components.collision.CollisionShape.CollisionPolygon;
+import kala.behaviors.Behavior;
+import kala.behaviors.collision.BaseCollider.ICollider;
+import kala.behaviors.collision.CollisionResult;
+import kala.behaviors.collision.CollisionShape.CollisionCircle;
+import kala.behaviors.collision.CollisionShape.CollisionPolygon;
 import kala.math.Collision;
 import kala.math.Rotation;
 import kala.math.Vec2;
@@ -14,7 +15,7 @@ import kala.util.types.Trio;
 import kha.FastFloat;
 import kha.math.FastMatrix3;
 
-@:allow(kala.components.Component)
+@:allow(kala.behaviors.Behavior)
 class CollisionShape {
 	
 	// To avoid using Std.is

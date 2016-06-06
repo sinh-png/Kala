@@ -2,15 +2,15 @@ package kala.objects.sprite;
 
 #if (kala_mouse || kala_touch)
 
-import kala.components.collision.Collider;
-import kala.components.collision.CollisionShape;
+import kala.behaviors.collision.Collider;
+import kala.behaviors.collision.CollisionShape;
 import kala.EventHandle.CallbackHandle;
 import kala.math.Vec2;
 import kha.FastFloat;
 import kha.Image;
 
 /**
- * Sprite with basic touch and / or mouse interaction using Collider component. 
+ * Sprite with basic touch and / or mouse interaction using Collider behavior. 
  * Good for making basic button.
  */
 class PushSprite extends Sprite {
@@ -53,8 +53,8 @@ class PushSprite extends Sprite {
 		onOut = addCBHandle(new CallbackHandle<PushSprite->Void>());
 	}
 	
-	override public function reset(componentsReset:Bool = false):Void {
-		super.reset(componentsReset);
+	override public function reset(resetBehaviors:Bool = false):Void {
+		super.reset(resetBehaviors);
 		
 		hovered = _mouseHovered = _touched = false;
 		
@@ -63,8 +63,8 @@ class PushSprite extends Sprite {
 		#end
 	}
 	
-	override public function destroy(destroyComponents:Bool = true):Void {
-		super.destroy(destroyComponents);
+	override public function destroy(destroyBehaviors:Bool = true):Void {
+		super.destroy(destroyBehaviors);
 		
 		collider = null;
 		

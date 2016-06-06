@@ -53,7 +53,7 @@ class Kala {
 	public static var deltaTiming:Bool = false;
 	
 	/**
-	 * Scale factor to calculate elapsed time. This affects all built-in timing processes of objects and components. 
+	 * Scale factor to calculate elapsed time. This affects all built-in timing processes of objects and behaviors. 
 	 */
 	public static var timeScale:FastFloat = 1;
 

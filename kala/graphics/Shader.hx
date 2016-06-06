@@ -1,6 +1,6 @@
 package kala.graphics;
 
-import kala.components.Component;
+import kala.behaviors.Behavior;
 import kala.objects.Object;
 import kha.graphics4.FragmentShader;
 import kha.graphics4.PipelineState;
@@ -11,7 +11,7 @@ import kha.Image;
 import kha.Shaders;
 
 @:allow(kala.objects.Object)
-@:allow(kala.components.Component)
+@:allow(kala.behaviors.Behavior)
 class Shader {
 
 	public var pipeline:PipelineState;

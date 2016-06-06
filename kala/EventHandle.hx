@@ -1,6 +1,7 @@
 package kala;
+import kala.behaviors.Behavior;
 
-import kala.components.Component.IComponent;
+import kala.behaviors.Behavior.IBehavior;
 
 class EventHandle {
 
@@ -36,7 +37,7 @@ interface ICallbackHandle {
 	private function destroy():Void;
 }
 
-@:allow(kala.components.Component)
+@:allow(kala.behaviors.Behavior)
 class CallbackHandle<T> implements ICallbackHandle {
 	
 	public var lenght(get, never):Int;
@@ -60,7 +61,7 @@ class CallbackHandle<T> implements ICallbackHandle {
 	}
 	
 	/**
-	 * Remove callback from this handle if it wasn't added by a component.
+	 * Remove callback from this handle if it wasn't added by a behavior.
 	 * 
 	 * @param	callback	The callback to be removed.
 	 */
@@ -107,9 +108,9 @@ class Callback<T> {
 	public var cbFunction(default, null):T;
 	public var owner(default, null):Dynamic;
 	
-	public inline function new(cbFunction:T, component:Dynamic = null) {
+	public inline function new(cbFunction:T, behavior:Dynamic = null) {
 		this.cbFunction = cbFunction;
-		this.owner = component;
+		this.owner = behavior;
 	}
 	
 }

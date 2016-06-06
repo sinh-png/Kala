@@ -2,7 +2,7 @@ package kala;
 
 import haxe.ds.StringMap;
 import kala.Assets.AssetLoader;
-import kala.components.SpriteAnimation;
+import kala.behaviors.SpriteAnimation;
 import kala.EventHandle.CallbackHandle;
 import kala.math.Rect.RectI;
 import kala.objects.sprite.Sprite.SpriteData;

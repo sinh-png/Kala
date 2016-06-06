@@ -21,8 +21,8 @@ class Polygon extends Shape {
 		this.vertices = vertices;
 	}
 	
-	override public function destroy(destroyComponents:Bool = true):Void {
-		super.destroy(destroyComponents);
+	override public function destroy(destroyBehaviors:Bool = true):Void {
+		super.destroy(destroyBehaviors);
 		vector2Array = null;
 		_vertices = null;
 	}

@@ -1,10 +1,10 @@
-package kala.components.input;
+package kala.behaviors.input;
 
 #if kala_mouse
 
-import kala.components.collision.Collider;
-import kala.components.collision.CollisionShape;
-import kala.components.Component;
+import kala.behaviors.collision.Collider;
+import kala.behaviors.collision.CollisionShape;
+import kala.behaviors.Behavior;
 import kala.EventHandle.CallbackHandle;
 import kala.math.color.Color;
 import kala.math.Vec2;
@@ -13,7 +13,7 @@ import kala.objects.group.View;
 import kala.objects.Object;
 import kha.FastFloat;
 
-class MouseInteraction extends Component<Object> {
+class MouseInteraction extends Behavior<Object> {
 	
 	public var collider:Collider;
 	public var debugColor:Color = 0xffff00ff;
@@ -252,7 +252,7 @@ class MouseInteraction extends Component<Object> {
 	
 }
 
-@:allow(kala.components.input.MouseInteraction)
+@:allow(kala.behaviors.input.MouseInteraction)
 class MouseInteractionInput {
 	
 	public var button(default, null):MouseButton;
@@ -262,12 +262,12 @@ class MouseInteractionInput {
 	public var justReleased(default, null):Bool;
 	
 	/**
-	 * The time the button has been pressed on the component.
+	 * The time the button has been pressed on the behavior.
 	 */
 	public var duration(default, null):FastFloat = -1;
 	
 	/**
-	 * Whether to reset duration when cursor is moving out of the component or not.
+	 * Whether to reset duration when cursor is moving out of the behavior or not.
 	 */
 	public var resetOnMovingOut:Bool = true;
 	

@@ -1,17 +1,17 @@
-package kala.components.tween;
+package kala.behaviors.tween;
 
 import kala.Kala;
-import kala.components.Component;
-import kala.components.tween.Ease.EaseFunction;
-import kala.components.tween.Tween.TweenTask;
-import kala.components.tween.Tween.TweenTimeline;
+import kala.behaviors.Behavior;
+import kala.behaviors.tween.Ease.EaseFunction;
+import kala.behaviors.tween.Tween.TweenTask;
+import kala.behaviors.tween.Tween.TweenTimeline;
 import kala.objects.Object;
 import kala.util.pool.Pool;
 import kala.util.types.Trio;
 import kha.FastFloat;
 
-@:allow(kala.components.tween.TweenTimeline)
-class Tween extends Component<Object> {
+@:allow(kala.behaviors.tween.TweenTimeline)
+class Tween extends Behavior<Object> {
 	
 	private var _tweens:Array<TweenTimeline> = new Array<TweenTimeline>();
 	
@@ -105,7 +105,7 @@ class Tween extends Component<Object> {
 	
 }
 
-@:allow(kala.components.tween.Tween)
+@:allow(kala.behaviors.tween.Tween)
 class TweenTimeline {
 	
 	public static var pool(default, never):Pool<TweenTimeline> = new Pool<TweenTimeline>(create);
@@ -517,7 +517,7 @@ enum TweenNode {
 	
 }
 
-@:allow(kala.components.tween.TweenTimeline)
+@:allow(kala.behaviors.tween.TweenTimeline)
 class TweenTask {
 	
 	public static var pool(default, never) = new Pool<TweenTask>(create);

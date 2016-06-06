@@ -52,14 +52,14 @@ class View extends Object {
 		viewport = new Rect(viewX, viewY, viewWidth, viewHeight);
 	}
 	
-	override public function reset(componentsReset:Bool = false):Void {
-		super.reset(componentsReset);
+	override public function reset(resetBehaviors:Bool = false):Void {
+		super.reset(resetBehaviors);
 		bgColor = 0;
 		transparent = true;
 	}
 	
-	override public function destroy(componentsDestroy:Bool = true):Void {
-		super.destroy(componentsDestroy);
+	override public function destroy(destroyBehaviors:Bool = true):Void {
+		super.destroy(destroyBehaviors);
 		
 		viewBuffer.unload();
 		viewBuffer = null;
