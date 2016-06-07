@@ -6,6 +6,7 @@ import kala.behaviors.collision.CollisionResult;
 import kala.behaviors.collision.CollisionShape.CollisionCircle;
 import kala.behaviors.collision.CollisionShape.CollisionPolygon;
 import kala.math.Collision;
+import kala.math.Position;
 import kala.math.Rotation;
 import kala.math.Vec2;
 import kala.math.Vec2T;
@@ -23,7 +24,7 @@ class CollisionShape {
 	
 	public var collider(default, null):Collider;
 
-	public var position:Vec2T = new Vec2T();
+	public var position:Position = new Position();
 	
 	public var scale:Vec2T = new Vec2T();
 	public var skew:Vec2T = new Vec2T();
