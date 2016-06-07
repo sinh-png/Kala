@@ -9,6 +9,7 @@ import kala.math.Collision;
 import kala.math.helpers.FastMatrix3Helper;
 import kala.math.Angle;
 import kala.math.color.Color;
+import kala.math.Position;
 import kala.math.Rect;
 import kala.math.Rotation;
 import kala.math.Vec2T;
@@ -33,7 +34,7 @@ interface IObject {
 	
 	public var angle(get, set):FastFloat;
 	
-	public var position:Vec2T;
+	public var position:Position;
 	
 	public var flipX:Bool;
 	public var flipY:Bool;
@@ -146,7 +147,7 @@ class Object extends EventHandle implements IObject {
 	 */
 	public var angle(get, set):FastFloat;
 	
-	public var position:Vec2T = new Vec2T();
+	public var position:Position = new Position();
 	
 	/**
 	 * Horizontal flip this object at its center.
