@@ -31,6 +31,8 @@ interface IObject {
 	public var x(get, set):FastFloat;
 	public var y(get, set):FastFloat;
 	
+	public var angle(get, set):FastFloat;
+	
 	public var position:Vec2T;
 	
 	public var flipX:Bool;
@@ -139,6 +141,10 @@ class Object extends EventHandle implements IObject {
 	 * Shortcut to position.y
 	 */
 	public var y(get, set):FastFloat;
+	/**
+	 * Shortcut to rotation.angle
+	 */
+	public var angle(get, set):FastFloat;
 	
 	public var position:Vec2T = new Vec2T();
 	
@@ -694,6 +700,14 @@ class Object extends EventHandle implements IObject {
 	
 	inline function set_y(value:FastFloat):FastFloat {
 		return position.y = value;
+	}
+
+	inline function get_angle():FastFloat {
+		return rotation.angle;
+	}
+	
+	inline function set_angle(value:FastFloat):FastFloat {
+		return rotation.angle = value;
 	}
 	
 	inline function get_groups():Array<IGroup> {
