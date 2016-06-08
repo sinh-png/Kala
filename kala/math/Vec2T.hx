@@ -79,18 +79,9 @@ class Vec2T {
 		
 		return this;
 	}
-	
+
 	@:extern
-	public inline function move(x:FastFloat, y:FastFloat, ox:FastFloat, oy:FastFloat):Void {
-		this.x += x;
-		this.y += y;
-		
-		this.ox += ox;
-		this.oy += oy;
-	}
-	
-	@:extern
-	public inline function moveXY(x:FastFloat, y:FastFloat):Void {
+	public inline function move(x:FastFloat, y:FastFloat):Void {
 		this.x += x;
 		this.y += y;
 	}
