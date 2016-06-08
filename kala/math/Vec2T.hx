@@ -22,22 +22,18 @@ class Vec2T {
 	}
 	
 	@:extern
-	public inline function set(x:FastFloat = 0, y:FastFloat = 0, originX:FastFloat = 0, originY:FastFloat = 0):Vec2T {
+	public inline function set(x:FastFloat = 0, y:FastFloat = 0, originX:FastFloat = 0, originY:FastFloat = 0):Void {
 		this.x = x;
 		this.y = y;
 		
 		this.ox = originX;
 		this.oy = originY;
-		
-		return this;
 	}
 	
 	@:extern
-	public inline function copy(vec:Vec2T):Vec2T {
+	public inline function copy(vec:Vec2T):Void {
 		this.x = vec.x;
 		this.y = vec.y;
-		
-		return this;
 	}
 	
 	@:extern
@@ -85,30 +81,24 @@ class Vec2T {
 	}
 	
 	@:extern
-	public inline function move(x:FastFloat, y:FastFloat, ox:FastFloat, oy:FastFloat):Vec2T {
+	public inline function move(x:FastFloat, y:FastFloat, ox:FastFloat, oy:FastFloat):Void {
 		this.x += x;
 		this.y += y;
 		
 		this.ox += ox;
 		this.oy += oy;
-		
-		return this;
 	}
 	
 	@:extern
-	public inline function moveXY(x:FastFloat, y:FastFloat):Vec2T {
+	public inline function moveXY(x:FastFloat, y:FastFloat):Void {
 		this.x += x;
 		this.y += y;
-		
-		return this;
 	}
 	
 	@:extern
-	public inline function moveOrigin(ox:FastFloat, oy:FastFloat):Vec2T {
+	public inline function moveOrigin(ox:FastFloat, oy:FastFloat):Void {
 		this.ox += ox;
 		this.oy += oy;
-		
-		return this;
 	}
 	
 	public inline function toString():String {

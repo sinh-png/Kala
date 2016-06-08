@@ -17,23 +17,19 @@ class Rect {
 	}
 	
 	@:extern
-	public inline function set(x:FastFloat = 0, y:FastFloat = 0, width:FastFloat = 0, height:FastFloat = 0):Rect {
+	public inline function set(x:FastFloat = 0, y:FastFloat = 0, width:FastFloat = 0, height:FastFloat = 0):Void {
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		
-		return this;
 	}
 	
 	@:extern
-	public inline function copy(rect:Rect):Rect {
+	public inline function copy(rect:Rect):Void {
 		x = rect.x;
 		y = rect.y;
 		width = rect.width;
 		height = rect.height;
-		
-		return this;
 	}
 	
 	@:extern
@@ -62,23 +58,19 @@ class RectI {
 	}
 	
 	@:extern
-	public inline function set(x:Int = 0, y:Int = 0, width:Int = 0, height:Int = 0):RectI {
+	public inline function set(x:Int = 0, y:Int = 0, width:Int = 0, height:Int = 0):Void {
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		
-		return this;
 	}
 	
 	@:extern
-	public inline function copy(rect:RectI):RectI {
+	public inline function copy(rect:RectI):Void {
 		x = rect.x;
 		y = rect.y;
 		width = rect.width;
 		height = rect.height;
-		
-		return this;
 	}
 	
 	@:extern
