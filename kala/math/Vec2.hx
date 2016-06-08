@@ -5,21 +5,31 @@ import kha.math.FastMatrix3;
 import kha.math.FastVector2;
 import kha.math.Vector2;
 
-class Vec2 {
+abstract Vec2(FastVector2) from FastVector2 to FastVector2 {
 	
+	@:from
+	public static inline function fromVector2(vec:Vector2):Vec2 {
+		return new Vec2(vec.x, vec.y);
+	}
+	
+	@:extern
 	public static inline function toVector2Array(vectors:Array<Vec2>):Array<Vector2> {
 		return [for (vec in vectors) new Vector2(vec.x, vec.y)];
 	}
 	
 	//
 	
-	public var x:FastFloat;
-	public var y:FastFloat;
+	public var x(get, set):FastFloat;
+	public var y(get, set):FastFloat;
 	public var length(get, set):FastFloat;
 	
 	public inline function new(x:FastFloat = 0, y:FastFloat = 0): Void {
-		this.x = x;
-		this.y = y;
+		this = new FastVector2(x, y);
+	}
+	
+	@:to
+	public inline function toVector2():Vector2 {
+		return new Vector2(x, y);
 	}
 	
 	@:extern
@@ -41,16 +51,6 @@ class Vec2 {
 		y = vec.y;
 		
 		return this;
-	}
-	
-	@:extern
-	public inline function toVector2():Vector2 {
-		return new Vector2(x, y);
-	}
-	
-	@:extern
-	public inline function toFastVector2():FastVector2 {
-		return new FastVector2(x, y);
 	}
 	
 	@:extern 
@@ -82,19 +82,15 @@ class Vec2 {
 	}
 
 	@:extern 
-	public inline function move(x:FastFloat, y:FastFloat):Vec2 {
+	public inline function move(x:FastFloat, y:FastFloat):Void {
 		this.x += x;
 		this.y += y;
-		
-		return this;
 	}
 	
 	@:extern
-	public inline function invert():Vec2 {
+	public inline function invert():Void {
 		x = -x;
 		y = -y;
-		
-        return this;
     }
 	
 	@:extern
@@ -162,10 +158,17 @@ class Vec2 {
         return this;
     }
 	
+	@:extern
+	public inline function toString():String {
+		return "Vec2(x: " + x + ", y: " + y + ")";
+	}
+	
+	@:extern
 	inline function get_length():FastFloat {
 		return Math.sqrt(x * x + y * y);
 	}
 	
+	@:extern
 	inline function set_length(value:FastFloat):FastFloat {
         var angle = Math.atan2(y, x);
 
@@ -178,8 +181,24 @@ class Vec2 {
 		return value;
 	}
 	
-	public inline function toString():String {
-		return "Vec2(x: " + x + ", y: " + y + ")";
+	@:extern
+	inline function get_x():FastFloat {
+		return this.x;
+	}
+	
+	@:extern
+	inline function set_x(value:FastFloat):FastFloat {
+		return this.x = value;
+	}
+	
+	@:extern
+	inline function get_y():FastFloat {
+		return this.y;
+	}
+	
+	@:extern
+	inline function set_y(value:FastFloat):FastFloat {
+		return this.y = value;
 	}
 	
 } 
