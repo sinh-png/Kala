@@ -82,9 +82,8 @@ class CollisionShape {
 		return matrix;
 	}
 	
-	public function updateMatrix():CollisionShape {
+	public inline function updateMatrix():Void {
 		matrix = collider._matrix.multmat(getMatrix());
-		return this;
 	}
 	
 	public function getVertices():Array<Vec2> {
@@ -210,7 +209,8 @@ class CollisionCircle extends CollisionShape {
 	
 	override public function testPolygon(polygon:CollisionPolygon):CollisionResult {
 		updateMatrix();
-		var polyVertices = polygon.updateMatrix().getTransformedVertices();
+		polygon.updateMatrix();
+		var polyVertices = polygon.getTransformedVertices();
 		
 		var data:CollisionData;
 		
@@ -361,8 +361,11 @@ class CollisionPolygon extends CollisionShape {
 	}
 	
 	override public function testPolygon(polygon:CollisionPolygon):CollisionResult {
+		updateMatrix();
+		polygon.updateMatrix();
+		
 		var result = Collision.polygonVsPolygon(
-			updateMatrix().getTransformedVertices(), polygon.updateMatrix().getTransformedVertices()
+			getTransformedVertices(), polygon.getTransformedVertices()
 		);
 		
 		if (result == null) return null;
@@ -375,7 +378,8 @@ class CollisionPolygon extends CollisionShape {
 	}
 	
 	override public function testPoint(pointX:FastFloat, pointY:FastFloat):Bool {
-		return Collision.pointVsPolygon(pointX, pointY, updateMatrix().getTransformedVertices());
+		updateMatrix();
+		return Collision.pointVsPolygon(pointX, pointY, getTransformedVertices());
 	}
 	
 	function get_vertices():Array<Vec2> {

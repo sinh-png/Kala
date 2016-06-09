@@ -162,7 +162,9 @@ class BaseCollider<T:Object> extends Behavior<T> implements ICollider {
 		g2.opacity = 1;
 		
 		for (shape in shapes) {
-			g2.transformation = shape.updateMatrix().matrix;
+			shape.updateMatrix();
+			
+			g2.transformation = shape.matrix;
 			
 			if (fill) {
 				g2.fillPolygon(
