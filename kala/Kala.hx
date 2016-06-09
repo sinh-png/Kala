@@ -1,6 +1,7 @@
 package kala;
 
 import kala.asset.Assets;
+import kala.audio.Audio;
 import kala.debug.Debug;
 import kala.input.Keyboard;
 import kala.input.Mouse;
