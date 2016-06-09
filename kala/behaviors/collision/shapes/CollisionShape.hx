@@ -1,16 +1,10 @@
 package kala.behaviors.collision.shapes;
 
-import kala.behaviors.Behavior;
-import kala.behaviors.collision.BaseCollider.ICollider;
-import kala.behaviors.collision.CollisionResult;
-import kala.math.Collision;
 import kala.math.Matrix;
 import kala.math.Position;
 import kala.math.Rotation;
 import kala.math.Vec2;
 import kala.math.Vec2T;
-import kala.util.pool.Pool;
-import kala.util.types.Trio;
 import kha.FastFloat;
 
 @:allow(kala.behaviors.Behavior)
