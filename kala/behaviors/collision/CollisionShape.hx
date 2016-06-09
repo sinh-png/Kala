@@ -37,6 +37,8 @@ class CollisionShape {
 	public var width(get, never):FastFloat;
 	public var height(get, never):FastFloat;
 	
+	public var updated(get, never):Bool;
+	
 	private var _vertices:Array<Vec2> = new Array<Vec2>();
 
 	public function new() {
@@ -69,7 +71,7 @@ class CollisionShape {
 		
 	}
 	
-	public inline function getMatrix():Matrix {
+	public inline function getLocalMatrix():Matrix {
 		var matrix = Matrix.getTransformation(position, scale, skew, rotation);
 		
 		if (flipX || flipY) {
@@ -82,8 +84,8 @@ class CollisionShape {
 		return matrix;
 	}
 	
-	public inline function updateMatrix():Void {
-		matrix = collider._matrix.multmat(getMatrix());
+	public inline function updateMatrix(objectMatrix:Matrix):Void {
+		matrix = objectMatrix.multmat(getLocalMatrix());
 	}
 	
 	public function getVertices():Array<Vec2> {
@@ -125,6 +127,10 @@ class CollisionShape {
 		return 0;
 	}
 	
+	inline function get_updated():Bool {
+		return matrix != null;
+	}
+	
 }
 
 class CollisionCircle extends CollisionShape {
@@ -163,9 +169,6 @@ class CollisionCircle extends CollisionShape {
 	}
 	
 	override public function testCircle(circle:CollisionCircle):CollisionResult {
-		updateMatrix();
-		circle.updateMatrix();
-		
 		var otherStillCircle = circle.hasSymmetricalTransformation();
 		
 		var otherX = circle.matrix._20;
@@ -208,8 +211,6 @@ class CollisionCircle extends CollisionShape {
 	}
 	
 	override public function testPolygon(polygon:CollisionPolygon):CollisionResult {
-		updateMatrix();
-		polygon.updateMatrix();
 		var polyVertices = polygon.getTransformedVertices();
 		
 		var data:CollisionData;
@@ -232,8 +233,6 @@ class CollisionCircle extends CollisionShape {
 	}
 	
 	override public function testPoint(pointX:FastFloat, pointY:FastFloat):Bool {
-		updateMatrix();
-		
 		if (hasSymmetricalTransformation()) {
 			return Collision.pointVsCircle(pointX, pointY, matrix._20, matrix._21, radius * matrix._00);
 		}
@@ -256,8 +255,6 @@ class CollisionCircle extends CollisionShape {
 	 * ignore other transformations and collision data.
 	 */
 	public inline function testCircleNoTransform(circle:CollisionCircle):Bool {
-		updateMatrix();
-		circle.updateMatrix();
 		return Collision.fastCircleVsCircle(
 			matrix._20, matrix._21, radius,
 			circle.matrix._20, circle.matrix._21, circle.radius
@@ -361,9 +358,6 @@ class CollisionPolygon extends CollisionShape {
 	}
 	
 	override public function testPolygon(polygon:CollisionPolygon):CollisionResult {
-		updateMatrix();
-		polygon.updateMatrix();
-		
 		var result = Collision.polygonVsPolygon(
 			getTransformedVertices(), polygon.getTransformedVertices()
 		);
@@ -378,7 +372,6 @@ class CollisionPolygon extends CollisionShape {
 	}
 	
 	override public function testPoint(pointX:FastFloat, pointY:FastFloat):Bool {
-		updateMatrix();
 		return Collision.pointVsPolygon(pointX, pointY, getTransformedVertices());
 	}
 	

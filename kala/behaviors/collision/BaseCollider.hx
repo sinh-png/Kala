@@ -19,12 +19,13 @@ using kha.graphics2.GraphicsExtension;
 
 interface ICollider extends IBehavior {
 	
-	public var postDrawUpdate(default, set):Bool;
 	public var shapes:Array<CollisionShape>;
-	public function test(collider:ICollider):CollisionResult;
 	
-	private var _matrix:Matrix;
-	private function update():Void;
+	public function test(collider:ICollider):CollisionResult;
+	public function testPoint(pointX:FastFloat, pointY:FastFloat):Bool;
+	public function drawDebug(color:UInt, ?fill:Bool = false, ?lineStrenght:FastFloat = 1, canvas:Canvas):Void;
+	
+	private function postDrawUpdate(obj:Object, data:DrawingData, canvas:Canvas):Void;
 	
 }
 
@@ -40,56 +41,30 @@ class BaseCollider<T:Object> extends Behavior<T> implements ICollider {
 	public var debugFill:Bool = false;
 	public var debugLineStrenght:UInt = 2;
 	
-	/**
-	 * If true, update transformation on object post draw using the object already calculated drawing matrix.
-	 * If false, update transformation on every collision testing. Might be slower if testing is done often.
-	 * 
-	 * DEFAULT: true
-	 */
-	public var postDrawUpdate(default, set):Bool;
-	
 	public var shapes:Array<CollisionShape> = new Array<CollisionShape>();
 	
-	private var _postDrawCBAdded:Bool = false;
-	
-	private var _matrix:Matrix;
-	
-	var _shapeMatrix:Matrix = Matrix.translation(0, 0);
+	public var updated(default, null):Bool = false;
 	
 	override public function reset():Void {
 		super.reset();
-		postDrawUpdate = true;
 		while (shapes.length > 0) shapes.pop().put();
+		updated = false;
 	}
 	
 	override public function destroy():Void {
 		super.destroy();
-		
 		while (shapes.length > 0) shapes.pop().put();
 		shapes = null;
-		
-		_matrix = null;
 	}
 	
 	override public function addTo(object:T):BaseCollider<T> {
 		super.addTo(object);
-		
-		if (postDrawUpdate && !_postDrawCBAdded) {
-			object.onPostDraw.notifyPrivateCB(this, postDrawCB);
-			_postDrawCBAdded = true;
-		}
-		
-		update();
-		
+		object.onPostDraw.notifyPrivateCB(this, postDrawUpdate);
 		return this;
 	}
 	
 	override public function remove():Void {
-		if (postDrawUpdate && object != null) {
-			object.onPostDraw.removePrivateCB(this, postDrawCB);
-			_postDrawCBAdded = false;
-		}
-		
+		object.onPostDraw.removePrivateCB(this, postDrawUpdate);
 		super.remove();
 	}
 
@@ -101,9 +76,8 @@ class BaseCollider<T:Object> extends Behavior<T> implements ICollider {
 	 * @return				The result data. Return null if there was no collision.
 	 */
 	public function test(collider:ICollider):CollisionResult {
-		if (!postDrawUpdate) update();
-		if (!collider.postDrawUpdate) collider.update();
-
+		if (!updated) return null;
+		
 		var result:CollisionResult;
 		
 		for (shapeA in shapes) {
@@ -116,24 +90,9 @@ class BaseCollider<T:Object> extends Behavior<T> implements ICollider {
 		return null;
 	}
 	
-	/**
-	 * Force this collider to update then test it with another collider.
-	 * 
-	 * @param	collider	The collider to be tested.
-	 * @return				The result data. Return null if there was no collision.
-	 */
-	public inline function forceTest(collider:ICollider):CollisionResult {
-		var t = postDrawUpdate;
-		postDrawUpdate = false;
-		
-		var result = test(collider);
-		
-		postDrawUpdate = t;
-		
-		return result;
-	}	
-	
 	public function testPoint(pointX:FastFloat, pointY:FastFloat):Bool {
+		if (!updated) return false;
+		
 		for (shape in shapes) {
 			if (shape.testPoint(pointX, pointY)) return true;
 		}
@@ -141,29 +100,14 @@ class BaseCollider<T:Object> extends Behavior<T> implements ICollider {
 		return false;
 	}
 	
-	public function forceTestPoint(pointX:FastFloat, pointY:FastFloat):Bool {
-		var t = postDrawUpdate;
-		postDrawUpdate = false;
-		
-		var result = testPoint(pointX, pointY);
-		
-		postDrawUpdate = t;
-		
-		return result;
-	}
-	
 	public function drawDebug(color:UInt, ?fill:Bool = false, ?lineStrenght:FastFloat = 1, canvas:Canvas):Void {
 		if (object == null) return;
-		
-		if (!postDrawUpdate) update();
 		
 		var g2 = canvas.g2;
 		g2.color = color;
 		g2.opacity = 1;
 		
 		for (shape in shapes) {
-			shape.updateMatrix();
-			
 			g2.transformation = shape.matrix;
 			
 			if (fill) {
@@ -181,8 +125,10 @@ class BaseCollider<T:Object> extends Behavior<T> implements ICollider {
 		}
 	}
 	
-	function postDrawCB(obj:Object, data:DrawingData, canvas:Canvas):Void {
-		_matrix = obj._cachedDrawingMatrix;
+	function postDrawUpdate(obj:Object, data:DrawingData, canvas:Canvas):Void {
+		updated = true;
+		
+		for (shape in shapes) shape.updateMatrix(obj._cachedDrawingMatrix);
 		
 		#if (debug || kala_debug)
 		if (Debug.collisionDebug) {
@@ -196,24 +142,6 @@ class BaseCollider<T:Object> extends Behavior<T> implements ICollider {
 			);
 		}
 		#end
-	}
-	
-	function update():Void {
-		_matrix = object.getDrawingMatrix();
-	}
-	
-	function set_postDrawUpdate(value:Bool):Bool {
-		if (object == null) return postDrawUpdate = value;
-		
-		if (value) {
-			object.onPostDraw.notifyPrivateCB(this, postDrawCB);
-			_postDrawCBAdded = true;
-		} else {
-			object.onPostDraw.removePrivateCB(this, postDrawCB);
-			_postDrawCBAdded = false;
-		}
-		
-		return postDrawUpdate = value;
 	}
 	
 }
