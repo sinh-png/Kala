@@ -12,7 +12,7 @@ import kha.FontStyle;
 import kha.Image;
 import kha.graphics2.ImageScaleQuality;
 
-using kala.util.StringHelper;
+using kala.util.StringUtil;
 using StringTools;
 
 @:access(kala.math.color.Color)

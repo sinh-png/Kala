@@ -1,6 +1,6 @@
 package kala.util;
 
-class StringHelper {
+class StringUtil {
 
 	public static function chars(string:String, ?eolSymbol:String = '\n'):Array<String> {
 		var lines = string.split(eolSymbol);
