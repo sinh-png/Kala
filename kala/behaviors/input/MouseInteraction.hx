@@ -3,7 +3,9 @@ package kala.behaviors.input;
 #if kala_mouse
 
 import kala.behaviors.collision.Collider;
-import kala.behaviors.collision.CollisionShape;
+import kala.behaviors.collision.shapes.CollisionCircle;
+import kala.behaviors.collision.shapes.CollisionPolygon;
+import kala.behaviors.collision.shapes.CollisionShape;
 import kala.behaviors.Behavior;
 import kala.EventHandle.CallbackHandle;
 import kala.math.color.Color;

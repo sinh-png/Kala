@@ -3,7 +3,7 @@ package kala.behaviors.collision;
 import kala.debug.Debug;
 import kala.DrawingData;
 import kala.behaviors.Behavior;
-import kala.behaviors.collision.CollisionShape;
+import kala.behaviors.collision.shapes.CollisionShape;
 import kala.math.color.Color;
 import kala.math.Matrix;
 import kala.math.Vec2;
@@ -30,7 +30,7 @@ interface ICollider extends IBehavior {
 }
 
 @:access(kala.objects.Object)
-@:allow(kala.behaviors.collision.CollisionShape)
+@:allow(kala.behaviors.collision.shapes.CollisionShape)
 class BaseCollider<T:Object> extends Behavior<T> implements ICollider {
 	
 	#if (debug || kala_debug)

@@ -1,6 +1,8 @@
 package kala.behaviors.collision;
 
-import kala.behaviors.collision.CollisionShape;
+import kala.behaviors.collision.shapes.CollisionCircle;
+import kala.behaviors.collision.shapes.CollisionPolygon;
+import kala.behaviors.collision.shapes.CollisionShape;
 import kala.math.Vec2;
 import kala.objects.Object;
 import kha.FastFloat;
