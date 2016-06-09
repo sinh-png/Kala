@@ -47,7 +47,9 @@ class Kala {
 	public static var delta:FastFloat = 0;
 	
 	/**
-	 * If true, use seconds as timing unit otherwise use frames.
+	 * If true, use seconds for calculating timestep otherwise use frames. 
+	 * Timestep is still affected by timeScale when this set to false.
+	 * 
 	 * DEFAULT: false
 	 */
 	public static var deltaTiming:Bool = false;
