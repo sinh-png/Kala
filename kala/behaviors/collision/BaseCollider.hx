@@ -1,5 +1,6 @@
 package kala.behaviors.collision;
 
+import kala.debug.Debug;
 import kala.DrawingData;
 import kala.behaviors.Behavior;
 import kala.behaviors.collision.CollisionShape;
@@ -11,7 +12,7 @@ import kha.Canvas;
 import kha.FastFloat;
 
 #if (debug || kala_debug)
-import kala.Debug.DebugDrawCall;
+import kala.debug.Debug.DebugDrawCall;
 #end
 
 using kha.graphics2.GraphicsExtension;

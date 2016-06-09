@@ -1,4 +1,4 @@
-package kala;
+package kala.debug;
 
 #if (debug || kala_debug)
 import kala.debug.Debugger;
