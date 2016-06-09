@@ -1,11 +1,11 @@
-package kala.internal;
+package kala.asset;
 
 import haxe.Json;
 import haxe.macro.Context;
 import haxe.macro.Expr.Field;
 import sys.io.File;
 
-class AssetsBuilder {
+class Builder {
 	
 	public static var resPath(default, null):String;
 	public static var resJson(default, null):Dynamic;
@@ -55,7 +55,7 @@ class AssetsBuilder {
 						doc: null,
 						meta: [],
 						access: [APublic],
-						kind: FProp("default", "never", macro :SheetData, macro new SheetData($v{json.frames})),
+						kind: FProp("default", "never", macro :SheetData, macro new kala.asset.sheet.TexturePacker($v{json.frames})),
 						pos: Context.currentPos()
 					});
 				}
