@@ -6,15 +6,14 @@ import kala.behaviors.collision.CollisionResult;
 import kala.behaviors.collision.CollisionShape.CollisionCircle;
 import kala.behaviors.collision.CollisionShape.CollisionPolygon;
 import kala.math.Collision;
+import kala.math.Matrix;
 import kala.math.Position;
 import kala.math.Rotation;
 import kala.math.Vec2;
 import kala.math.Vec2T;
-import kala.math.helpers.FastMatrix3Helper;
 import kala.util.pool.Pool;
 import kala.util.types.Trio;
 import kha.FastFloat;
-import kha.math.FastMatrix3;
 
 @:allow(kala.behaviors.Behavior)
 class CollisionShape {
@@ -33,7 +32,7 @@ class CollisionShape {
 	public var flipX:Bool;
 	public var flipY:Bool;
 
-	public var matrix(default, null):FastMatrix3;
+	public var matrix(default, null):Matrix;
 	
 	public var width(get, never):FastFloat;
 	public var height(get, never):FastFloat;
@@ -70,11 +69,11 @@ class CollisionShape {
 		
 	}
 	
-	public inline function getMatrix():FastMatrix3 {
-		var matrix = FastMatrix3Helper.getTransformation(position, scale, skew, rotation);
+	public inline function getMatrix():Matrix {
+		var matrix = Matrix.getTransformation(position, scale, skew, rotation);
 		
 		if (flipX || flipY) {
-			return FastMatrix3Helper.flip(
+			return Matrix.flip(
 				matrix, flipX, flipY,
 				position.x - position.ox + width / 2, position.y - position.oy + height / 2
 			);

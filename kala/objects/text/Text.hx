@@ -11,9 +11,7 @@ import kha.FastFloat;
 import kha.FontStyle;
 import kha.Image;
 import kha.graphics2.ImageScaleQuality;
-import kha.math.FastMatrix3;
 
-using kala.math.helpers.FastMatrix3Helper;
 using kala.util.StringHelper;
 using StringTools;
 

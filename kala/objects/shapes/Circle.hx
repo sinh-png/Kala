@@ -6,7 +6,6 @@ import kala.math.Vec2;
 import kha.Canvas;
 import kha.FastFloat;
 import kha.graphics2.Graphics;
-import kha.math.FastMatrix3;
 
 class Circle extends Shape {
 

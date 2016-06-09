@@ -3,6 +3,7 @@ package kala.debug;
 import kala.input.Keyboard;
 import kala.input.Mouse;
 import kala.math.color.Color;
+import kala.math.Matrix;
 import kala.math.Rect;
 import kala.util.types.Pair;
 import kha.Canvas;
@@ -10,7 +11,6 @@ import kha.FastFloat;
 import kha.Font;
 import kha.graphics2.Graphics;
 import kha.Image;
-import kha.math.FastMatrix3;
 import kha.Scheduler;
 
 #if (debug || kala_debug)
@@ -106,7 +106,7 @@ class Debugger {
 		else if (rect.y > canvas.height - rect.height) rect.y = canvas.height - rect.height;
 		
 		var g = canvas.g2;
-		g.transformation = FastMatrix3.translation(rect.x, rect.y);
+		g.transformation = Matrix.translation(rect.x, rect.y);
 		g.opacity = 1;
 		
 		// Title bar

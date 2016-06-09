@@ -1,7 +1,7 @@
 package kala.math.shapes;
 
 import kala.math.Vec2;
-import kha.math.FastMatrix3;
+import kha.math.Matrix;
 
 class Triangle {
 	
@@ -16,12 +16,12 @@ class Triangle {
 	}
 	
 	@:extern
-	public inline function transform(matrix:FastMatrix3):Triangle {
+	public inline function transform(matrix:Matrix):Triangle {
 		return new Triangle(p1.transform(matrix), p2.transform(matrix), p3.transform(matrix));
 	}
 	
 	@:extern
-	public inline function transformBy(matrix:FastMatrix3):Triangle {
+	public inline function transformBy(matrix:Matrix):Triangle {
 		p1.transformBy(matrix);
 		p2.transformBy(matrix);
 		p3.transformBy(matrix);

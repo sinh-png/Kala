@@ -7,7 +7,6 @@ import kala.math.Rect;
 import kha.Canvas;
 import kha.FastFloat;
 import kha.Image;
-import kha.math.FastMatrix3;
 
 class Sprite extends Object {
 

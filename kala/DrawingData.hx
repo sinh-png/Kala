@@ -2,13 +2,13 @@ package kala;
 
 import kala.math.color.BlendMode;
 import kala.math.color.Color;
+import kala.math.Matrix;
 import kha.FastFloat;
-import kha.math.FastMatrix3;
 
 class DrawingData {
 
 	public var antialiasing:Bool;
-	public var transformation:FastMatrix3;
+	public var transformation:Matrix;
 	
 	public var color:Null<Color>;
 	public var colorBlendMode:BlendMode = BlendMode.ADD;
@@ -18,7 +18,7 @@ class DrawingData {
 	
 	public inline function new(
 		?antialiasing:Bool = false,
-		?transformation:FastMatrix3, 
+		?transformation:Matrix, 
 		?color:Color, 
 		?colorBlendMode:BlendMode, ?colorAlphaBlendMode:BlendMode,
 		?opacity:FastFloat = 1

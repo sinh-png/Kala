@@ -6,7 +6,6 @@ import kala.math.color.Color;
 import kala.objects.Object;
 import kha.Canvas;
 import kha.FastFloat;
-import kha.math.FastMatrix3;
 
 using StringTools;
 

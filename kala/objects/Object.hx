@@ -6,9 +6,9 @@ import kala.EventHandle;
 import kala.behaviors.Behavior.IBehavior;
 import kala.graphics.Shader;
 import kala.math.Collision;
-import kala.math.helpers.FastMatrix3Helper;
 import kala.math.Angle;
 import kala.math.color.Color;
+import kala.math.Matrix;
 import kala.math.Position;
 import kala.math.Rect;
 import kala.math.Rotation;
@@ -19,7 +19,6 @@ import kha.Canvas;
 import kha.FastFloat;
 import kha.graphics2.ImageScaleQuality;
 import kha.Image;
-import kha.math.FastMatrix3;
 
 interface IObject {
 	
@@ -104,7 +103,7 @@ interface IObject {
 	
 	//
 	
-	private var _cachedDrawingMatrix:FastMatrix3;
+	private var _cachedDrawingMatrix:Matrix;
 	
 	//
 	
@@ -117,7 +116,7 @@ interface IObject {
 	public function isVisible():Bool;
 	public function addShader(shader:Shader):Void;
 	public function removeShader(shader:Shader):Shader;
-	public function getDrawingMatrix():FastMatrix3;
+	public function getDrawingMatrix():Matrix;
 	
 }
 
@@ -240,7 +239,7 @@ class Object extends EventHandle implements IObject {
 	
 	//
 	
-	private var _cachedDrawingMatrix:FastMatrix3;
+	private var _cachedDrawingMatrix:Matrix;
 
 	public function new() {
 		super();
@@ -467,11 +466,11 @@ class Object extends EventHandle implements IObject {
 		return this;
 	}
 
-	public inline function getMatrix():FastMatrix3 {
-		var matrix = FastMatrix3Helper.getTransformation(position, scale, skew, rotation);
+	public inline function getMatrix():Matrix {
+		var matrix = Matrix.getTransformation(position, scale, skew, rotation);
 		
 		if (flipX || flipY) {
-			return FastMatrix3Helper.flip(
+			return Matrix.flip(
 				matrix, flipX, flipY,
 				position.x - position.ox + width / 2, position.y - position.oy + height / 2
 			);
@@ -480,7 +479,7 @@ class Object extends EventHandle implements IObject {
 		return matrix;
 	}
 	
-	public function getDrawingMatrix():FastMatrix3 {
+	public function getDrawingMatrix():Matrix {
 		var group = this.group;
 		
 		while (true) {

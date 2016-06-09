@@ -1,13 +1,12 @@
 package kala.math;
 
 import kha.FastFloat;
-import kha.math.FastMatrix3;
 import kha.math.FastVector2;
 import kha.math.Vector2;
 
 abstract Vec2(FastVector2) from FastVector2 to FastVector2 {
 	
-	@:from
+	@:extern @:from
 	public static inline function fromVector2(vec:Vector2):Vec2 {
 		return new Vec2(vec.x, vec.y);
 	}
@@ -27,7 +26,7 @@ abstract Vec2(FastVector2) from FastVector2 to FastVector2 {
 		this = new FastVector2(x, y);
 	}
 	
-	@:to
+	@:extern @:to
 	public inline function toVector2():Vector2 {
 		return new Vector2(x, y);
 	}
@@ -138,7 +137,7 @@ abstract Vec2(FastVector2) from FastVector2 to FastVector2 {
 	}
 	
 	@:extern
-	public inline function transform(matrix:FastMatrix3):Vec2 {
+	public inline function transform(matrix:Matrix):Vec2 {
         var vec = clone();
 		
         vec.x = x * matrix._00 + y * matrix._10 + matrix._20;
@@ -148,7 +147,7 @@ abstract Vec2(FastVector2) from FastVector2 to FastVector2 {
     }
 	
 	@:extern
-	public inline function transformBy(matrix:FastMatrix3):Vec2 {
+	public inline function transformBy(matrix:Matrix):Vec2 {
         var xx = x;
 		var yy = y;
 		

@@ -4,18 +4,17 @@ import kala.DrawingData;
 import kala.behaviors.Behavior;
 import kala.behaviors.collision.CollisionShape;
 import kala.math.color.Color;
+import kala.math.Matrix;
 import kala.math.Vec2;
 import kala.objects.Object;
 import kha.Canvas;
 import kha.FastFloat;
-import kha.math.FastMatrix3;
 
 #if (debug || kala_debug)
 import kala.Debug.DebugDrawCall;
 #end
 
 using kha.graphics2.GraphicsExtension;
-using kala.math.helpers.FastMatrix3Helper;
 
 interface ICollider extends IBehavior {
 	
@@ -23,7 +22,7 @@ interface ICollider extends IBehavior {
 	public var shapes:Array<CollisionShape>;
 	public function test(collider:ICollider):CollisionResult;
 	
-	private var _matrix:FastMatrix3;
+	private var _matrix:Matrix;
 	private function update():Void;
 	
 }
@@ -52,9 +51,9 @@ class BaseCollider<T:Object> extends Behavior<T> implements ICollider {
 	
 	private var _postDrawCBAdded:Bool = false;
 	
-	private var _matrix:FastMatrix3;
+	private var _matrix:Matrix;
 	
-	var _shapeMatrix:FastMatrix3 = FastMatrix3.translation(0, 0);
+	var _shapeMatrix:Matrix = Matrix.translation(0, 0);
 	
 	override public function reset():Void {
 		super.reset();

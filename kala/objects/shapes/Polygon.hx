@@ -5,7 +5,6 @@ import kala.math.color.Color;
 import kala.math.Vec2;
 import kha.Canvas;
 import kha.FastFloat;
-import kha.math.FastMatrix3;
 import kha.math.Vector2;
 
 using kha.graphics2.GraphicsExtension;

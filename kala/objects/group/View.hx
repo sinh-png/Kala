@@ -11,7 +11,6 @@ import kha.FastFloat;
 import kha.graphics2.ImageScaleQuality;
 import kha.Image;
 import kha.graphics4.DepthStencilFormat;
-import kha.math.FastMatrix3;
 
 @:access(kala.objects.group.Group)
 class View extends Object {

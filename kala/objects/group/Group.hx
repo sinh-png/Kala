@@ -2,6 +2,7 @@ package kala.objects.group;
 
 import kala.DrawingData;
 import kala.math.color.BlendMode;
+import kala.math.Matrix;
 import kala.objects.group.View;
 import kala.objects.Object;
 import kala.math.color.Color;
@@ -9,7 +10,6 @@ import kha.Canvas;
 import kha.FastFloat;
 import kha.Image;
 import kha.graphics2.ImageScaleQuality;
-import kha.math.FastMatrix3;
 
 typedef GenericGroup = Group<Object>;
 
@@ -136,7 +136,7 @@ class Group<T:Object> extends Object implements IGroup {
 			g2.end();
 			
 			var viewBuffer:Image;
-			var matrix:FastMatrix3;
+			var matrix:Matrix;
 			
 			for (view in _views) {
 				if (view == null) continue;
@@ -144,13 +144,13 @@ class Group<T:Object> extends Object implements IGroup {
 				viewBuffer = view.viewBuffer;
 				
 				if (data.transformation == null) {
-					drawingData.transformation = FastMatrix3.translation(
+					drawingData.transformation = Matrix.translation(
 						-view.viewport.x,
 						-view.viewport.y
 					);
 				} else {
 					drawingData.transformation = data.transformation.multmat(
-						FastMatrix3.translation( -view.viewport.x, -view.viewport.y)
+						Matrix.translation( -view.viewport.x, -view.viewport.y)
 					);
 				}
 
