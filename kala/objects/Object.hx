@@ -104,6 +104,8 @@ interface IObject {
 	public function reset(resetBehaviors:Bool = false):Void;
 	public function destroy(destroyBehaviors:Bool = true):Void;
 	public function deepReset(deepResetBehaviors:Bool = true):Void;
+	public function kill():Void;
+	public function revive():Void;
 	public function update(elapsed:FastFloat):Void;
 	public function draw(data:DrawingData, canvas:Canvas):Void;
 	public function drawBuffer(data:DrawingData, canvas:Canvas):Void;
@@ -111,6 +113,9 @@ interface IObject {
 	public function addShader(shader:Shader):Void;
 	public function removeShader(shader:Shader):Shader;
 	public function getDrawingMatrix():Matrix;
+	
+	private function callUpdate(elapsed:FastFloat):Void;
+	private function callDraw(data:DrawingData, canvas:Canvas):Void;
 	
 }
 
@@ -499,7 +504,7 @@ class Object extends EventHandle implements IObject {
 		}
 	}
 	
-	inline function callUpdate(?group:IGroup, elapsed:FastFloat):Void {
+	inline function callUpdate(elapsed:FastFloat):Void {
 		elapsed *= timeScale;
 	
 		execFirstFrame();
@@ -512,7 +517,7 @@ class Object extends EventHandle implements IObject {
 		for (callback in onPostUpdate) callback.cbFunction(this, elapsed);
 	}
 	
-	function callDraw(?group:IGroup, data:DrawingData, canvas:Canvas):Void {
+	function callDraw(data:DrawingData, canvas:Canvas):Void {
 		execFirstFrame();
 		
 		if (_shaders.length > 0) {

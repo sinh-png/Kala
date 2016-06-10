@@ -79,7 +79,7 @@ class Group<T:Object> extends Object implements IGroup {
 				continue;
 			}
 			
-			if (child.alive && child.active) child.callUpdate(this, elapsed);
+			if (child.alive && child.active) child.callUpdate(elapsed);
 			
 			i++;
 		}
@@ -94,7 +94,7 @@ class Group<T:Object> extends Object implements IGroup {
 				continue;
 			}
 
-			if (view.alive && view.active) view.callUpdate(this, elapsed);
+			if (view.alive && view.active) view.callUpdate(elapsed);
 
 			i++;
 		}
@@ -130,7 +130,7 @@ class Group<T:Object> extends Object implements IGroup {
 				if (child == null) continue;
 	
 				if (child.alive && child.isVisible()) {
-					child.callDraw(this, drawingData, canvas);
+					child.callDraw(drawingData, canvas);
 				}
 			}
 		} else {
@@ -160,7 +160,7 @@ class Group<T:Object> extends Object implements IGroup {
 					if (child == null) continue;
 					
 					if (child.alive && child.isVisible()) {
-						child.callDraw(this, drawingData, viewBuffer);
+						child.callDraw(drawingData, viewBuffer);
 					}
 				}
 				viewBuffer.g2.end();
@@ -174,7 +174,7 @@ class Group<T:Object> extends Object implements IGroup {
 				if (view == null) continue;
 				
 				if (view.alive && view.isVisible()) {
-					view.callDraw(this, drawingData, canvas);
+					view.callDraw(drawingData, canvas);
 				}
 			}
 		}
