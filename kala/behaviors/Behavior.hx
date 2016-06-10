@@ -20,17 +20,12 @@ class Behavior<T:Object> extends EventHandle implements IBehavior {
 	
 	public var onDestroy(default, null):CallbackHandle<Behavior<T>->Void>;
 	public var onReset(default, null):CallbackHandle<Behavior<T>->Void>;
-	public var onAdd(default, null):CallbackHandle<Behavior<T>->Void>;
-	public var onRemove(default, null):CallbackHandle<Behavior<T>->Void>;
-	
+
 	public function new(?object:T) {
 		super();
 		
 		onDestroy = addCBHandle(new CallbackHandle<Behavior<T>->Void>());
 		onReset = addCBHandle(new CallbackHandle<Behavior<T>->Void>());
-		onAdd = addCBHandle(new CallbackHandle<Behavior<T>->Void>());
-		onRemove = addCBHandle(new CallbackHandle<Behavior<T>->Void>());
-		
 		reset();
 		
 		if (object != null) addTo(object);
@@ -45,8 +40,6 @@ class Behavior<T:Object> extends EventHandle implements IBehavior {
 		
 		onDestroy = null;
 		onReset = null;
-		onAdd = null;
-		onRemove = null;
 	}
 	
 	public function deepReset():Void {
@@ -60,14 +53,12 @@ class Behavior<T:Object> extends EventHandle implements IBehavior {
 		
 		this.object = object;
 		object._behaviors.push(this);
-		for (callback in onAdd) callback.cbFunction(this);
-		
+
 		return this;
 	}
 	
 	public function remove():Void {
 		if (object != null) {
-			for (callback in onRemove) callback.cbFunction(this);
 			object._behaviors.remove(this);
 			object = null;
 		}
