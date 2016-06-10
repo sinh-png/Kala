@@ -22,7 +22,7 @@ interface IGroup extends IObject {
 	
 	public var timeScale:FastFloat;
 	
-	private var _views:Array<View>;
+	public var views(default, null):Array<View>;
 	
 	public function addView(view:View, pos:Int = -1):Void;
 	public function removeView(view:View, splice:Bool = false):View;
@@ -42,8 +42,8 @@ class Group<T:Object> extends Object implements IGroup {
 	
 	public var factoryFunction:Void->T;
 	
-	private var _children:Array<T> = new Array<T>();
-	private var _views:Array<View> = new Array<View>();
+	public var members(default, null):Array<T> = new Array<T>();
+	public var views(default, null):Array<View> = new Array<View>();
 	
 	public function new(transformationEnable:Bool = false, ?factoryFunction:Void->T) {
 		super();
@@ -61,21 +61,21 @@ class Group<T:Object> extends Object implements IGroup {
 	override public function destroy(destroyBehaviors:Bool = true):Void {
 		super.destroy(destroyBehaviors);
 		
-		while (_children.length > 0) _children.pop().destroy(destroyBehaviors);
-		while (_views.length > 0) _views.pop().destroy(destroyBehaviors);
+		while (members.length > 0) members.pop().destroy(destroyBehaviors);
+		while (views.length > 0) views.pop().destroy(destroyBehaviors);
 		
-		_children = null;
-		_views = null;
+		members = null;
+		views = null;
 	}
 	
 	override public function update(elapsed:FastFloat):Void {
 		var i = 0;
 		var child:T;
-		while (i < _children.length) {
-			child = _children[i];
+		while (i < members.length) {
+			child = members[i];
 
 			if (child == null) {
-				_children.splice(i, 1);
+				members.splice(i, 1);
 				continue;
 			}
 			
@@ -86,11 +86,11 @@ class Group<T:Object> extends Object implements IGroup {
 		
 		i = 0;
 		var view:View;
-		while (i < _views.length) {
-			view = _views[i];
+		while (i < views.length) {
+			view = views[i];
 			
 			if (view == null) {
-				_views.splice(i, 1);
+				views.splice(i, 1);
 				continue;
 			}
 
@@ -125,8 +125,8 @@ class Group<T:Object> extends Object implements IGroup {
 		
 		if (antialiasing) data.antialiasing = true;
 		
-		if (_views.length == 0) {
-			for (child in _children) {
+		if (views.length == 0) {
+			for (child in members) {
 				if (child == null) continue;
 	
 				if (child.alive && child.isVisible()) {
@@ -139,7 +139,7 @@ class Group<T:Object> extends Object implements IGroup {
 			var viewBuffer:Image;
 			var matrix:Matrix;
 			
-			for (view in _views) {
+			for (view in views) {
 				if (view == null) continue;
 				
 				viewBuffer = view.viewBuffer;
@@ -156,7 +156,7 @@ class Group<T:Object> extends Object implements IGroup {
 				}
 
 				viewBuffer.g2.begin(true, view.transparent ? 0 : (255 << 24 | view.bgColor));
-				for (child in _children) {
+				for (child in members) {
 					if (child == null) continue;
 					
 					if (child.alive && child.isVisible()) {
@@ -170,7 +170,7 @@ class Group<T:Object> extends Object implements IGroup {
 			
 			drawingData.transformation = data.transformation;
 			
-			for (view in _views) {
+			for (view in views) {
 				if (view == null) continue;
 				
 				if (view.alive && view.isVisible()) {
@@ -180,12 +180,8 @@ class Group<T:Object> extends Object implements IGroup {
 		}
 	}
 	
-	public inline function getChildren():Array<T> {
-		return _children.copy();
-	}
-	
 	public function createAlive():T {
-		for (obj in _children) {
+		for (obj in members) {
 			if (!obj.alive) {
 				obj.revive();
 				return obj;
@@ -202,20 +198,20 @@ class Group<T:Object> extends Object implements IGroup {
 	}
 	
 	public function add(obj:T, pos:Int = -1):Void {
-		if (_children.indexOf(obj) != -1) return;
+		if (members.indexOf(obj) != -1) return;
 		
-		if (pos == -1) _children.push(obj);
-		else _children.insert(pos, obj);
+		if (pos == -1) members.push(obj);
+		else members.insert(pos, obj);
 		
 		obj.group = this;
 	}
 	
 	public function swap(swappedObj:T, obj:T):Bool {
-		var index = _children.indexOf(swappedObj);
+		var index = members.indexOf(swappedObj);
 		
 		if (index == -1) return false;
 		
-		_children[index] = obj;
+		members[index] = obj;
 		obj.group = this;
 		
 		swappedObj.group = null;
@@ -225,12 +221,12 @@ class Group<T:Object> extends Object implements IGroup {
 	}
 	
 	public function remove(obj:T, splice:Bool = false):T {
-		var index = _children.indexOf(obj);
+		var index = members.indexOf(obj);
 		
 		if (index == -1) return null;
 		
-		if (splice) _children.splice(index, 1);
-		else _children[index] = null;
+		if (splice) members.splice(index, 1);
+		else members[index] = null;
 
 		obj.group = null;
 		obj.firstFrameExecuted = false;
@@ -239,21 +235,21 @@ class Group<T:Object> extends Object implements IGroup {
 	}
 	
 	public function addView(view:View, pos:Int = -1):Void {
-		if (_views.indexOf(view) != -1) return null;
+		if (views.indexOf(view) != -1) return null;
 		
-		if (pos == -1) _views.push(view);
-		else _views.insert(pos, view);
+		if (pos == -1) views.push(view);
+		else views.insert(pos, view);
 		
 		view.group = this;
 	}
 	
 	public function removeView(view:View, splice:Bool = false):View {
-		var index = _views.indexOf(view);
+		var index = views.indexOf(view);
 		
 		if (index == -1) return null;
 		
-		if (splice) _views.splice(index, 1);
-		else _views[index] = null;
+		if (splice) views.splice(index, 1);
+		else views[index] = null;
 		
 		view.group = null;
 		view.firstFrameExecuted = false;
@@ -262,7 +258,7 @@ class Group<T:Object> extends Object implements IGroup {
 	}
 	
 	public inline function iterator():Iterator<T> {
-		return _children.iterator();
+		return members.iterator();
 	}
 	
 	//
