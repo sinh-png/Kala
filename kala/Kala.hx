@@ -10,7 +10,6 @@ import kala.math.color.Color;
 import kala.objects.group.View;
 import kala.objects.Object;
 import kala.objects.group.Group;
-import kala.system.HTML5;
 import kha.FastFloat;
 import kha.Font;
 import kha.Framebuffer;
@@ -90,7 +89,7 @@ class Kala {
 	//
 	
 	#if js
-	public static var html5(default, never):HTML5 = new HTML5();
+	public static var html5(default, never):kala.system.HTML5 = new kala.system.HTML5();
 	#end
 	
 	//
