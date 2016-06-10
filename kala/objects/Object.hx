@@ -39,7 +39,6 @@ interface IObject {
 	public var flipY:Bool;
 	
 	public var scale:Vec2T;
-	public var skew:Vec2T;
 	public var rotation:Rotation;
 	
 	public var color:Color;
@@ -53,9 +52,6 @@ interface IObject {
 	public var width(get, set):FastFloat;
 	private var _height:FastFloat;
 	public var height(get, set):FastFloat;
-	
-	public var tWidth(get, never):FastFloat;
-	public var tHeight(get, never):FastFloat;
 	
 	//
 	
@@ -158,7 +154,6 @@ class Object extends EventHandle implements IObject {
 	public var flipY:Bool;
 	
 	public var scale:Vec2T = new Vec2T();
-	public var skew:Vec2T = new Vec2T();
 	public var rotation:Rotation = new Rotation();
 	
 	public var color:Color;
@@ -177,15 +172,6 @@ class Object extends EventHandle implements IObject {
 	 */
 	public var height(get, set):FastFloat;
 	var _height:FastFloat;
-	
-	/**
-	 * The width of this object taking scaling and skewing into account.
-	 */
-	public var tWidth(get, never):FastFloat;
-	/**
-	 * The height of this object taking scaling and skewing into account.
-	 */
-	public var tHeight(get, never):FastFloat;
 	
 	//
 	
@@ -278,7 +264,6 @@ class Object extends EventHandle implements IObject {
 		position.set(0, 0, 0, 0);
 
 		scale.set(1, 1, 0, 0);
-		skew.set(0, 0, 0, 0);
 		rotation.set(0, 0, 0);
 		
 		color = Color.WHITE;
@@ -309,7 +294,6 @@ class Object extends EventHandle implements IObject {
 		
 		position = null;
 		scale = null;
-		skew = null;
 		rotation = null;
 		
 		//
@@ -367,7 +351,6 @@ class Object extends EventHandle implements IObject {
 		
 		position.moveOrigin(offsetX, offsetY);
 		scale.moveOrigin(offsetX, offsetY);
-		skew.moveOrigin(offsetX, offsetY);
 		rotation.movePivot(offsetX, offsetY);
 	
 		applyDrawingData(data, canvas);
@@ -378,7 +361,6 @@ class Object extends EventHandle implements IObject {
 		
 		position.moveOrigin(offsetX, offsetY);
 		scale.moveOrigin(offsetX, offsetY);
-		skew.moveOrigin(offsetX, offsetY);
 		rotation.movePivot(offsetX, offsetY);
 	}
 	
@@ -428,7 +410,6 @@ class Object extends EventHandle implements IObject {
 	public inline function setOrigin(x:FastFloat, y:FastFloat):Object {
 		position.setOrigin(x, y);
 		scale.setOrigin(x, y);
-		skew.setOrigin(x, y);
 		rotation.setPivot(x, y);
 		
 		return this;
@@ -436,38 +417,27 @@ class Object extends EventHandle implements IObject {
 	
 	public inline function setTransformationOrigin(x:FastFloat, y:FastFloat):Object {
 		scale.setOrigin(x, y);
-		skew.setOrigin(x, y);
 		rotation.setPivot(x, y);
 		
 		return this;
 	}
 	
 	public inline function centerOrigin(centerX:Bool = true, centerY:Bool = true):Object {
-		if (centerX) {
-			position.ox = scale.ox = skew.ox = rotation.px = width / 2;
-		}
-		
-		if (centerY) {
-			position.oy = scale.oy = skew.oy = rotation.py = height / 2;
-		}
+		if (centerX) position.ox = scale.ox = rotation.px = width / 2;
+		if (centerY) position.oy = scale.oy = rotation.py = height / 2;
 		
 		return this;
 	}
 	
 	public inline function centerTransformation(centerX:Bool = true, centerY:Bool = true):Object {
-		if (centerX) {
-			scale.ox = skew.ox = rotation.px = width / 2;
-		}
-		
-		if (centerY) {
-			scale.oy = skew.oy = rotation.py = height / 2;
-		}
-		
+		if (centerX) scale.ox = rotation.px = width / 2;
+		if (centerY) scale.oy = rotation.py = height / 2;
+
 		return this;
 	}
 
 	public inline function getMatrix():Matrix {
-		var matrix = Matrix.getTransformation(position, scale, skew, rotation);
+		var matrix = Matrix.getTransformation(position, scale, rotation);
 		
 		if (flipX || flipY) {
 			return Matrix.flip(
@@ -638,14 +608,12 @@ class Object extends EventHandle implements IObject {
 		
 		var tempPos = position.clone();
 		var tempScale = scale.clone();
-		var tempSkew = skew.clone();
 		var tempRot = rotation.clone();
 		var tempColor = color;
 		var tempOpacity = opacity;
 		
 		position.set(bufferOriginX, bufferOriginY);
 		scale.setXY(1, 1);
-		skew.setXY();
 		rotation.angle = 0;
 		color = Color.WHITE;
 		opacity = 1;
@@ -656,7 +624,6 @@ class Object extends EventHandle implements IObject {
 		
 		position = tempPos;
 		scale = tempScale;
-		skew = tempSkew;
 		rotation = tempRot;
 		color = tempColor;
 		opacity = tempOpacity;
@@ -678,6 +645,7 @@ class Object extends EventHandle implements IObject {
 		return _height;
 	}
 	
+	/*
 	inline function get_tWidth():FastFloat {
 		return Math.abs(width * scale.x) + Math.abs(height * scale.y * Math.tan(skew.x * Angle.CONST_RAD));
 	}
@@ -685,6 +653,7 @@ class Object extends EventHandle implements IObject {
 	inline function get_tHeight():FastFloat {
 		return Math.abs(height * scale.y) + Math.abs(width  * scale.x  * Math.tan(skew.y * Angle.CONST_RAD));
 	}
+	*/
 	
 	inline function get_x():FastFloat {
 		return position.x;

@@ -18,42 +18,44 @@ abstract Matrix(FastMatrix3) from FastMatrix3 to FastMatrix3 {
 	
 	@:extern
 	public static inline function getTransformation(
-		position:Vec2T, scale:Vec2T, skew:Vec2T, rotation:Rotation
+		position:Vec2T, scale:Vec2T, rotation:Rotation
 	):Matrix {
-			var x = position.x - position.ox;
-			var y = position.y - position.oy;
+		var x = position.x - position.ox;
+		var y = position.y - position.oy;
+		
+		// Positing
+		var matrix = Matrix.translation(x, y);
+		
+		// Scaling
+		var ox = x + scale.ox;
+		var oy = y + scale.oy;
+		
+		matrix = Matrix.translation(ox, oy)
+				.multmat(Matrix.scale(scale.x, scale.y))
+				.multmat(Matrix.translation( -ox, -oy))
+				.multmat(matrix);
+		
+		/*
+		// Skewing
+		ox = x + skew.ox;
+		oy = y + skew.oy;
+		
+		matrix = Matrix.translation(ox, oy)
+				.multmat(new Matrix(1, Math.tan(skew.x * Angle.CONST_RAD), 0, Math.tan(skew.y * Angle.CONST_RAD), 1, 0))
+				.multmat(Matrix.translation( -ox, -oy))
+				.multmat(matrix);
+		*/
+		
+		// Rotating
+		ox = x + rotation.px;
+		oy = y + rotation.py;
+		
+		matrix = Matrix.translation(ox, oy)
+				.multmat(Matrix.rotation(rotation.rad))
+				.multmat(Matrix.translation( -ox, -oy))
+				.multmat(matrix);
 			
-			// Positing
-			var matrix = Matrix.translation(x, y);
-			
-			// Scaling
-			var ox = x + scale.ox;
-			var oy = y + scale.oy;
-			
-			matrix = Matrix.translation(ox, oy)
-					.multmat(Matrix.scale(scale.x, scale.y))
-					.multmat(Matrix.translation( -ox, -oy))
-					.multmat(matrix);
-					
-			// Skewing
-			ox = x + skew.ox;
-			oy = y + skew.oy;
-			
-			matrix = Matrix.translation(ox, oy)
-					.multmat(new Matrix(1, Math.tan(skew.x * Angle.CONST_RAD), 0, Math.tan(skew.y * Angle.CONST_RAD), 1, 0))
-					.multmat(Matrix.translation( -ox, -oy))
-					.multmat(matrix);
-			
-			// Rotating
-			ox = x + rotation.px;
-			oy = y + rotation.py;
-			
-			matrix = Matrix.translation(ox, oy)
-					.multmat(Matrix.rotation(rotation.rad))
-					.multmat(Matrix.translation( -ox, -oy))
-					.multmat(matrix);
-				
-			return matrix;
+		return matrix;
 	}
 	
 	@:extern

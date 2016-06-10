@@ -18,7 +18,6 @@ class CollisionShape {
 	public var position:Position = new Position();
 	
 	public var scale:Vec2T = new Vec2T();
-	public var skew:Vec2T = new Vec2T();
 	public var rotation:Rotation = new Rotation();
 	
 	public var flipX:Bool;
@@ -41,7 +40,6 @@ class CollisionShape {
 		position.set();
 		
 		scale.set(1, 1, 0, 0);
-		skew.set(0, 0, 0, 0);
 		rotation.set(0, 0, 0);
 		
 		flipX = flipY = false;
@@ -51,7 +49,6 @@ class CollisionShape {
 		position = null;
 		
 		scale = null;
-		skew = null;
 		rotation = null;
 		
 		_vertices = null;
@@ -64,7 +61,7 @@ class CollisionShape {
 	}
 	
 	public inline function getLocalMatrix():Matrix {
-		var matrix = Matrix.getTransformation(position, scale, skew, rotation);
+		var matrix = Matrix.getTransformation(position, scale, rotation);
 		
 		if (flipX || flipY) {
 			return Matrix.flip(

@@ -29,6 +29,7 @@ interface IGroup extends IObject {
 	
 	private function _add(obj:Object, pos:Int = -1):Void;
 	private function _remove(obj:Object, spilce:Bool = false):Void;
+	
 }
 
 @:access(kala.math.color.Color)
@@ -206,7 +207,7 @@ class Group<T:Object> extends Object implements IGroup {
 		if (pos == -1) _children.push(obj);
 		else _children.insert(pos, obj);
 		
-		obj._groups.push(this);
+		obj._groups.push(null);
 	}
 	
 	public function swap(swappedObj:T, obj:T):Bool {
