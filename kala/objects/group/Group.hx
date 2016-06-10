@@ -207,7 +207,7 @@ class Group<T:Object> extends Object implements IGroup {
 		if (pos == -1) _children.push(obj);
 		else _children.insert(pos, obj);
 		
-		obj._groups.push(null);
+		obj.group = this;
 	}
 	
 	public function swap(swappedObj:T, obj:T):Bool {
@@ -216,11 +216,9 @@ class Group<T:Object> extends Object implements IGroup {
 		if (index == -1) return false;
 		
 		_children[index] = obj;
-		obj._groups.push(this);
+		obj.group = this;
 		
-		swappedObj._groups.remove(this);
-		if (swappedObj.group == this) swappedObj.group = null;
-		
+		swappedObj.group = null;
 		swappedObj.firstFrameExecuted = false;
 		
 		return true;
@@ -234,9 +232,7 @@ class Group<T:Object> extends Object implements IGroup {
 		if (splice) _children.splice(index, 1);
 		else _children[index] = null;
 
-		obj._groups.remove(this);
-		if (obj.group == this) obj.group = null;
-		
+		obj.group = null;
 		obj.firstFrameExecuted = false;
 		
 		return obj;
@@ -248,7 +244,7 @@ class Group<T:Object> extends Object implements IGroup {
 		if (pos == -1) _views.push(view);
 		else _views.insert(pos, view);
 		
-		view._groups.push(this);
+		view.group = this;
 	}
 	
 	public function removeView(view:View, splice:Bool = false):View {
@@ -259,9 +255,7 @@ class Group<T:Object> extends Object implements IGroup {
 		if (splice) _views.splice(index, 1);
 		else _views[index] = null;
 		
-		view._groups.remove(this);
-		if (view.group == this) view.group = null;
-		
+		view.group = null;
 		view.firstFrameExecuted = false;
 		
 		return view;

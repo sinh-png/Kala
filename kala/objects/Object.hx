@@ -62,8 +62,6 @@ interface IObject {
 	//
 	
 	public var group(default, null):IGroup;
-	public var groups(get, never):Array<IGroup>;
-	private var _groups:Array<IGroup>;
 	
 	//
 	
@@ -180,14 +178,9 @@ class Object extends EventHandle implements IObject {
 	public var bufferOriginY(default, null):FastFloat;
 	
 	//
-	
-	/**
-	 * The current group updating or rendering this object.
-	 */
+
 	public var group(default, null):IGroup;
-	public var groups(get, never):Array<IGroup>;
-	var _groups:Array<IGroup> = new Array<IGroup>();
-	
+
 	//
 	
 	public var data:Dynamic;
@@ -319,10 +312,11 @@ class Object extends EventHandle implements IObject {
 		
 		//
 		
-		removefromGroups();
-		group = null;
-		_groups = null;
-		
+		if (group != null) {
+			group._remove(this);
+			group = null;
+		}
+
 		//
 		
 		data = null;
@@ -332,9 +326,14 @@ class Object extends EventHandle implements IObject {
 	
 	public function deepReset(deepResetBehaviors:Bool = true):Void {
 		reset(false);
+		
 		if (deepResetBehaviors) this.deepResetBehaviors();
 		clearCBHandles();
-		removefromGroups();
+		
+		if (group != null) {
+			group._remove(this);
+			group = null;
+		}
 	}
 	
 	public function update(elapsed:FastFloat):Void {
@@ -471,10 +470,6 @@ class Object extends EventHandle implements IObject {
 		alive = true;
 	}
 	
-	public inline function removefromGroups(splice:Bool = false):Void {
-		for (group in _groups) group._remove(this, splice);
-	}
-	
 	public inline function getBehaviors():Array<IBehavior> {
 		return _behaviors.copy();
 	}
@@ -506,9 +501,7 @@ class Object extends EventHandle implements IObject {
 	
 	inline function callUpdate(?group:IGroup, elapsed:FastFloat):Void {
 		elapsed *= timeScale;
-		
-		this.group = group;
-		
+	
 		execFirstFrame();
 		
 		var updatePrevented = false;
@@ -520,8 +513,6 @@ class Object extends EventHandle implements IObject {
 	}
 	
 	function callDraw(?group:IGroup, data:DrawingData, canvas:Canvas):Void {
-		this.group = group;
-		
 		execFirstFrame();
 		
 		if (_shaders.length > 0) {
@@ -677,10 +668,6 @@ class Object extends EventHandle implements IObject {
 	
 	inline function set_angle(value:FastFloat):FastFloat {
 		return rotation.angle = value;
-	}
-	
-	inline function get_groups():Array<IGroup> {
-		return _groups.copy();
 	}
 	
 }
