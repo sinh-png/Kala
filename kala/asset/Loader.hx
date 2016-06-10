@@ -171,7 +171,7 @@ class Loader extends EventHandle {
 		
 		var i = 0;
 		var callback:Dynamic->AssetLoadingInfo->AssetLoadingInfo->Bool;
-		while (i < onProcess.lenght) {
+		while (i < onProcess.count) {
 			callback = onProcess._callbacks[i].cbFunction;
 			if (callback(data, loadedAsset, nextAsset)) {
 				onProcess._callbacks.splice(i, 1);

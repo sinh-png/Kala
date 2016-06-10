@@ -40,7 +40,7 @@ interface ICallbackHandle {
 @:allow(kala.behaviors.Behavior)
 class CallbackHandle<T> implements ICallbackHandle {
 	
-	public var lenght(get, never):Int;
+	public var count(get, never):Int;
 	
 	private var _callbacks:Array<Callback<T>> = new Array<Callback<T>>();
 	
@@ -48,15 +48,11 @@ class CallbackHandle<T> implements ICallbackHandle {
 	
 	}
 	
-	function removeAll():Void {
-		_callbacks.splice(0, _callbacks.length);
+	public inline function iterator():Iterator<Callback<T>> {
+		return _callbacks.iterator();
 	}
 	
-	function destroy():Void {
-		_callbacks = null;
-	}
-	
-	public function notify(callback:T):Void {
+	public inline function notify(callback:T):Void {
 		_callbacks.push(new Callback(callback));
 	}
 	
@@ -76,7 +72,7 @@ class CallbackHandle<T> implements ICallbackHandle {
 		}
 	}
 	
-	function notifyPrivateCB(owner:Dynamic, callback:T):Void {
+	inline function notifyPrivateCB(owner:Dynamic, callback:T):Void {
 		_callbacks.push(new Callback(callback, owner));
 	}
 	
@@ -93,11 +89,15 @@ class CallbackHandle<T> implements ICallbackHandle {
 		throw 'Incorrectly tried to remove a private callback of $owner from object $this.';
 	}
 	
-	public function iterator():Iterator<Callback<T>> {
-		return _callbacks.iterator();
+	function removeAll():Void {
+		_callbacks.splice(0, _callbacks.length);
 	}
 	
-	function get_lenght():Int {
+	function destroy():Void {
+		_callbacks = null;
+	}
+	
+	function get_count():Int {
 		return _callbacks.length;
 	}
 	
