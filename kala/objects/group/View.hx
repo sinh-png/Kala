@@ -55,6 +55,7 @@ class View extends Object {
 		super.reset(resetBehaviors);
 		bgColor = 0;
 		transparent = true;
+		scaleMode = NONE;
 	}
 	
 	override public function destroy(destroyBehaviors:Bool = true):Void {
@@ -73,43 +74,43 @@ class View extends Object {
 		var w:FastFloat = viewport.width = viewBuffer.width;
 		var h:FastFloat = viewport.height = viewBuffer.height;
 		
-		if (scaleMode != null) {
-			switch(scaleMode) {
+		switch(scaleMode) {
+			
+			case EXACT:
+				scale.setXY(cw / w, ch / h);
+				w = cw;
+				h = ch;
+			
+			case RATIO:
+				var hs = cw / w;
+				var vs = ch / h;
 				
-				case EXACT:
-					scale.setXY(cw / w, ch / h);
-					w = cw;
-					h = ch;
+				var s = Math.min(hs, vs);
+				scale.setXY(s, s);
 				
-				case RATIO:
-					var hs = cw / w;
-					var vs = ch / h;
-					
-					var s = Math.min(hs, vs);
-					scale.setXY(s, s);
-					
-					w *= s;
-					h *= s;
-					
-				case RATIO_FILL:
-					var hs = cw / w;
-					var vs = ch / h;
-					
-					var s = Math.max(hs, vs);
-					scale.setXY(s, s);
-					
-					w *= s;
-					h *= s;
+				w *= s;
+				h *= s;
 				
-				case FIXED(hpercent, vpercent):
-					scale.setXY((cw * hpercent) / w, (ch * vpercent) / h);
-					
-					w *= scale.x;
-					h *= scale.y;
-					
-			}
+			case RATIO_FILL:
+				var hs = cw / w;
+				var vs = ch / h;
+				
+				var s = Math.max(hs, vs);
+				scale.setXY(s, s);
+				
+				w *= s;
+				h *= s;
+			
+			case FIXED(hpercent, vpercent):
+				scale.setXY((cw * hpercent) / w, (ch * vpercent) / h);
+				
+				w *= scale.x;
+				h *= scale.y;
+				
+			case NONE:
+				
 		}
-		
+
 		applyDrawingData(data, canvas);
 		
 		if (halign != null) {
@@ -162,6 +163,7 @@ class View extends Object {
 
 enum ScaleMode {
 	
+	NONE;
 	EXACT;
 	RATIO;
 	RATIO_FILL;
