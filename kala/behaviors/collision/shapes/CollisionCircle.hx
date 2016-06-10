@@ -128,8 +128,8 @@ class CollisionCircle extends CollisionShape {
 	 */
 	public inline function testCircleNoTransform(circle:CollisionCircle):Bool {
 		return Collision.fastCircleVsCircle(
-			matrix._20, matrix._21, radius,
-			circle.matrix._20, circle.matrix._21, circle.radius
+			matrix.tx, matrix.ty, radius,
+			circle.matrix.tx, circle.matrix.ty, circle.radius
 		);
 	}
 	
