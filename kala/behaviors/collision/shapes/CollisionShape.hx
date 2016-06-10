@@ -20,9 +20,6 @@ class CollisionShape {
 	public var scale:Vec2T = new Vec2T();
 	public var rotation:Rotation = new Rotation();
 	
-	public var flipX:Bool;
-	public var flipY:Bool;
-
 	public var matrix(default, null):Matrix;
 	
 	public var width(get, never):FastFloat;
@@ -38,11 +35,8 @@ class CollisionShape {
 	
 	public function reset():Void {
 		position.set();
-		
 		scale.set(1, 1, 0, 0);
 		rotation.set(0, 0, 0);
-		
-		flipX = flipY = false;
 	}
 	
 	public function destroy():Void {
@@ -61,16 +55,7 @@ class CollisionShape {
 	}
 	
 	public inline function getLocalMatrix():Matrix {
-		var matrix = Matrix.getTransformation(position, scale, rotation);
-		
-		if (flipX || flipY) {
-			return Matrix.flip(
-				matrix, flipX, flipY,
-				position.x - position.ox + width / 2, position.y - position.oy + height / 2
-			);
-		}
-		
-		return matrix;
+		return Matrix.getTransformation(position, scale, rotation);
 	}
 	
 	public inline function updateMatrix(objectMatrix:Matrix):Void {
