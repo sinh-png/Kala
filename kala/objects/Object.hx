@@ -610,7 +610,7 @@ class Object extends EventHandle implements IObject {
 		opacity = 1;
 	
 		_texture.g2.begin();
-		draw(new DrawingData(), _texture);
+		draw(new DrawingData(false, null, null, null, null, 1), _texture);
 		_texture.g2.end();
 		
 		position = tempPos;

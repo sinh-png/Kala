@@ -11,17 +11,17 @@ class DrawingData {
 	public var transformation:Matrix;
 	
 	public var color:Null<Color>;
-	public var colorBlendMode:BlendMode = BlendMode.ADD;
-	public var colorAlphaBlendMode:BlendMode = null;
+	public var colorBlendMode:BlendMode;
+	public var colorAlphaBlendMode:BlendMode;
 	
 	public var opacity:FastFloat;
 	
 	public inline function new(
-		?antialiasing:Bool = false,
-		?transformation:Matrix, 
-		?color:Color, 
-		?colorBlendMode:BlendMode, ?colorAlphaBlendMode:BlendMode,
-		?opacity:FastFloat = 1
+		antialiasing:Bool,
+		transformation:Matrix, 
+		color:Null<Color>, 
+		colorBlendMode:BlendMode, ?colorAlphaBlendMode:BlendMode,
+		opacity:FastFloat
 	) {
 		this.antialiasing = antialiasing;
 		this.transformation = transformation;
