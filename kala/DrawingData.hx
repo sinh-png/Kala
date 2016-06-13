@@ -16,12 +16,18 @@ class DrawingData {
 	
 	public var opacity:FastFloat;
 	
+	/**
+	 * Used to send data from groups to their members throught post draw callback.
+	 */
+	public var extra:Dynamic;
+	
 	public inline function new(
 		antialiasing:Bool,
 		transformation:Matrix, 
 		color:Null<Color>, 
 		colorBlendMode:BlendMode, ?colorAlphaBlendMode:BlendMode,
-		opacity:FastFloat
+		opacity:FastFloat,
+		extra:Dynamic
 	) {
 		this.antialiasing = antialiasing;
 		this.transformation = transformation;
@@ -29,6 +35,7 @@ class DrawingData {
 		this.colorBlendMode = colorBlendMode;
 		this.colorAlphaBlendMode = colorAlphaBlendMode;
 		this.opacity = opacity;
+		this.extra = extra;
 	}
 	
 }

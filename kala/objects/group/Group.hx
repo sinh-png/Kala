@@ -107,7 +107,8 @@ class Group<T:Object> extends Object implements IGroup {
 			data.antialiasing,
 			data.transformation,
 			data.color, colorBlendMode, colorAlphaBlendMode,
-			data.opacity
+			data.opacity,
+			data.extra
 		);
 		
 		if (transformationEnable) {
