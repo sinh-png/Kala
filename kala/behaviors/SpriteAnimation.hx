@@ -12,14 +12,16 @@ import kha.Image;
 @:access(kala.objects.sprite.Sprite)
 class SpriteAnimation extends Behavior<Sprite> {
 
+	public var animations(default, null):StringMap<SpriteAnimationData> = new StringMap<SpriteAnimationData>();
+	
 	public var anim(default, null):SpriteAnimationData;
 	public var frame(default, set):Int;
+	public var delay(default, set):FastFloat;
+	public var reversed:Bool;
+	
+	public var timeLeft:FastFloat;
 	
 	public var onAnimComplete(default, null):CallbackHandle<SpriteAnimation->Void>;
-	
-	private var _animations:StringMap<SpriteAnimationData> = new StringMap<SpriteAnimationData>();
-	
-	private var _timeLeft:FastFloat;
 	
 	private var _lastAddedKey:String;
 	
@@ -31,8 +33,9 @@ class SpriteAnimation extends Behavior<Sprite> {
 	
 	override public function reset():Void {
 		super.reset();
-		anim = null;
 		removeAllAnimations();
+		anim = null;
+		timeLeft = 0;
 	}
 	
 	override public function destroy():Void {
@@ -41,7 +44,7 @@ class SpriteAnimation extends Behavior<Sprite> {
 		anim = null;
 		
 		removeAllAnimations();
-		_animations = null;
+		animations = null;
 		
 		destroyCBHandles();
 		onAnimComplete = null;
@@ -70,12 +73,12 @@ class SpriteAnimation extends Behavior<Sprite> {
 	 * 
 	 * @param	key				The key used to add the animation.
 	 * @param	delay			Delay time between frames. Left null to use the current setting.
-	 * @param	reversed		Whether to play the animation in reverse or not. Left null to use the current setting.
+	 * @param	reversed		Whether to play the animation in reverse or not.
 	 * @param	forceReplay		Whether to force replay the animation if it is already playing with the same settings.
 	 * 
 	 * @return 					This behavior.
 	 */
-	public function play(?key:String, ?delay:UInt, ?reversed:Bool, forceReplay:Bool = false):SpriteAnimation {
+	public function play(?key:String, ?delay:UInt, reversed:Bool = false, forceReplay:Bool = false):SpriteAnimation {
 		if (key == null) {
 			if (_lastAddedKey == null) return null;
 			key = _lastAddedKey;
@@ -83,18 +86,18 @@ class SpriteAnimation extends Behavior<Sprite> {
 		
 		if (
 			anim != null && key == anim.key && !forceReplay &&
-			(delay == null || delay == anim.delay) &&
-			(reversed == null || reversed == anim.reversed)
+			(delay == null || delay == this.delay) &&
+			reversed == this.reversed
 		) {
 			return this;
 		}
 		
-		anim = _animations.get(key);
+		anim = animations.get(key);
 		
 		if (anim != null) {
-			anim.delay = _timeLeft = (delay == null) ? anim.delay : delay;
-			anim.reversed = (reversed == null) ? anim.reversed : reversed;
-			frame = anim.reversed ? anim.frames.length - 1 : 0; 
+			this.delay = timeLeft = (delay == null) ? anim.delay : delay;
+			this.reversed = reversed;
+			frame = reversed ? anim.frames.length - 1 : 0; 
 			if (anim.image != null) object.image = anim.image;
 		} else {
 			return null;
@@ -104,7 +107,7 @@ class SpriteAnimation extends Behavior<Sprite> {
 	}
 	
 	public inline function pause():Void {
-		anim.delay = -1;
+		delay = -1;
 	}
 	
 	/**
@@ -167,7 +170,7 @@ class SpriteAnimation extends Behavior<Sprite> {
 			}
 		}
 		
-		_animations.set(key, anim);
+		animations.set(key, anim);
 		_lastAddedKey = key;
 		
 		return this;
@@ -193,14 +196,14 @@ class SpriteAnimation extends Behavior<Sprite> {
 			anim.addFrameRect(frame);
 		}
 		
-		_animations.set(key, anim);
+		animations.set(key, anim);
 		_lastAddedKey = key;
 		
 		return this;
 	}
 	
 	public function removeAnim(key:String):SpriteAnimation {
-		_animations.remove(key);
+		animations.remove(key);
 		if (_lastAddedKey == key) _lastAddedKey = null;
 		
 		return this;
@@ -208,24 +211,24 @@ class SpriteAnimation extends Behavior<Sprite> {
 	
 	public function getAnimations():Array<SpriteAnimationData> {
 		var array = new Array<SpriteAnimationData>();
-		for (key in _animations.keys()) {
-			array.push(_animations.get(key));
+		for (key in animations.keys()) {
+			array.push(animations.get(key));
 		}
 		return array;
 	}
 	
 	public function removeAllAnimations():Void {
-		for (key in _animations.keys()) _animations.remove(key);
+		for (key in animations.keys()) animations.remove(key);
 	}
 	
 	function update(obj:Object, elapsed:FastFloat):Void {
-		if (anim != null && anim.delay > -1) {
-			_timeLeft -= elapsed;
+		if (anim != null && delay > -1) {
+			timeLeft -= elapsed;
 			
-			if (_timeLeft <= 0) {
-				_timeLeft = anim.delay;
+			if (timeLeft <= 0) {
+				timeLeft = delay;
 				
-				if (!anim.reversed) {
+				if (!reversed) {
 					if (frame < anim.frames.length - 1) {
 						frame++;
 					} else {
@@ -249,6 +252,11 @@ class SpriteAnimation extends Behavior<Sprite> {
 		object.frameRect.copy(anim.frames[frame = value]);
 		return value;
 	}
+	
+	inline function set_delay(value:FastFloat):FastFloat {
+		if (value > -1 && timeLeft > value) timeLeft = value;
+		return delay = value;
+	}
 
 }
 
@@ -258,7 +266,6 @@ class SpriteAnimationData {
 	public var image:Image;
 	public var frames:Array<RectI>;
 	public var delay:FastFloat;
-	public var reversed:Bool;
 	
 	public inline function new(key:String, image:Image, delay:UInt) {
 		this.key = key;
@@ -266,7 +273,6 @@ class SpriteAnimationData {
 		this.delay = delay;
 		
 		frames = new Array<RectI>();
-		reversed = false;
 	}
 
 	@:extern
