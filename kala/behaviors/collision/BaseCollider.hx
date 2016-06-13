@@ -43,12 +43,12 @@ class BaseCollider<T:Object> extends Behavior<T> implements ICollider {
 	
 	public var shapes:Array<CollisionShape> = new Array<CollisionShape>();
 	
-	public var updated(default, null):Bool = false;
+	public var available(default, null):Bool = false;
 	
 	override public function reset():Void {
 		super.reset();
 		while (shapes.length > 0) shapes.pop().put();
-		updated = false;
+		available = false;
 	}
 	
 	override public function destroy():Void {
@@ -76,7 +76,7 @@ class BaseCollider<T:Object> extends Behavior<T> implements ICollider {
 	 * @return				The result data. Return null if there was no collision.
 	 */
 	public function test(collider:ICollider):CollisionResult {
-		if (!updated) return null;
+		if (!available) return null;
 		
 		var result:CollisionResult;
 		
@@ -91,7 +91,7 @@ class BaseCollider<T:Object> extends Behavior<T> implements ICollider {
 	}
 	
 	public function testPoint(pointX:FastFloat, pointY:FastFloat):Bool {
-		if (!updated) return false;
+		if (!available) return false;
 		
 		for (shape in shapes) {
 			if (shape.testPoint(pointX, pointY)) return true;
@@ -126,7 +126,7 @@ class BaseCollider<T:Object> extends Behavior<T> implements ICollider {
 	}
 	
 	function postDrawUpdate(obj:Object, data:DrawingData, canvas:Canvas):Void {
-		updated = true;
+		available = true;
 		
 		for (shape in shapes) shape.updateMatrix(obj._cachedDrawingMatrix);
 		

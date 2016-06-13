@@ -25,7 +25,7 @@ class CollisionShape {
 	public var width(get, never):FastFloat;
 	public var height(get, never):FastFloat;
 	
-	public var updated(get, never):Bool;
+	public var available(get, never):Bool;
 	
 	private var _vertices:Array<Vec2> = new Array<Vec2>();
 
@@ -101,7 +101,7 @@ class CollisionShape {
 		return 0;
 	}
 	
-	inline function get_updated():Bool {
+	inline function get_available():Bool {
 		return matrix != null;
 	}
 	
