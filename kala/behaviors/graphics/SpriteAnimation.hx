@@ -1,7 +1,6 @@
-package kala.behaviors;
+package kala.behaviors.graphics;
 
 import haxe.ds.StringMap;
-import kala.behaviors.SpriteAnimation.SpriteAnimationData;
 import kala.EventHandle.CallbackHandle;
 import kala.math.Rect.RectI;
 import kala.objects.Object;
