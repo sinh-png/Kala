@@ -72,7 +72,7 @@ class Sprite extends Object {
 
 		if (animKey == null) animKey = data.key;
 		
-		animation.addAnimFromSpriteData(animKey, image, data, animDelay).play();
+		animation.addAnimFromSpriteData(animKey, image, data, animDelay);
 		
 		return this;
 	}
@@ -93,7 +93,6 @@ class SpriteData {
 	public var image:Image;
 	public var frames:Array<RectI>;
 	public var animDelay:Int;
-	//public var shapes;
 
 	public inline function new(key:String, image:Image, frames:Array<RectI>, animDelay:UInt) {
 		this.key = key;
