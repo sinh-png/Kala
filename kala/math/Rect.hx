@@ -37,6 +37,30 @@ class Rect {
 		return new Rect(x, y, width, height);
 	}
 	
+	/**
+	 * Get the intersection arena of this rectangle with the input rectangle.
+	 */
+	@:extern
+	public inline function getIntersection(rect:Rect):Rect {
+		var x2 = x + width;
+		var x4 = rect.x + rect.width;
+		var y1 = y - height;
+		var y3 = rect.y - rect.height;
+
+		var leftX = Math.max(x, rect.x);
+		var rightX = Math.min(x2, x4);
+		
+		if (rightX <= leftX) return null;
+		else {
+			var topY = Math.max(y1, y3);
+			var bottomY = Math.min(y, rect.y);
+			
+			if (bottomY <= topY) return null;
+			else return new Rect(leftX, bottomY, rightX - leftX, bottomY - topY);
+		}
+	}
+	
+	@:extern
 	public inline function toString():String {
 		return "Rect(x: " + x + ", y: " + y + ", w: " + width + ", h: " + height + ")";
 	}
@@ -78,6 +102,30 @@ class RectI {
 		return new RectI(x, y, width, height);
 	}
 	
+	/**
+	 * Get the intersection arena of this rectangle with the input rectangle.
+	 */
+	@:extern
+	public inline function getIntersection(rect:Rect):RectI {
+		var x2 = x + width;
+		var x4 = rect.x + rect.width;
+		var y1 = y - height;
+		var y3 = rect.y - rect.height;
+
+		var leftX = Std.int(Math.max(x, rect.x));
+		var rightX = Std.int(Math.min(x2, x4));
+		
+		if (rightX <= leftX) return null;
+		else {
+			var topY = Std.int(Math.max(y1, y3));
+			var bottomY = Std.int(Math.min(y, rect.y));
+			
+			if (bottomY <= topY) return null;
+			else return new RectI(leftX, bottomY, rightX - leftX, bottomY - topY);
+		}
+	}
+	
+	@:extern
 	public inline function toString():String {
 		return "RectI(x: " + x + ", y: " + y + ", w: " + width + ", h: " + height + ")";
 	}
