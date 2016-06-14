@@ -47,6 +47,7 @@ class Group<T:Object> extends Object implements IGroup {
 	
 	public function new(transformationEnable:Bool = false, ?factoryFunction:Void->T) {
 		super();
+		isGroup = true;
 		this.transformationEnable = transformationEnable;
 		this.factoryFunction = factoryFunction;
 	}

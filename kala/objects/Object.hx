@@ -61,6 +61,8 @@ interface IObject {
 	
 	//
 	
+	public var isGroup(default, null):Bool;
+	
 	public var group(default, null):IGroup;
 	
 	//
@@ -184,6 +186,8 @@ class Object extends EventHandle implements IObject {
 	
 	//
 
+	public var isGroup(default, null):Bool;
+	
 	public var group(default, null):IGroup;
 
 	//
@@ -227,6 +231,8 @@ class Object extends EventHandle implements IObject {
 
 	public function new() {
 		super();
+		
+		isGroup = false;
 		
 		onDestroy = addCBHandle(new CallbackHandle<Object->Bool->Void>());
 		onReset = addCBHandle(new CallbackHandle<Object->Bool->Void>());
