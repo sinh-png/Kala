@@ -10,7 +10,7 @@ import kha.Image;
 
 class Sprite extends Object {
 
-	public var image(default, null):Image;
+	public var image:Image;
 	public var frameRect:RectI = new RectI();
 	
 	public var animation(default, null):SpriteAnimation;
