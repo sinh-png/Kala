@@ -32,6 +32,14 @@ class Rotation {
 	}
 	
 	@:extern
+	public inline function copy(rotation:Rotation):Void {
+		px = rotation.px;
+		py = rotation.py;
+		angle = rotation.angle;
+		asDeg = rotation.asDeg;
+	}
+	
+	@:extern
 	public inline function clone():Rotation {
 		return new Rotation(angle, px, py, asDeg);
 	}
