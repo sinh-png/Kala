@@ -103,26 +103,21 @@ class Group<T:Object> extends Object implements IGroup {
 	
 	override public function draw(data:DrawingData, canvas:Canvas):Void {
 		var g2 = canvas.g2;
-		
-		var drawingData = new DrawingData(
-			data.antialiasing,
-			data.transformation,
-			data.color, colorBlendMode, colorAlphaBlendMode,
-			data.opacity,
-			data.extra
-		);
-		
+
 		if (transformationEnable) {
-			if (data.transformation == null) drawingData.transformation = _cachedDrawingMatrix = getMatrix();
-			else drawingData.transformation = _cachedDrawingMatrix = data.transformation.multmat(getMatrix());
+			if (data.transformation == null) data.transformation = _cachedDrawingMatrix = getMatrix();
+			else data.transformation = _cachedDrawingMatrix = data.transformation.multmat(getMatrix());
 		
-			if (drawingData.color == null) {
-				drawingData.color = color;
+			if (data.color == null) {
+				data.color = color;
 			} else {
-				drawingData.color = Color.getBlendColor(color, data.color, data.colorBlendMode, data.colorAlphaBlendMode);
+				data.color = Color.getBlendColor(color, data.color, data.colorBlendMode, data.colorAlphaBlendMode);
 			}
 			
-			g2.opacity = this.opacity * data.opacity;
+			data.colorBlendMode = colorBlendMode;
+			data.colorAlphaBlendMode = colorAlphaBlendMode;
+		
+			data.opacity = opacity * data.opacity;
 		}
 		
 		if (antialiasing) data.antialiasing = true;
@@ -132,7 +127,7 @@ class Group<T:Object> extends Object implements IGroup {
 				if (child == null) continue;
 	
 				if (child.alive && child.isVisible()) {
-					child.callDraw(drawingData, canvas);
+					child.callDraw(data, canvas);
 				}
 			}
 		} else {
@@ -147,12 +142,12 @@ class Group<T:Object> extends Object implements IGroup {
 				viewBuffer = view.viewBuffer;
 				
 				if (data.transformation == null) {
-					drawingData.transformation = Matrix.translation(
+					data.transformation = Matrix.translation(
 						-view.viewport.x,
 						-view.viewport.y
 					);
 				} else {
-					drawingData.transformation = data.transformation.multmat(
+					data.transformation = data.transformation.multmat(
 						Matrix.translation( -view.viewport.x, -view.viewport.y)
 					);
 				}
@@ -162,7 +157,7 @@ class Group<T:Object> extends Object implements IGroup {
 					if (child == null) continue;
 					
 					if (child.alive && child.isVisible()) {
-						child.callDraw(drawingData, viewBuffer);
+						child.callDraw(data, viewBuffer);
 					}
 				}
 				viewBuffer.g2.end();
@@ -170,16 +165,20 @@ class Group<T:Object> extends Object implements IGroup {
 			
 			g2.begin(false);
 			
-			drawingData.transformation = data.transformation;
+			data.transformation = data.transformation;
 			
 			for (view in views) {
 				if (view == null) continue;
 				
 				if (view.alive && view.isVisible()) {
-					view.callDraw(drawingData, canvas);
+					view.callDraw(data, canvas);
 				}
 			}
 		}
+	}
+	
+	override function callDraw(data:DrawingData, canvas:Canvas):Void {
+		super.callDraw(data.clone(), canvas);
 	}
 	
 	public function createAlive():T {
