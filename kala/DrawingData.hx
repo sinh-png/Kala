@@ -38,4 +38,15 @@ class DrawingData {
 		this.extra = extra;
 	}
 	
+	public inline function clone():DrawingData {
+		return new DrawingData(
+			antialiasing,
+			transformation,
+			color,
+			colorBlendMode, colorAlphaBlendMode,
+			opacity,
+			extra
+		);
+	}
+	
 }
