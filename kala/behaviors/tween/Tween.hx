@@ -75,28 +75,6 @@ class Tween extends Behavior<Object> {
 		return timeline;
 	}
 	
-	public inline function tweenX(
-		target:Dynamic, x:FastFloat, duration:UInt, ?ease:EaseFunction,
-		?onFinishCB:TweenTimeline->Void, ?onUpdateCB:TweenTask->Void
-	):TweenTimeline {
-		var timeline = TweenTimeline.get().init(this, null, null, null, null).tween(target, { x: x }, duration, ease, onUpdateCB);
-		if (onFinishCB != null) timeline.call(onFinishCB);
-		timeline.start();
-		
-		return timeline;
-	}
-	
-	public inline function tweenY(
-		target:Dynamic, y:FastFloat, duration:UInt, ?ease:EaseFunction,
-		?onFinishCB:TweenTimeline->Void, ?onUpdateCB:TweenTask->Void
-	):TweenTimeline {
-		var timeline = TweenTimeline.get().init(this, null, null, null, null).tween(target, { y: y }, duration, ease, onUpdateCB);
-		if (onFinishCB != null) timeline.call(onFinishCB);
-		timeline.start();
-		
-		return timeline;
-	}
-	
 	function update(obj:Object, elapsed:FastFloat):Void {
 		for (tween in _tweens) {
 			if (!tween.paused) tween.update(elapsed);
@@ -172,44 +150,20 @@ class TweenTimeline {
 	}
 	
 	public inline function tweenXY(
-		target:Object, x:FastFloat, y:FastFloat, duration:UInt,
+		target:Dynamic, x:FastFloat, y:FastFloat, duration:UInt,
 		?ease:EaseFunction, ?backwardEase:EaseFunction, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
 		tween(target, { x: x, y: y }, duration, ease, backwardEase, onUpdateCB);
 		return this;
 	}
 	
-	public inline function tweenX(
-		target:Dynamic, x:FastFloat, duration:UInt,
-		?ease:EaseFunction, ?backwardEase:EaseFunction, ?onUpdateCB:TweenTask->Void
-	):TweenTimeline {
-		tween(target, { x: x }, duration, ease, backwardEase, onUpdateCB);
-		return this;
-	}
-	
-	public inline function tweenY(
-		target:Object, y:FastFloat, duration:UInt,
-		?ease:EaseFunction, ?backwardEase:EaseFunction, ?onUpdateCB:TweenTask->Void
-	):TweenTimeline {
-		tween(target, { y: y }, duration, ease, backwardEase, onUpdateCB);
-		return this;
-	}
-	
 	public inline function tweenAngle(
-		target:Object, ?fromAngle:FastFloat, toAngle:FastFloat, duration:UInt,
+		?target:Object, ?fromAngle:FastFloat, toAngle:FastFloat, duration:UInt,
 		?ease:EaseFunction, ?backwardEase:EaseFunction, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
 		if (target == null) target = this.target;
 		if (fromAngle != null) target.rotation.angle = fromAngle;
 		tween(target.rotation, { angle: toAngle }, duration, ease, backwardEase, onUpdateCB);
-		return this;
-	}
-	
-	public inline function tweenOpacity(
-		target:Object, opacity:FastFloat, duration:UInt,
-		?ease:EaseFunction, ?backwardEase:EaseFunction, ?onUpdateCB:TweenTask->Void
-	):TweenTimeline {
-		tween(target, { opacity: opacity }, duration, ease, backwardEase, onUpdateCB);
 		return this;
 	}
 	
