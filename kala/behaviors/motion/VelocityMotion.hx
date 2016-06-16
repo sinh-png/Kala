@@ -6,8 +6,6 @@ import kala.math.Velocity;
 import kala.objects.Object;
 import kha.FastFloat;
 
-using kala.math.Angle;
-
 class VelocityMotion extends Behavior<Object> {
 
 	public var velocity:Velocity = new Velocity();

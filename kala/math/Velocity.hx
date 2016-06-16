@@ -2,8 +2,6 @@ package kala.math;
 
 import kha.FastFloat;
 
-using kala.math.Angle;
-
 class Velocity {
 
 	var _x:FastFloat;
@@ -61,11 +59,11 @@ class Velocity {
 	inline function get_angle():FastFloat {
 		if (_angleUpdated) return _angle;
 		_angleUpdated = true;
-		return _angle = Math.atan2(y, x).toDeg();
+		return _angle = Mathf.deg(Math.atan2(y, x));
 	}
 	
 	inline function set_angle(value:FastFloat):FastFloat {
-		var rad = value.toRad();
+		var rad = Mathf.rad(value);
 		_x = speed * Math.cos(rad);
 		_y = speed * Math.sin(rad);
 		_angleUpdated = true;
@@ -75,11 +73,11 @@ class Velocity {
 	inline function get_speed():FastFloat {
 		if (_speedUpdated) return _speed;
 		_speedUpdated = true;
-		return _speed = x / Math.cos(angle.toRad());
+		return _speed = x / Math.cos(Mathf.rad(angle));
 	}
 	
 	inline function set_speed(value:FastFloat):FastFloat {
-		var rad = angle.toRad();
+		var rad = Mathf.rad(angle);
 		_x = value * Math.cos(rad);
 		_y = value * Math.sin(rad);
 		_speedUpdated = true;

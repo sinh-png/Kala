@@ -14,7 +14,7 @@ abstract Position(Vec2T) from Vec2T to Vec2T {
 	}
 	
 	public inline function getAngle(pos:Position, asDeg:Bool = true):FastFloat {
-		return Math.atan2(pos.y - this.y, pos.x - this.x) * (asDeg ? Angle.CONST_DEG : 1);
+		return Math.atan2(pos.y - this.y, pos.x - this.x) * (asDeg ? Mathf.CONST_DEG : 1);
 	}
 	
 }

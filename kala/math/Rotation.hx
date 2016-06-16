@@ -1,6 +1,5 @@
 package kala.math;
 
-import kala.math.Angle;
 import kha.FastFloat;
 
 class Rotation {
@@ -58,8 +57,8 @@ class Rotation {
 	 */
 	@:extern
 	public inline function convert():Rotation {
-		if (asDeg) angle = Angle.toRad(angle);
-		else angle = Angle.toDeg(angle);
+		if (asDeg) angle = Mathf.rad(angle);
+		else angle = Mathf.deg(angle);
 		
 		asDeg = !asDeg;
 		
@@ -76,7 +75,7 @@ class Rotation {
 	
 	function get_deg():FastFloat {
 		if (asDeg) return angle;
-		return Angle.toDeg(angle);
+		return Mathf.deg(angle);
 	}
 	
 	function set_deg(value:FastFloat):FastFloat {
@@ -85,7 +84,7 @@ class Rotation {
 	}
 	
 	function get_rad():FastFloat {
-		if (asDeg) return Angle.toRad(angle);
+		if (asDeg) return Mathf.rad(angle);
 		return angle;
 	}
 	

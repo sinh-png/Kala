@@ -41,7 +41,7 @@ abstract Matrix(FastMatrix3) from FastMatrix3 to FastMatrix3 {
 		oy = y + skew.oy;
 		
 		matrix = Matrix.translation(ox, oy)
-				.multmat(new Matrix(1, Math.tan(skew.x * Angle.CONST_RAD), 0, Math.tan(skew.y * Angle.CONST_RAD), 1, 0))
+				.multmat(new Matrix(1, Math.tan(skew.x * Mathf.CONST_RAD), 0, Math.tan(skew.y * Mathf.CONST_RAD), 1, 0))
 				.multmat(Matrix.translation( -ox, -oy))
 				.multmat(matrix);
 		*/
