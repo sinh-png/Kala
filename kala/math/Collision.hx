@@ -48,6 +48,31 @@ class Collision {
 	}
 	
 	/**
+	 * Test two axis-aligned rectangles without getting collision data.
+	 */
+	public static inline function fastRectVsRect(
+		x1:FastFloat, y1:FastFloat, w1:FastFloat, h1:FastFloat,
+		x2:FastFloat, y2:FastFloat, w2:FastFloat, h2:FastFloat
+	):Bool {
+		return (
+			x1 < x2 + w2 && x1 + w1 > x2 &&
+			y1 < y2 + h2 && y1 + h1 > y2
+		);
+	}
+	
+	/**
+	 * Test a circle with an axis-aligned rectangle without getting collision data.
+	 */
+	public static inline function fastCircleVsRect(
+		circleX:FastFloat, circleY:FastFloat, circleRadius:FastFloat,
+		rectX:FastFloat, rectY:FastFloat, rectWidth:FastFloat, rectHeight:FastFloat
+	):Bool {
+		var dx = circleX - Mathf.clamp(circleX, rectX, rectX + rectWidth);
+		var dy = circleY - Mathf.clamp(circleY, rectY, rectY + rectHeight);
+		return dx * dx + dy * dy < circleRadius * circleRadius;
+	}
+	
+	/**
 	 * Test two circles without getting collision data.
 	 */
 	public static inline function fastCircleVsCircle(
