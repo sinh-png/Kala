@@ -1,5 +1,6 @@
-package kala.behaviors.collision.shapes;
+package kala.behaviors.collision.transformable.shapes;
 
+import kala.behaviors.collision.BaseCollisionShape;
 import kala.math.Matrix;
 import kala.math.Position;
 import kala.math.Rotation;
@@ -8,14 +9,10 @@ import kala.math.Vec2T;
 import kha.FastFloat;
 
 @:allow(kala.behaviors.Behavior)
-class CollisionShape {
+class CollisionShape extends BaseCollisionShape {
 	
 	// To avoid using Std.is
 	public var isCircle(default, null):Bool;
-	
-	public var collider(default, null):Collider;
-
-	public var position:Position = new Position();
 	
 	public var scale:Vec2T = new Vec2T();
 	public var rotation:Rotation = new Rotation();
@@ -25,22 +22,22 @@ class CollisionShape {
 	public var width(get, never):FastFloat;
 	public var height(get, never):FastFloat;
 	
-	public var available(get, never):Bool;
-	
 	private var _vertices:Array<Vec2> = new Array<Vec2>();
 
 	public function new() {
+		super();
 		reset();
 	}
 	
-	public function reset():Void {
-		position.set();
+	override public function reset():Void {
+		super.reset();
 		scale.set(1, 1, 0, 0);
 		rotation.set(0, 0, 0);
+		matrix = null;
 	}
 	
-	public function destroy():Void {
-		position = null;
+	override public function destroy():Void {
+		super.destroy();
 		
 		scale = null;
 		rotation = null;
@@ -50,16 +47,12 @@ class CollisionShape {
 		matrix = null;
 	}
 	
-	public function put():Void {
-		
+	override public function update(objectMatrix:Matrix):Void {
+		matrix = objectMatrix.multmat(getLocalMatrix());
 	}
 	
 	public inline function getLocalMatrix():Matrix {
 		return Matrix.getTransformation(position, scale, rotation);
-	}
-	
-	public inline function updateMatrix(objectMatrix:Matrix):Void {
-		matrix = objectMatrix.multmat(getLocalMatrix());
 	}
 	
 	public function getVertices():Array<Vec2> {
@@ -89,10 +82,6 @@ class CollisionShape {
 		return null;
 	}
 	
-	public function testPoint(pointX:FastFloat, pointY:FastFloat):Bool {
-		return false;
-	}
-	
 	function get_width():FastFloat {
 		return 0;
 	}
@@ -101,7 +90,7 @@ class CollisionShape {
 		return 0;
 	}
 	
-	inline function get_available():Bool {
+	override function get_available():Bool {
 		return matrix != null;
 	}
 	

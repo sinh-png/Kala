@@ -1,37 +1,18 @@
 package kala.behaviors.collision;
 
-import kala.debug.Debug;
-import kala.DrawingData;
 import kala.behaviors.Behavior;
-import kala.behaviors.collision.shapes.CollisionShape;
 import kala.math.color.Color;
-import kala.math.Matrix;
-import kala.math.Vec2;
 import kala.objects.Object;
 import kha.Canvas;
 import kha.FastFloat;
 
 #if (debug || kala_debug)
-import kala.debug.Debug.DebugDrawCall;
+import kala.debug.Debug;
 #end
 
-using kha.graphics2.GraphicsExtension;
-
-interface ICollider extends IBehavior {
-	
-	public var shapes:Array<CollisionShape>;
-	
-	public function test(collider:ICollider):CollisionResult;
-	public function testPoint(pointX:FastFloat, pointY:FastFloat):Bool;
-	public function drawDebug(color:UInt, ?fill:Bool = false, ?lineStrenght:FastFloat = 1, canvas:Canvas):Void;
-	
-	private function postDrawUpdate(obj:Object, data:DrawingData, canvas:Canvas):Void;
-	
-}
-
 @:access(kala.objects.Object)
-@:allow(kala.behaviors.collision.shapes.CollisionShape)
-class BaseCollider<T:Object> extends Behavior<T> implements ICollider {
+@:allow(kala.behaviors.collision.transformable.shapes.BaseCollisionShape)
+class BaseCollider<T:Object> extends Behavior<T> {
 	
 	#if (debug || kala_debug)
 	private static var _debugDrawCalls:Array<DebugDrawCall> = Debug.addDrawLayer();
@@ -41,7 +22,7 @@ class BaseCollider<T:Object> extends Behavior<T> implements ICollider {
 	public var debugFill:Bool = false;
 	public var debugLineStrenght:UInt = 2;
 	
-	public var shapes:Array<CollisionShape> = new Array<CollisionShape>();
+	public var shapes(default, null):Array<BaseCollisionShape> = new Array<BaseCollisionShape>();
 	
 	public var available(default, null):Bool = false;
 	
@@ -64,30 +45,9 @@ class BaseCollider<T:Object> extends Behavior<T> implements ICollider {
 	}
 	
 	override public function remove():Void {
+		available = false;
 		object.onPostDraw.removePrivateCB(this, postDrawUpdate);
 		super.remove();
-	}
-
-	/**
-	 * Collision test this collider with another collider.
-	 * If you want to test when the object is invisible and postDrawUpdate is set to true, use forceTest instead.
-	 * 
-	 * @param	collider	The collider to be tested.
-	 * @return				The result data. Return null if there was no collision.
-	 */
-	public function test(collider:ICollider):CollisionResult {
-		if (!available) return null;
-		
-		var result:CollisionResult;
-		
-		for (shapeA in shapes) {
-			for (shapeB in collider.shapes) {
-				result = shapeA.test(shapeB);
-				if (result != null) return result;
-			}
-		}
-		
-		return null;
 	}
 	
 	public function testPoint(pointX:FastFloat, pointY:FastFloat):Bool {
@@ -103,32 +63,14 @@ class BaseCollider<T:Object> extends Behavior<T> implements ICollider {
 	public function drawDebug(color:UInt, ?fill:Bool = false, ?lineStrenght:FastFloat = 1, canvas:Canvas):Void {
 		if (object == null) return;
 		
-		var g2 = canvas.g2;
-		g2.color = color;
-		g2.opacity = 1;
-		
-		for (shape in shapes) {
-			g2.transformation = shape.matrix;
-			
-			if (fill) {
-				g2.fillPolygon(
-					0, 0,
-					Vec2.toVector2Array(shape.getVertices())
-				);
-			} else {
-				g2.drawPolygon(
-					0, 0,
-					Vec2.toVector2Array(shape.getVertices()), 
-					lineStrenght
-				);
-			}
-		}
+		canvas.g2.color = color;
+		canvas.g2.opacity = 1;
 	}
 	
 	function postDrawUpdate(obj:Object, data:DrawingData, canvas:Canvas):Void {
 		available = true;
 		
-		for (shape in shapes) shape.updateMatrix(obj._cachedDrawingMatrix);
+		for (shape in shapes) shape.update(obj._cachedDrawingMatrix);
 		
 		#if (debug || kala_debug)
 		if (Debug.collisionDebug) {

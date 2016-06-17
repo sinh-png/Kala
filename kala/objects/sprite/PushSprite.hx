@@ -1,11 +1,11 @@
 package kala.objects.sprite;
-import kala.behaviors.collision.shapes.CollisionCircle;
-import kala.behaviors.collision.shapes.CollisionPolygon;
-import kala.behaviors.collision.shapes.CollisionShape;
+import kala.behaviors.collision.transformable.shapes.CollisionCircle;
+import kala.behaviors.collision.transformable.shapes.CollisionPolygon;
+import kala.behaviors.collision.transformable.shapes.CollisionShape;
 
 #if (kala_mouse || kala_touch)
 
-import kala.behaviors.collision.Collider;
+import kala.behaviors.collision.transformable.Collider;
 import kala.EventHandle.CallbackHandle;
 import kala.math.Vec2;
 import kha.FastFloat;

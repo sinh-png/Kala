@@ -1,5 +1,6 @@
-package kala.behaviors.collision.shapes;
+package kala.behaviors.collision.transformable.shapes;
 
+import kala.behaviors.collision.transformable.CollisionResult;
 import kala.math.Collision;
 import kala.math.Vec2;
 import kala.util.pool.Pool;
@@ -7,16 +8,12 @@ import kha.FastFloat;
 
 class CollisionCircle extends CollisionShape {
 	
-	public static var pool(default, never) = new Pool<CollisionCircle>(create);
+	public static var pool(default, never) = new Pool<CollisionCircle>(function() return new CollisionCircle());
 	
 	public static inline function get():CollisionCircle {
 		var circle = pool.get();
 		circle.reset();
 		return circle;
-	}
-	
-	static function create():CollisionCircle {
-		return new CollisionCircle();
 	}
 	
 	//
@@ -123,7 +120,7 @@ class CollisionCircle extends CollisionShape {
 	}
 	
 	/**
-	 * Test this circle with another cirlce using only position & radius data,
+	 * Test this circle with another cirlce using only position & radius,
 	 * ignore other transformation and collision data.
 	 */
 	public inline function testCircleNoTransform(circle:CollisionCircle):Bool {

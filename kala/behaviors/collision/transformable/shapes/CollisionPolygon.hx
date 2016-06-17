@@ -1,5 +1,6 @@
-package kala.behaviors.collision.shapes;
+package kala.behaviors.collision.transformable.shapes;
 
+import kala.behaviors.collision.transformable.CollisionResult;
 import kala.math.Collision;
 import kala.math.Vec2;
 import kala.util.pool.Pool;
@@ -7,10 +8,7 @@ import kha.FastFloat;
 
 class CollisionPolygon extends CollisionShape {
 	
-	public static var pool(default, never) = new Pool<CollisionPolygon>(create);
-	
-	var _width:FastFloat;
-	var _height:FastFloat;
+	public static var pool(default, never) = new Pool<CollisionPolygon>(function() return new CollisionPolygon());
 	
 	public static inline function get():CollisionPolygon {
 		var polygon = pool.get();
@@ -18,13 +16,12 @@ class CollisionPolygon extends CollisionShape {
 		return polygon;
 	}
 	
-	static function create():CollisionPolygon {
-		return new CollisionPolygon()	;
-	}
-	
 	//
 	
 	public var vertices(get, set):Array<Vec2>;
+	
+	var _width:FastFloat;
+	var _height:FastFloat;
 	
 	public function new() {
 		super();
