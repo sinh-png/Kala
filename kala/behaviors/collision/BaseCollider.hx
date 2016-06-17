@@ -54,7 +54,7 @@ class BaseCollider<T:Object> extends Behavior<T> {
 		if (!available) return false;
 		
 		for (shape in shapes) {
-			if (shape.testPoint(pointX, pointY)) return true;
+			if (shape.active && shape.testPoint(pointX, pointY)) return true;
 		}
 		
 		return false;
@@ -70,7 +70,10 @@ class BaseCollider<T:Object> extends Behavior<T> {
 	function postDrawUpdate(obj:Object, data:DrawingData, canvas:Canvas):Void {
 		available = true;
 		
-		for (shape in shapes) shape.update(obj._cachedDrawingMatrix);
+		for (shape in shapes) {
+			if (!shape.active) continue;
+			shape.update(obj._cachedDrawingMatrix);
+		}
 		
 		#if (debug || kala_debug)
 		if (Debug.collisionDebug) {

@@ -28,6 +28,8 @@ class Collider extends BaseCollider<Object> {
 		super.drawDebug(color, fill, lineStrenght, canvas);
 		
 		for (shape in _shapes) {
+			if (!shape.active) continue;
+			
 			canvas.g2.transformation = shape.matrix;
 			
 			if (fill) {
@@ -101,7 +103,9 @@ class Collider extends BaseCollider<Object> {
 		var result:CollisionResult;
 		
 		for (shapeA in _shapes) {
+			if (!shapeA.active) continue;
 			for (shapeB in collider._shapes) {
+				if (!shapeB.active) continue;
 				result = shapeA.test(shapeB);
 				if (result != null) return result;
 			}

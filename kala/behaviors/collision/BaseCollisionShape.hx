@@ -10,6 +10,7 @@ class BaseCollisionShape {
 
 	public var position:Position = new Position();
 	public var available(get, never):Bool;
+	public var active:Bool;
 	
 	public function new() {
 		
@@ -17,6 +18,7 @@ class BaseCollisionShape {
 	
 	public function reset():Void {
 		position.setOrigin();
+		active = true;
 	}
 	
 	public function destroy():Void {

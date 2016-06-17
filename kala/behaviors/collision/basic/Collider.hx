@@ -26,7 +26,7 @@ class Collider extends BaseCollider<Object> {
 	
 	override public function drawDebug(color:UInt, ?fill:Bool = false, ?lineStrenght:FastFloat = 1, canvas:Canvas):Void {
 		super.drawDebug(color, fill, lineStrenght, canvas);
-		for (shape in _shapes) shape.drawDebug(fill, lineStrenght, canvas);
+		for (shape in _shapes) if (shape.active) shape.drawDebug(fill, lineStrenght, canvas);
 	}
 	
 	public inline function removeShape(shape:CollisionShape):Bool {
@@ -64,8 +64,9 @@ class Collider extends BaseCollider<Object> {
 		if (!available) return false;
 		
 		for (shapeA in _shapes) {
+			if (!shapeA.active) continue;
 			for (shapeB in collider._shapes) {
-				if (shapeA.test(shapeB)) return true;
+				if (shapeB.active && shapeA.test(shapeB)) return true;
 			}
 		}
 		
