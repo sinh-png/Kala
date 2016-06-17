@@ -18,10 +18,10 @@ abstract Matrix(FastMatrix3) from FastMatrix3 to FastMatrix3 {
 	
 	@:extern
 	public static inline function getTransformation(
-		position:Vec2T, scale:Vec2T, rotation:Rotation
+		position:Position, scale:Vec2T, rotation:Rotation
 	):Matrix {
-		var x = position.x - position.ox;
-		var y = position.y - position.oy;
+		var x = position.realX;
+		var y = position.realY;
 		
 		// Positing
 		var matrix = Matrix.translation(x, y);
