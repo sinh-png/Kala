@@ -6,8 +6,10 @@ import kala.math.Position;
 import kala.math.Rotation;
 import kala.math.Vec2;
 import kala.math.Vec2T;
+import kala.objects.Object;
 import kha.FastFloat;
 
+@:access(kala.objects.Object)
 @:allow(kala.behaviors.Behavior)
 class CollisionShape extends BaseCollisionShape {
 	
@@ -47,14 +49,6 @@ class CollisionShape extends BaseCollisionShape {
 		matrix = null;
 	}
 	
-	override public function update(objectMatrix:Matrix):Void {
-		matrix = objectMatrix.multmat(getLocalMatrix());
-	}
-	
-	public inline function getLocalMatrix():Matrix {
-		return Matrix.getTransformation(position, scale, rotation);
-	}
-	
 	public function getVertices():Array<Vec2> {
 		return _vertices.copy();
 	}
@@ -80,6 +74,14 @@ class CollisionShape extends BaseCollisionShape {
 	
 	public function testPolygon(polygon:CollisionPolygon):CollisionResult {
 		return null;
+	}
+	
+	override public function update(object:Object):Void {
+		var position = position.clone();
+		position.moveOrigin(object.position.ox, object.position.oy);
+		matrix = object._cachedDrawingMatrix.multmat(
+			Matrix.getTransformation(position, scale, rotation)
+		);
 	}
 	
 	function get_width():FastFloat {

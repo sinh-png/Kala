@@ -72,7 +72,7 @@ class BaseCollider<T:Object> extends Behavior<T> {
 		
 		for (shape in shapes) {
 			if (!shape.active) continue;
-			shape.update(obj._cachedDrawingMatrix);
+			shape.update(obj);
 		}
 		
 		#if (debug || kala_debug)

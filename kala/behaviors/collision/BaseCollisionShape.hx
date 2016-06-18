@@ -1,8 +1,8 @@
 package kala.behaviors.collision;
 
 import kala.behaviors.collision.transformable.Collider;
-import kala.math.Matrix;
 import kala.math.Position;
+import kala.objects.Object;
 import kha.FastFloat;
 
 @:allow(kala.behaviors.collision.BaseCollider)
@@ -25,16 +25,16 @@ class BaseCollisionShape {
 		position = null;
 	}
 	
-	public function update(objectMatrix:Matrix):Void {
-	
-	}
-	
 	public function put():Void {
 		
 	}
 	
 	public function testPoint(pointX:FastFloat, pointY:FastFloat):Bool {
 		return false;
+	}
+	
+	function update(object:Object):Void {
+	
 	}
 	
 	function get_available():Bool {

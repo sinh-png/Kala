@@ -54,8 +54,8 @@ class Collider extends BaseCollider<Object> {
 		return rect;
 	}
 	
-	public inline function addObjectRect():CollisionRectangle {
-		var rect = addRect(0, 0, object.width, object.height);
+	public inline function addObjectRect(scaleX:FastFloat = 1, scaleY:FastFloat = 1):CollisionRectangle {
+		var rect = addRect(0, 0, object.width * scaleX, object.height * scaleY);
 		rect.position.setOrigin(object.position.ox, object.position.oy);
 		return rect;
 	}
