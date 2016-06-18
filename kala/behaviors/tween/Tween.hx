@@ -333,6 +333,8 @@ class TweenTimeline {
 	}
 	
 	function nextNode():Void {
+		if (manager == null) return;
+		
 		if (pos == nodes.length - 1) {
 			if (loopsLeft == 0) cancel();
 			else {
