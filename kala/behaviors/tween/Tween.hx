@@ -54,7 +54,7 @@ class Tween extends Behavior<Object> {
 	}
 	
 	public inline function tween(
-		target:Dynamic, vars:Dynamic, duration:UInt, ?ease:EaseFunction,
+		target:Dynamic, vars:Dynamic, duration:FastFloat, ?ease:EaseFunction,
 		?onFinishCB:TweenTimeline->Void, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
 		var timeline = TweenTimeline.get().init(this, null, null, null, null).tween(target, vars, duration, ease, onUpdateCB);
@@ -65,7 +65,7 @@ class Tween extends Behavior<Object> {
 	}
 	
 	public inline function tweenXY(
-		target:Dynamic, x:FastFloat, y:FastFloat, duration:UInt, ?ease:EaseFunction,
+		target:Dynamic, x:FastFloat, y:FastFloat, duration:FastFloat, ?ease:EaseFunction,
 		?onFinishCB:TweenTimeline->Void, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
 		var timeline = TweenTimeline.get().init(this, null, null, null, null).tween(target, { x: x, y: y }, duration, ease, onUpdateCB);
@@ -139,7 +139,7 @@ class TweenTimeline {
 	}
 	
 	public inline function tween(
-		target:Dynamic, vars:Dynamic, duration:UInt,
+		target:Dynamic, vars:Dynamic, duration:FastFloat,
 		?ease:EaseFunction, ?backwardEase:EaseFunction, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
 		var task = TweenTask.get();
@@ -150,7 +150,7 @@ class TweenTimeline {
 	}
 	
 	public inline function tweenXY(
-		target:Dynamic, x:FastFloat, y:FastFloat, duration:UInt,
+		target:Dynamic, x:FastFloat, y:FastFloat, duration:FastFloat,
 		?ease:EaseFunction, ?backwardEase:EaseFunction, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
 		tween(target, { x: x, y: y }, duration, ease, backwardEase, onUpdateCB);
@@ -158,7 +158,7 @@ class TweenTimeline {
 	}
 	
 	public inline function tweenAngle(
-		?target:Object, ?fromAngle:FastFloat, toAngle:FastFloat, duration:UInt,
+		?target:Object, ?fromAngle:FastFloat, toAngle:FastFloat, duration:FastFloat,
 		?ease:EaseFunction, ?backwardEase:EaseFunction, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
 		if (target == null) target = this.target;
@@ -175,12 +175,12 @@ class TweenTimeline {
 	/**
 	 * If duration is lesser or equal to 0, this timeline will be paused on this node until resume() is called.
 	 */
-	public inline function wait(duration:Int):TweenTimeline {
+	public inline function wait(duration:FastFloat):TweenTimeline {
 		nodes.push(WAIT(duration));
 		return this;
 	}
 	
-	public inline function waitEx(f:TweenTimeline->Int):TweenTimeline {
+	public inline function waitEx(f:TweenTimeline->FastFloat):TweenTimeline {
 		nodes.push(WAIT_EX(f));
 		return this;
 	}
@@ -246,16 +246,15 @@ class TweenTimeline {
 		}
 		
 		while (children.length > 0) children.pop().cancel();
-		
-		node = null;
-		nodes.splice(0, nodes.length);
+		while (_prvTweenTasks.length > 0) _prvTweenTasks.pop().put();
+		while (_crTweenTasks.length > 0) _crTweenTasks.pop().put();
 		
 		_target = null;
 		_ease = null;
 		_tweenUpdateCB = null;
 		
-		_prvTweenTasks.splice(0, _prvTweenTasks.length);
-		_crTweenTasks.splice(0, _crTweenTasks.length);
+		node = null;
+		nodes.splice(0, nodes.length);
 		
 		pool.putUnsafe(this);
 	}
@@ -266,49 +265,21 @@ class TweenTimeline {
 	):TweenTimeline {
 		this.parent = parent;
 		this.manager = manager;
-		
 		_target = target;
 		_ease = ease;
 		_tweenUpdateCB = tweenUpdateCB;
 		
-		waitTimeLeft = 0;
-		
 		pos = -1;
-		_batchCalling = false;
-		
+		waitTimeLeft = 0;
+		loopsLeft = 0;
 		paused = false;
+		batching = false;
+		_batchCalling = false;
 		
 		return this;
 	}
 	
-	/*function destroy():Void {
-		if (manager != null) {
-			manager._tweens.remove(this);
-			manager = null;
-		}
-		
-		if (parent != null) {
-			parent.children.remove(this);
-			parent = null;
-		}
-		
-		while (children.length > 0) children.pop().destroy();
-		children = null;
-		
-		node = null;
-		nodes = null;
-		
-		manager = null;
-		
-		_target = null;
-		_ease = null;
-		_tweenUpdateCB = null;
-		
-		_prvTweenTasks = null;
-		_crTweenTasks = null;
-	}*/
-	
-	function update(elapsed:FastFloat):Void {
+	inline function update(elapsed:FastFloat):Void {
 		if (waitTimeLeft > 0) waitTimeLeft -= elapsed;
 		
 		if (waitTimeLeft <= 0 || batching) {
@@ -364,7 +335,7 @@ class TweenTimeline {
 				if (task.onUpdateCB == null) task.onUpdateCB = tweenUpdateCB;
 				task.initVars();
 				_crTweenTasks.push(task);
-					
+				
 			case BACKWARD_TWEEN(duration, ease, onUpdateCB):
 				if (_prvTweenTasks.length == 0) {
 					if (_batchCalling || children.length == 0) nextNode();
@@ -375,10 +346,13 @@ class TweenTimeline {
 				
 				var appendedIndex = _crTweenTasks.length;
 				var task:TweenTask = null;
+				var prvTask:TweenTask;
 				while (_prvTweenTasks.length > 0) {
 					task = TweenTask.get();
 					task.init(null, null, duration, ease, onUpdateCB);
-					task.copyBackward(_prvTweenTasks.pop());
+					prvTask = _prvTweenTasks.pop();
+					task.copyBackward(prvTask);
+					prvTask.put();
 					_crTweenTasks.insert(appendedIndex, task);
 				}
 				
@@ -461,14 +435,14 @@ class TweenTimeline {
 enum TweenNode {
 	
 	TWEEN(task:TweenTask);
-	BACKWARD_TWEEN(duration:UInt, ease:EaseFunction, onUpdateCB:TweenTask->Void);
-	WAIT(duration:Int);
-	WAIT_EX(f:TweenTimeline->Int);
-	CALL(callback:TweenTimeline-> Void);
+	BACKWARD_TWEEN(duration:FastFloat, ease:EaseFunction, onUpdateCB:TweenTask->Void);
+	WAIT(duration:FastFloat);
+	WAIT_EX(f:TweenTimeline->FastFloat);
+	CALL(callback:TweenTimeline->Void);
 	START_BATCH;
 	END_BATCH;
 	CHILD_TIMELINE(child:TweenTimeline);
-	JUMP(f:TweenTimeline-> Int);
+	JUMP(f:TweenTimeline->Int);
 	SET(target:Dynamic, ease:EaseFunction);
 	
 }
@@ -492,7 +466,7 @@ class TweenTask {
 	public var vars(default, null):Dynamic;
 	
 	public var percent(default, null):FastFloat;
-	public var duration(default, null):UInt;
+	public var duration(default, null):FastFloat;
 	public var elapsed:FastFloat;
 	
 	public var backward(default, null):Bool;
@@ -502,16 +476,16 @@ class TweenTask {
 	
 	public var onUpdateCB:TweenTask->Void;
 	
-	private var _varNames:Array<String>;
-	private var _varStartValues:Array<FastFloat>;
-	private var _varRanges:Array<FastFloat>;
+	private var _varNames:Array<String> = new Array<String>();
+	private var _varStartValues:Array<FastFloat> = new Array<FastFloat>();
+	private var _varRanges:Array<FastFloat> = new Array<FastFloat>();
 	
 	public function new() {
 		
 	}
 	
 	function init(
-		target:Dynamic, vars:Dynamic, duration:UInt, ease:EaseFunction, onUpdateCB:TweenTask->Void
+		target:Dynamic, vars:Dynamic, duration:FastFloat, ease:EaseFunction, onUpdateCB:TweenTask->Void
 	):Void {
 		this.target = target;
 		this.vars = vars;
@@ -520,18 +494,15 @@ class TweenTask {
 		this.onUpdateCB = onUpdateCB;
 		
 		backward = false;
+		
+		percent = 0;
+		elapsed = 0;
 	}
 	
 	function initVars():Void {
-		percent = 0;
-		
 		if (!Reflect.isObject(vars)) {
 			throw "Tweening destination values are not contained in a valid object.";
 		}
-		
-		_varNames = new Array<String>();
-		_varStartValues = new Array<FastFloat>();
-		_varRanges = new Array<FastFloat>();
 		
 		var startValue:Dynamic;
 		var destValue:Dynamic;
@@ -554,13 +525,9 @@ class TweenTask {
 			}
 			
 			_varNames.push(name);
-			
-
 			_varStartValues.push(startValue);
 			_varRanges.push(destValue - startValue);
 		}
-		
-		elapsed = 0;
 	}
 	
 	function copyBackward(task:TweenTask):Void {
@@ -577,10 +544,6 @@ class TweenTask {
 		
 		if (onUpdateCB == null) onUpdateCB = task.onUpdateCB;
 		
-		_varNames = new Array<String>();
-		_varStartValues = new Array<FastFloat>();
-		_varRanges = new Array<FastFloat>();
-		
 		for (i in 0...task._varNames.length) {
 			_varNames.push(task._varNames[i]);
 			_varStartValues.push(task._varStartValues[i] + task._varRanges[i]);
@@ -591,18 +554,16 @@ class TweenTask {
 		backward = true;
 	}
 	
-	function put():Void {
+	inline function put():Void {
 		_varNames.splice(0, _varNames.length);
 		_varStartValues.splice(0, _varStartValues.length);
 		_varRanges.splice(0, _varRanges.length);
-	
 		pool.putUnsafe(this);
 	}
 	
-	function update(elapsed:FastFloat):Bool {
+	inline function update(elapsed:FastFloat):Bool {
 		this.elapsed += elapsed;
-		
-		percent = this.elapsed /  duration;
+		percent = Math.min(this.elapsed /  duration, 1);
 		
 		for (i in 0..._varNames.length) {
 			Reflect.setProperty(
@@ -612,10 +573,9 @@ class TweenTask {
 		}
 		
 		if (onUpdateCB != null) onUpdateCB(this);
-
-		if (this.elapsed >= duration) return true;
 		
-		return false;
+		if (percent == 1) return true;
+		else return false;
 	}
 	
 }
