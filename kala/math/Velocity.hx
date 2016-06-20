@@ -29,7 +29,13 @@ class Velocity {
 	public inline function set(x:FastFloat = 0, y:FastFloat = 0):Velocity {
 		this.x = x;
 		this.y = y;
-		
+		return this;
+	}
+	
+	@:extern
+	public inline function setAngleSpeed(angle:FastFloat, speed:FastFloat):Velocity {
+		this.angle = angle;
+		this.speed = speed;
 		return this;
 	}
 	
