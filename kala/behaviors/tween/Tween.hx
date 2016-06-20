@@ -142,7 +142,7 @@ class TweenTimeline {
 		target:Dynamic, vars:Dynamic, duration:FastFloat,
 		?ease:EaseFunction, ?backwardEase:EaseFunction, ?onUpdateCB:TweenTask->Void
 	):TweenTimeline {
-		var task = TweenTask.get();
+		var task = TweenTask.create();
 		task.init(target, vars, duration, ease, onUpdateCB);
 		task.backwardEase = backwardEase;
 		nodes.push(TWEEN(task));
@@ -494,12 +494,12 @@ class TweenTask {
 		this.onUpdateCB = onUpdateCB;
 		
 		backward = false;
-		
-		percent = 0;
-		elapsed = 0;
 	}
 	
 	function initVars():Void {
+		percent = 0;
+		elapsed = 0;
+		
 		if (!Reflect.isObject(vars)) {
 			throw "Tweening destination values are not contained in a valid object.";
 		}
