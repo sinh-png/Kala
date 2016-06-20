@@ -93,9 +93,9 @@ abstract Vec2(FastVector2) from FastVector2 to FastVector2 {
     }
 	
 	@:extern
-    public inline function cross(vec:Vec2):FastFloat {
-        return x * vec.y - y * vec.x;
-    }
+	public inline function cross(vec:Vec2):FastFloat {
+		return x * vec.y - y * vec.x;
+	}
 	
 	@:extern 
 	public inline function dot(vec:Vec2):FastFloat {
@@ -148,7 +148,7 @@ abstract Vec2(FastVector2) from FastVector2 to FastVector2 {
 	
 	@:extern
 	public inline function transformBy(matrix:Matrix):Vec2 {
-        var xx = x;
+		var xx = x;
 		var yy = y;
 		
         x = xx * matrix._00 + yy * matrix._10 + matrix._20;
@@ -169,13 +169,13 @@ abstract Vec2(FastVector2) from FastVector2 to FastVector2 {
 	
 	@:extern
 	inline function set_length(value:FastFloat):FastFloat {
-        var angle = Math.atan2(y, x);
+		var angle = Math.atan2(y, x);
 
-        x = Math.cos(angle) * value;
-        y = Math.sin(angle) * value;
+		x = Math.cos(angle) * value;
+		y = Math.sin(angle) * value;
 
-        if (Math.abs(x) < 0.00000001) x = 0;
-        if (Math.abs(y) < 0.00000001) y = 0;
+		if (Math.abs(x) < 0.00000001) x = 0;
+		if (Math.abs(y) < 0.00000001) y = 0;
 
 		return value;
 	}
