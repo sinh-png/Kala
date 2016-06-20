@@ -38,6 +38,7 @@ class DrawingData {
 		this.extra = extra;
 	}
 	
+	@:extern
 	public inline function clone():DrawingData {
 		return new DrawingData(
 			antialiasing,
@@ -48,5 +49,5 @@ class DrawingData {
 			extra
 		);
 	}
-	
+
 }
