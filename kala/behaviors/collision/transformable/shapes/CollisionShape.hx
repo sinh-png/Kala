@@ -78,7 +78,7 @@ class CollisionShape extends BaseCollisionShape {
 	
 	override public function update(object:Object):Void {
 		var position = position.clone();
-		position.moveOrigin(object.position.ox, object.position.oy);
+		position.moveOrigin( -object.position.ox, -object.position.oy);
 		matrix = object._cachedDrawingMatrix.multmat(
 			Matrix.getTransformation(position, scale, rotation)
 		);
