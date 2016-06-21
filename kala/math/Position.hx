@@ -8,8 +8,8 @@ abstract Position(Vec2T) from Vec2T to Vec2T {
 	public var realX(get, never):FastFloat;
 	public var realY(get, never):FastFloat;
 	
-	public inline function new() {
-		this = new Vec2T();
+	public inline function new(x:FastFloat = 0, y:FastFloat = 0, ox:FastFloat = 0, oy:FastFloat = 0) {
+		this = new Vec2T(x, y, ox, oy);
 	}
 	
 	public inline function getDistance(pos:Position):FastFloat {
