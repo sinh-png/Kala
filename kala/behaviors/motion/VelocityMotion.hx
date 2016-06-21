@@ -9,14 +9,16 @@ import kha.FastFloat;
 class VelocityMotion extends Behavior<Object> {
 
 	public var velocity:Velocity = new Velocity();
-	public var accel:Velocity = new Velocity();
+	public var accelXY:Velocity = new Velocity();
+	public var accel:FastFloat;
 	public var turnSpeed:FastFloat;
 	public var turnAccel:FastFloat;
 	
 	override public function reset():Void {
 		super.reset();
 		velocity.set();
-		accel.set();
+		accelXY.set();
+		accel = 0;
 		turnSpeed = 0;
 		turnAccel = 0;
 	}
@@ -24,7 +26,7 @@ class VelocityMotion extends Behavior<Object> {
 	override public function destroy():Void {
 		super.destroy();
 		velocity = null;
-		accel = null;
+		accelXY = null;
 	}
 	
 	override public function addTo(object:Object):VelocityMotion {
@@ -47,8 +49,9 @@ class VelocityMotion extends Behavior<Object> {
 		var factor = elapsed;
 		if (Kala.deltaTiming) factor /= Kala.perfectDelta;
 		
-		if (accel.x != 0) velocity.x += accel.x * factor;
-		if (accel.y != 0) velocity.y += accel.y * factor;
+		if (accelXY.x != 0) velocity.x += accelXY.x * factor;
+		if (accelXY.y != 0) velocity.y += accelXY.y * factor;
+		if (accel != 0) velocity.speed += accel * factor;
 		
 		turnSpeed += turnAccel * factor;
 		if (turnSpeed != 0) velocity.angle += turnSpeed * factor;
