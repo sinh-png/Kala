@@ -58,17 +58,16 @@ interface IObject {
 	public var bufferOriginX(default, null):FastFloat;
 	public var bufferOriginY(default, null):FastFloat;
 	
-	//
-	
-	public var isGroup(default, null):Bool;
-	
-	public var group(default, null):IGroup;
-	
-	//
-	
 	public var data:Dynamic;
 	
+	//
+	
 	public var timeScale:FastFloat;
+	public var originalDelta:FastFloat;
+	
+	public var isGroup(default, null):Bool;
+	public var group(default, null):IGroup;
+	public var groupTimeScaleSkipped:Bool;
 	
 	//
 	
@@ -183,20 +182,19 @@ class Object extends EventHandle implements IObject {
 	public var bufferOriginX(default, null):FastFloat;
 	public var bufferOriginY(default, null):FastFloat;
 	
-	//
-
-	public var isGroup(default, null):Bool;
-	
-	public var group(default, null):IGroup;
-
-	//
-	
 	public var data:Dynamic;
+	
+	//
 	
 	/**
 	 * Scale factor to calculate elapsed time. This affects all built-in timing processes of objects and behaviors. 
 	 */
 	public var timeScale:FastFloat;
+	public var originalDelta:FastFloat;
+	
+	public var isGroup(default, null):Bool;
+	public var group(default, null):IGroup;
+	public var groupTimeScaleSkipped:Bool;
 	
 	//
 	
@@ -284,6 +282,8 @@ class Object extends EventHandle implements IObject {
 		data = null;
 		
 		timeScale = 1;
+		originalDelta = 0;
+		groupTimeScaleSkipped = false;
 		
 		for (callback in onReset) callback.cbFunction(this, resetBehaviors);
 
@@ -510,6 +510,7 @@ class Object extends EventHandle implements IObject {
 	}
 	
 	inline function callUpdate(elapsed:FastFloat):Void {
+		originalDelta = elapsed;
 		elapsed *= timeScale;
 	
 		execFirstFrame();

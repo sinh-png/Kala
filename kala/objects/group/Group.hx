@@ -80,7 +80,9 @@ class Group<T:Object> extends Object implements IGroup {
 				continue;
 			}
 			
-			if (child.alive && child.active) child.callUpdate(elapsed);
+			if (child.alive && child.active) {
+				child.callUpdate(child.groupTimeScaleSkipped ? originalDelta : elapsed);
+			}
 			
 			i++;
 		}
@@ -95,7 +97,9 @@ class Group<T:Object> extends Object implements IGroup {
 				continue;
 			}
 
-			if (view.alive && view.active) view.callUpdate(elapsed);
+			if (view.alive && view.active) {
+				view.callUpdate(view.groupTimeScaleSkipped ? originalDelta : elapsed);
+			}
 
 			i++;
 		}
