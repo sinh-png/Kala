@@ -1,8 +1,8 @@
 package kala.behaviors.collision;
 
 import kala.behaviors.collision.transformable.Collider;
+import kala.math.Matrix;
 import kala.math.Position;
-import kala.objects.Object;
 import kha.FastFloat;
 
 @:allow(kala.behaviors.collision.BaseCollider)
@@ -33,7 +33,7 @@ class BaseCollisionShape {
 		return false;
 	}
 	
-	function update(object:Object):Void {
+	function update(objectMatrix:Matrix):Void {
 	
 	}
 	

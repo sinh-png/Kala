@@ -24,9 +24,10 @@ class Collider extends BaseCollider<Object> {
 		_shapes = null;
 	}
 	
-	override public function drawDebug(color:UInt, ?fill:Bool = false, ?lineStrenght:FastFloat = 1, canvas:Canvas):Void {
-		super.drawDebug(color, fill, lineStrenght, canvas);
+	override public function drawDebug(color:UInt, ?fill:Bool = false, ?lineStrenght:FastFloat = 1, canvas:Canvas):Bool {
+		if (!super.drawDebug(color, fill, lineStrenght, canvas)) return false;
 		for (shape in _shapes) if (shape.active) shape.drawDebug(fill, lineStrenght, canvas);
+		return true;
 	}
 	
 	public inline function removeShape(shape:CollisionShape):Bool {
@@ -56,7 +57,7 @@ class Collider extends BaseCollider<Object> {
 	
 	public inline function addObjectRect(scaleX:FastFloat = 1, scaleY:FastFloat = 1):CollisionRectangle {
 		var rect = addRect(0, 0, object.width * scaleX, object.height * scaleY);
-		rect.position.setOrigin(object.position.ox, object.position.oy);
+		rect.position.setXY((object.width - rect.width) / 2, (object.height - rect.height) / 2);
 		return rect;
 	}
 	

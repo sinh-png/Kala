@@ -24,8 +24,8 @@ class Collider extends BaseCollider<Object> {
 		_shapes = null;
 	}
 	
-	override public function drawDebug(color:UInt, ?fill:Bool = false, ?lineStrenght:FastFloat = 1, canvas:Canvas):Void {
-		super.drawDebug(color, fill, lineStrenght, canvas);
+	override public function drawDebug(color:UInt, ?fill:Bool = false, ?lineStrenght:FastFloat = 1, canvas:Canvas):Bool {
+		if (!super.drawDebug(color, fill, lineStrenght, canvas)) return false;
 		
 		for (shape in _shapes) {
 			if (!shape.active) continue;
@@ -45,6 +45,8 @@ class Collider extends BaseCollider<Object> {
 				);
 			}
 		}
+		
+		return true;
 	}
 	
 	public function addCircle(x:FastFloat, y:FastFloat, radius:FastFloat):CollisionCircle {
@@ -83,9 +85,7 @@ class Collider extends BaseCollider<Object> {
 	}
 	
 	public inline function addObjectRect():CollisionPolygon {
-		var rect = addRect(0, 0, object.width, object.height);
-		rect.position.setOrigin(object.position.ox, object.position.oy);
-		return rect;
+		return addRect(0, 0, object.width, object.height);
 	}
 	
 	public inline function addShape(shape:CollisionShape):CollisionShape {

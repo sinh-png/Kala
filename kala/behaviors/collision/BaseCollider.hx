@@ -60,11 +60,13 @@ class BaseCollider<T:Object> extends Behavior<T> {
 		return false;
 	}
 	
-	public function drawDebug(color:UInt, ?fill:Bool = false, ?lineStrenght:FastFloat = 1, canvas:Canvas):Void {
-		if (object == null) return;
+	public function drawDebug(color:UInt, ?fill:Bool = false, ?lineStrenght:FastFloat = 1, canvas:Canvas):Bool {
+		if (object == null) return false;
 		
 		canvas.g2.color = color;
 		canvas.g2.opacity = 1;
+		
+		return true;
 	}
 	
 	function postDrawUpdate(obj:Object, data:DrawingData, canvas:Canvas):Void {
@@ -72,7 +74,7 @@ class BaseCollider<T:Object> extends Behavior<T> {
 		
 		for (shape in shapes) {
 			if (!shape.active) continue;
-			shape.update(obj);
+			shape.update(obj._cachedDrawingMatrix);
 		}
 		
 		#if (debug || kala_debug)

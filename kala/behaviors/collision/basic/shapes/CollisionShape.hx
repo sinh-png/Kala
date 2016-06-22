@@ -3,7 +3,6 @@ package kala.behaviors.collision.basic.shapes;
 import kala.behaviors.collision.BaseCollisionShape;
 import kala.behaviors.collision.basic.shapes.ShapeType;
 import kala.math.Matrix;
-import kala.objects.Object;
 import kha.Canvas;
 import kha.FastFloat;
 
@@ -11,8 +10,14 @@ import kha.FastFloat;
 class CollisionShape extends BaseCollisionShape {
 	
 	public var type(default, null):ShapeType;
+	public var dynamicPosition:Bool;
 	public var absX(default, null):Null<FastFloat>;
 	public var absY(default, null):Null<FastFloat>;
+	
+	override public function reset():Void {
+		super.reset();
+		dynamicPosition = true;
+	}
 
 	public inline function test(shape:CollisionShape):Bool {
 		return switch(shape.type) {
@@ -33,9 +38,11 @@ class CollisionShape extends BaseCollisionShape {
 		canvas.g2.transformation = Matrix.translation(absX, absY);
 	}
 	
-	override function update(object:Object):Void {
-		var matrix:Matrix = object._cachedDrawingMatrix.multmat(
-			Matrix.translation(position.realX + object.position.ox, position.realY + object.position.ox)
+	override function update(objectMatrix:Matrix):Void {
+		var matrix:Matrix = (
+			dynamicPosition ?
+			objectMatrix.multmat(Matrix.translation(position.realX, position.realY)) :
+			Matrix.translation(position.realX, position.realY).multmat(objectMatrix)
 		);
 		absX = matrix.tx;
 		absY = matrix.ty;
