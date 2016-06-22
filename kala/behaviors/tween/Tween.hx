@@ -515,7 +515,7 @@ class TweenTask {
 			}
 			
 			if (Math.isNaN(startValue)) {
-				throw 'Start value of "$name" is not a valid number.';
+				throw 'Start value of "$name" ($startValue) is not a valid number.';
 			}
 			
 			destValue = Reflect.getProperty(vars, name);
