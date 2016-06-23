@@ -146,6 +146,8 @@ class Kala {
 		js.Browser.window.open(url, target);
 		#elseif flash
 		flash.Lib.getURL(new flash.net.URLRequest(url), target);
+		#else
+		System.loadUrl(url);
 		#end
 	}
 
