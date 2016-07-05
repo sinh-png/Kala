@@ -8,6 +8,9 @@ import kala.objects.sprite.Sprite;
 import kha.FastFloat;
 import kha.Image;
 
+/**
+ * Used with sprite-sheets to play animation on a sprite object.
+ */
 @:access(kala.objects.sprite.Sprite)
 class SpriteAnimation extends Behavior<Sprite> {
 

@@ -10,6 +10,9 @@ import kha.FastFloat;
 
 using kha.graphics2.GraphicsExtension;
 
+/**
+ * Used for SAT supported collision detection.
+ */
 class Collider extends BaseCollider<Object> {
 
 	private var _shapes:Array<CollisionShape>;

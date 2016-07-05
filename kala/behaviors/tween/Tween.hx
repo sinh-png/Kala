@@ -10,6 +10,10 @@ import kala.util.pool.Pool;
 import kala.util.types.Trio;
 import kha.FastFloat;
 
+/**
+ * Used for tweening and timing on a timeline.
+ * Use get() to get a timeline.
+ */
 @:allow(kala.behaviors.tween.TweenTimeline)
 class Tween extends Behavior<Object> {
 	

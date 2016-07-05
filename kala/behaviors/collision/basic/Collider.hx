@@ -10,6 +10,10 @@ import kala.objects.Object;
 import kha.Canvas;
 import kha.FastFloat;
 
+/**
+ * Used for lightweight collision detection between shapes.
+ * Does not support transformation & collision result data.
+ */
 class Collider extends BaseCollider<Object> {
 
 	private var _shapes:Array<CollisionShape>;

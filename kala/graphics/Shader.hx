@@ -10,6 +10,12 @@ import kha.graphics4.VertexStructure;
 import kha.Image;
 import kha.Shaders;
 
+/**
+ * Used to set pipeline state for object rendering.
+ * Can be added to object via object.addShader().
+ * Multiple shaders can be chained together on a same object.
+ * For single shader, it will be faster to set canvas pipeline directly via onPreDraw of object.
+ */
 @:allow(kala.objects.Object)
 @:allow(kala.behaviors.Behavior)
 class Shader {
