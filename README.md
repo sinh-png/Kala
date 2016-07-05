@@ -1,1 +1,5 @@
-Kala is a component based 2D game framework powered by [Kha](https://github.com/KTXSoftware/Kha). The project is still a proof of concept but can be expected to grow a lot in the future. Documents will be worked on when Kala approached a stable, ready for production state (aimed at version 0.5).
+Kala is a component / object-behavior based 2D game engine powered by [Kha](https://github.com/KTXSoftware/Kha). The project is still a proof of concept but can be expected to grow a lot in the future.
+
+The development of Kala has been very wild without a proper plan, roadmap and documents since I wanted to let myself freely experiment and explore in a quest of finding a foundation for the engine which is pratical and easy to be extended. This experimental phase is now coming close to an end. Once Kala reached a stable state, documents will be worked on and the method of development will be adjusted to avoid pushing any developer who use Kala into a wall. The aim is so that Kala will be ready for serious production of real world projects as well as open a wide way for extensibility and long term development.
+
+If you try Kala and have any issue please don't hesitate to report. Issue report (either about bugs or something that wasn't clear on how to use, etc) and feedback are much appreciated, they are important for the grow of this project.
