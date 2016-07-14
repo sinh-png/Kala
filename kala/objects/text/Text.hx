@@ -279,11 +279,13 @@ class Text extends BasicText {
 	}
 	
 	override function set_text(value:String):String {
+		var prvText = _text;
+		
 		_dirty = true;
 		_htmlText = null;
 		_text = value;
 		
-		for (callback in onTextChange) callback.cbFunction(this);
+		for (callback in onTextChange) callback.cbFunction(this, prvText);
 		
 		return value;
 	}

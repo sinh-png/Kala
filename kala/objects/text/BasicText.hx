@@ -21,7 +21,7 @@ class BasicText extends Object {
 	public var italic:Bool;
 	public var underlined:Bool;
 	
-	public var onTextChange(default, null):CallbackHandle<BasicText->Void>;
+	public var onTextChange(default, null):CallbackHandle<BasicText->String->Void>;
 	
 	public function new(?text:String, ?font:Font, ?size:UInt = 24) {
 		super();
@@ -31,7 +31,7 @@ class BasicText extends Object {
 		this.size = size;
 		this.font = font;
 		
-		onTextChange = addCBHandle(new CallbackHandle<BasicText->Void>());
+		onTextChange = addCBHandle(new CallbackHandle<BasicText->String->Void>());
 	}
 
 	override public function reset(resetBehaviors:Bool = false):Void {
@@ -74,8 +74,9 @@ class BasicText extends Object {
 	
 	function set_text(value:String):String {
 		//value = value.replace('\r', "").replace('\n', "");
+		var prvText = _text;
 		_text = value;
-		for (callback in onTextChange) callback.cbFunction(this);
+		for (callback in onTextChange) callback.cbFunction(this, prvText);
 		return value;
 	}
 	
