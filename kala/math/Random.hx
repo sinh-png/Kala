@@ -19,7 +19,7 @@ abstract Random(kha.math.Random) from kha.math.Random to kha.math.Random {
 	}
 	
 	public static inline function bool(chance:Float = 50):Bool {
-		return int(0, 100) < 50;
+		return int(0, 100) < chance;
 	}
 	
 	/**
