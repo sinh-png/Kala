@@ -1,4 +1,4 @@
-package kala.behaviors.graphics;
+package kala.behaviors.display;
 
 import haxe.ds.StringMap;
 import kala.EventHandle.CallbackHandle;

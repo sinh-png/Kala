@@ -1,4 +1,4 @@
-package kala.behaviors.graphics;
+package kala.behaviors.display;
 
 import kala.behaviors.Behavior;
 import kala.DrawingData;
