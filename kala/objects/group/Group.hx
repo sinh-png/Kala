@@ -109,8 +109,8 @@ class Group<T:Object> extends Object implements IGroup {
 		var g2 = canvas.g2;
 
 		if (transformationEnable) {
-			if (data.transformation == null) data.transformation = _cachedDrawingMatrix = getMatrix();
-			else data.transformation = _cachedDrawingMatrix = data.transformation.multmat(getMatrix());
+			if (data.transformation == null) data.transformation = _cachedDrawingMatrix = matrix;
+			else data.transformation = _cachedDrawingMatrix = data.transformation.multmat(matrix);
 		
 			if (data.color == null) {
 				data.color = color;

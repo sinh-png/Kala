@@ -40,6 +40,8 @@ interface IObject {
 	public var scale:Vec2T;
 	public var rotation:Rotation;
 	
+	public var matrix(get, null):Matrix;
+	
 	public var color:Color;
 	public var opacity:FastFloat;
 	
@@ -156,6 +158,8 @@ class Object extends EventHandle implements IObject {
 	
 	public var scale:Vec2T = new Vec2T();
 	public var rotation:Rotation = new Rotation();
+	
+	public var matrix(get, null):Matrix;
 	
 	public var color:Color;
 	public var opacity:FastFloat;
@@ -429,19 +433,6 @@ class Object extends EventHandle implements IObject {
 		return this;
 	}
 
-	public inline function getMatrix():Matrix {
-		var matrix = Matrix.getTransformation(position, scale, rotation);
-		
-		if (flipX || flipY) {
-			return Matrix.flip(
-				matrix, flipX, flipY,
-				position.x - position.ox + width / 2, position.y - position.oy + height / 2
-			);
-		}
-		
-		return matrix;
-	}
-	
 	public function kill():Void {
 		alive = false;
 	}
@@ -540,8 +531,8 @@ class Object extends EventHandle implements IObject {
 			g2.imageScaleQuality = ImageScaleQuality.Low;
 		}
 		
-		if (data.transformation == null) g2.transformation = _cachedDrawingMatrix = getMatrix();
-		else g2.transformation = _cachedDrawingMatrix = data.transformation.multmat(getMatrix());
+		if (data.transformation == null) g2.transformation = _cachedDrawingMatrix = matrix;
+		else g2.transformation = _cachedDrawingMatrix = data.transformation.multmat(matrix);
 		
 		if (data.color == null) {
 			g2.color = color;
@@ -649,6 +640,19 @@ class Object extends EventHandle implements IObject {
 	
 	inline function set_angle(value:FastFloat):FastFloat {
 		return rotation.angle = value;
+	}
+	
+	inline function get_matrix():Matrix {
+		var matrix = Matrix.getTransformation(position, scale, rotation);
+		
+		if (flipX || flipY) {
+			return Matrix.flip(
+				matrix, flipX, flipY,
+				position.x - position.ox + width / 2, position.y - position.oy + height / 2
+			);
+		}
+		
+		return matrix;
 	}
 	
 }
