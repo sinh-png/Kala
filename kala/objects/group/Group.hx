@@ -239,6 +239,19 @@ class Group<T:Object> extends Object implements IGroup {
 		return obj;
 	}
 	
+	/**
+	 * Call kill() on every alive member.
+	 *
+	 * @param	killSelf	If set to true, will also kill this group. DEFAULT: false
+	 */
+	public function killAll(killSelf:Bool = false):Void {
+		for (member in members) {
+			if (member.alive) member.kill();
+		}
+		
+		if (killSelf) kill();
+	}
+	
 	public function addView(view:View, pos:Int = -1):Void {
 		if (views.indexOf(view) != -1) return null;
 		
