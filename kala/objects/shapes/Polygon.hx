@@ -36,14 +36,6 @@ class Polygon extends Shape {
 		canvas.g2.drawPolygon(0, 0, vector2Array, lineStrenght);
 	}
 	
-	public function getTransformedVertices():Array<Vec2> {
-		var verts = new Array<Vec2>();
-		for (vert in vertices) {
-			verts.push(vert.transform(getDrawingMatrix()));
-		}
-		return verts;
-	}
-	
 	inline function get_vertices():Array<Vec2> {
 		return _vertices;
 	}

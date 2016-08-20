@@ -207,8 +207,6 @@ class Group<T:Object> extends Object implements IGroup {
 		
 		if (pos == -1) members.push(obj);
 		else members.insert(pos, obj);
-		
-		obj.group = this;
 	}
 	
 	public function swap(swappedObj:T, obj:T):Bool {
@@ -217,9 +215,6 @@ class Group<T:Object> extends Object implements IGroup {
 		if (index == -1) return false;
 		
 		members[index] = obj;
-		obj.group = this;
-		
-		swappedObj.group = null;
 		swappedObj.firstFrameExecuted = false;
 		
 		return true;
@@ -232,8 +227,7 @@ class Group<T:Object> extends Object implements IGroup {
 		
 		if (splice) members.splice(index, 1);
 		else members[index] = null;
-
-		obj.group = null;
+		
 		obj.firstFrameExecuted = false;
 		
 		return obj;
@@ -257,8 +251,6 @@ class Group<T:Object> extends Object implements IGroup {
 		
 		if (pos == -1) views.push(view);
 		else views.insert(pos, view);
-		
-		view.group = this;
 	}
 	
 	public function removeView(view:View, splice:Bool = false):View {
@@ -269,7 +261,6 @@ class Group<T:Object> extends Object implements IGroup {
 		if (splice) views.splice(index, 1);
 		else views[index] = null;
 		
-		view.group = null;
 		view.firstFrameExecuted = false;
 		
 		return view;

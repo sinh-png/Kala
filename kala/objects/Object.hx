@@ -66,7 +66,6 @@ interface IObject {
 	public var originalDelta:FastFloat;
 	
 	public var isGroup(default, null):Bool;
-	public var group(default, null):IGroup;
 	public var groupTimeScaleSkipped:Bool;
 	
 	//
@@ -112,7 +111,6 @@ interface IObject {
 	public function isVisible():Bool;
 	public function addShader(shader:Shader):Void;
 	public function removeShader(shader:Shader):Shader;
-	public function getDrawingMatrix():Matrix;
 	
 	private function callUpdate(elapsed:FastFloat):Void;
 	private function callDraw(data:DrawingData, canvas:Canvas):Void;
@@ -193,7 +191,6 @@ class Object extends EventHandle implements IObject {
 	public var originalDelta:FastFloat;
 	
 	public var isGroup(default, null):Bool;
-	public var group(default, null):IGroup;
 	public var groupTimeScaleSkipped:Bool;
 	
 	//
@@ -322,13 +319,6 @@ class Object extends EventHandle implements IObject {
 		
 		//
 		
-		if (group != null) {
-			group._remove(this);
-			group = null;
-		}
-
-		//
-		
 		data = null;
 		
 		_cachedDrawingMatrix = null;
@@ -336,14 +326,8 @@ class Object extends EventHandle implements IObject {
 	
 	public function deepReset(deepResetBehaviors:Bool = true):Void {
 		reset(false);
-		
 		if (deepResetBehaviors) this.deepResetBehaviors();
 		clearCBHandles();
-		
-		if (group != null) {
-			group._remove(this);
-			group = null;
-		}
 	}
 	
 	public function update(elapsed:FastFloat):Void {
@@ -456,20 +440,6 @@ class Object extends EventHandle implements IObject {
 		}
 		
 		return matrix;
-	}
-	
-	public function getDrawingMatrix():Matrix {
-		var group = this.group;
-		
-		while (true) {
-			if (group == null) {
-				return getMatrix();
-			} else if (!group.transformationEnable) {
-				return group.getDrawingMatrix().multmat(getMatrix());
-			}
-			
-			group = cast group.group;
-		}
 	}
 	
 	public function kill():Void {
