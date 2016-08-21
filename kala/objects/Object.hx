@@ -136,10 +136,12 @@ class Object extends EventHandle implements IObject {
 	 * Shortcut to position.x
 	 */
 	public var x(get, set):FastFloat;
+	
 	/**
 	 * Shortcut to position.y
 	 */
 	public var y(get, set):FastFloat;
+	
 	/**
 	 * Shortcut to rotation.angle
 	 */
@@ -151,6 +153,7 @@ class Object extends EventHandle implements IObject {
 	 * Horizontal flip this object at its center.
 	 */
 	public var flipX:Bool;
+	
 	/**
 	 * Vertically flip this object at its center.
 	 */
@@ -172,6 +175,7 @@ class Object extends EventHandle implements IObject {
 	 */
 	public var width(get, set):FastFloat;
 	var _width:FastFloat;
+	
 	/**
 	 * The original height of this object.
 	 */
