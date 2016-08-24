@@ -31,9 +31,7 @@ class VelocityMotion extends Behavior<Object> {
 	
 	override public function addTo(object:Object):VelocityMotion {
 		super.addTo(object);
-		
 		object.onPostUpdate.notifyPrivateCB(this, update);
-		
 		return this;
 	}
 	
@@ -41,7 +39,6 @@ class VelocityMotion extends Behavior<Object> {
 		if (object != null) {
 			object.onPostUpdate.removePrivateCB(this, update);
 		}
-		
 		super.remove();
 	}
 	
