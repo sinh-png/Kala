@@ -10,8 +10,8 @@ import kha.FastFloat;
 
 class Timer extends Behavior<Object> {
 	
-	private var _coolingDownIDs:Array<Pair<Int, Int>> = new Array<Pair<Int, Int>>();
-	private var _coolingDownFunctions:Array<Pair<Void->Void, Int>> = new Array<Pair<Void->Void, Int>>();
+	private var _coolingDownIDs:Array<Pair<Int, FastFloat>> = new Array<Pair<Int, FastFloat>>();
+	private var _coolingDownFunctions:Array<Pair<Void->Void, FastFloat>> = new Array<Pair<Void->Void, FastFloat>>();
 	
 	private var _loopTasks:Array<LoopTask> = new Array<LoopTask>();
 	
@@ -47,7 +47,7 @@ class Timer extends Behavior<Object> {
 		super.remove();
 	}
 	
-	public function cooldown(?id:Int, coolingTime:Int, func:Void->Void):Bool {
+	public function cooldown(?id:Int, coolingTime:FastFloat, func:Void->Void):Bool {
 		if (id == null) {
 			for (cdFunc in _coolingDownFunctions) {
 				if (cdFunc.a == func) return false;
@@ -69,13 +69,13 @@ class Timer extends Behavior<Object> {
 		return true;
 	}
 	
-	public function delay(delayTime:Int, func:LoopTask->Void):LoopTask {
+	public function delay(delayTime:FastFloat, func:LoopTask->Void):LoopTask {
 		var task = new LoopTask(this, delayTime, 1, func, null);
 		_loopTasks.push(task);
 		return task;
 	}
 	
-	public function loop(duration:Int, execTimes:Int, ?execFirst:Bool = false, onExecute:LoopTask->Void, ?onComplete:LoopTask->Void):LoopTask {
+	public function loop(duration:FastFloat, execTimes:Int, ?execFirst:Bool = false, onExecute:LoopTask->Void, ?onComplete:LoopTask->Void):LoopTask {
 		var task = new LoopTask(this, duration, execTimes, onExecute, onComplete);
 		_loopTasks.push(task);
 		
