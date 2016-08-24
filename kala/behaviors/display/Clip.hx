@@ -33,10 +33,19 @@ class Clip extends Behavior<Object> {
 	override public function addTo(object:Object):Behavior<Object> {
 		super.addTo(object);
 		
-		object.onPreDraw.notify(preDrawHandle);
-		object.onPostDraw.notify(postDrawHandle);
+		object.onPreDraw.notifyPrivateCB(this, preDrawHandle);
+		object.onPostDraw.notifyPrivateCB(this, postDrawHandle);
 
 		return this;
+	}
+	
+	override public function remove():Void {
+		if (object != null) {
+			object.onPreDraw.removePrivateCB(this, preDrawHandle);
+			object.onPostDraw.removePrivateCB(this, postDrawHandle);
+		}
+		
+		super.remove();
 	}
 	
 	function preDrawHandle(obj:Object, data:DrawingData, canvas:Canvas):Bool {
