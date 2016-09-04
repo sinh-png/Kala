@@ -1,11 +1,13 @@
 package kala.objects.group;
 
 import kala.DrawingData;
+import kala.math.Random;
 import kala.math.Vec2;
 import kala.math.Vec2T;
 import kala.objects.Object;
 import kala.math.color.Color;
 import kala.math.Rect;
+import kala.util.Axes;
 import kha.Canvas;
 import kha.FastFloat;
 import kha.graphics2.ImageScaleQuality;
@@ -23,6 +25,17 @@ class View extends Object {
 	public var valign:Null<FastFloat>;
 	
 	public var scaleMode:ScaleMode;
+	
+	public var shaking(get, never):Bool;
+	public var shakeLeft:Int;
+	public var shakeIntensity:FastFloat;
+	public var shakeDelay:FastFloat;
+	public var shakeAxes:Axes;
+	
+	private var _shakeOffsetX:FastFloat;
+	private var _shakeOffsetY:FastFloat;
+	private var _shakeDelayTimeLeft:FastFloat;
+	private var _onShakeCompleteCB:Void->Void;
 	
 	/**
 	 * Background color in RGB fortmat.
@@ -56,6 +69,7 @@ class View extends Object {
 		bgColor = 0;
 		transparent = true;
 		scaleMode = NONE;
+		_shakeOffsetX = _shakeOffsetY = 0;
 	}
 	
 	override public function destroy(destroyBehaviors:Bool = true):Void {
@@ -65,6 +79,11 @@ class View extends Object {
 		viewBuffer = null;
 		
 		viewport = null;
+	}
+	
+	override public function update(elapsed:FastFloat):Void {
+		super.update(elapsed);
+		updateShake(elapsed);
 	}
 	
 	override public function draw(data:DrawingData, canvas:Canvas):Void {
@@ -121,6 +140,8 @@ class View extends Object {
 			canvas.g2.transformation._21 = (ch - h) * valign;
 		}
 		
+		canvas.g2.transformation._20 += _shakeOffsetX;
+		canvas.g2.transformation._21 += _shakeOffsetY;
 		_cachedDrawingMatrix = canvas.g2.transformation;
 		
 		canvas.g2.drawImage(viewBuffer, 0, 0);
@@ -151,12 +172,55 @@ class View extends Object {
 		return this;
 	}
 	
+	public inline function shake(
+		intensity:FastFloat, duration:FastFloat, delay:FastFloat = 0,
+		?onCompleteCB:Void->Void, ?axes:Axes
+	):Void {
+		shakeIntensity = intensity;
+		shakeLeft = Std.int(duration / (delay + 1));
+		shakeDelay = delay;
+		_shakeDelayTimeLeft = 0;
+		shakeAxes = axes == null ? Axes.XY : axes;
+	}
+	
 	override function get_width():FastFloat {
 		return viewBuffer.width;
 	}
 	
 	override function get_height():FastFloat {
 		return viewBuffer.height;
+	}
+	
+	inline function updateShake(elapsed:FastFloat):Void {
+		if (shakeLeft > 0) {
+			if (_shakeDelayTimeLeft > 0) _shakeDelayTimeLeft -= elapsed;
+			else {
+				_shakeDelayTimeLeft = shakeDelay;
+				
+				if (shakeAxes != Axes.Y) {
+					_shakeOffsetX = _shakeOffsetX < 0 ?
+						Random.float(0, shakeIntensity) :
+						Random.float(-shakeIntensity, 0);
+				}
+				
+				if (shakeAxes != Axes.X) {
+					_shakeOffsetY = _shakeOffsetY < 0 ?
+						Random.float(0, shakeIntensity) :
+						Random.float(-shakeIntensity, 0);
+				}
+				
+				shakeLeft--;
+				
+				if (shakeLeft == 0) {
+					_shakeOffsetX = _shakeOffsetY = 0;
+					if (_onShakeCompleteCB != null) _onShakeCompleteCB();
+				}
+			}
+		}
+	}
+	
+	inline function get_shaking():Bool {
+		return shakeLeft > 0;
 	}
 	
 }
