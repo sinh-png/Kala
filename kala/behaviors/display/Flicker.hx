@@ -9,14 +9,19 @@ class Flicker extends Behavior<Object> {
 	public var delay:FastFloat;
 	public var visibleDuration:FastFloat;
 	public var flickersLeft:Int;
+	
+	public var flickering(get, never):Bool;
 
-	var _delayTimeLeft:FastFloat;
-	var _visibleTimeLeft:FastFloat;
-	var _onCompleteCB:Void->Void;
+	private var _delayTimeLeft:FastFloat;
+	private var _visibleTimeLeft:FastFloat;
+	private var _onCompleteCB:Void->Void;
 	
 	override public function reset():Void {
 		super.reset();
-		delay = 1;
+		_delayTimeLeft = delay = 1;
+		visibleDuration = 1;
+		_visibleTimeLeft = 0;
+		flickersLeft = 0;
 	}
 	
 	override public function addTo(object:Object):Flicker {
@@ -32,7 +37,7 @@ class Flicker extends Behavior<Object> {
 		super.remove();
 	}
 	
-	public inline function flicker(duration:Int, delay:FastFloat = 0, visibleDuration:FastFloat = 0, ?onCompleteCB:Void->Void):Void {
+	public inline function flicker(duration:FastFloat, delay:FastFloat = 0, visibleDuration:FastFloat = 0, ?onCompleteCB:Void->Void):Void {
 		if (delay > 0) this.delay = _delayTimeLeft = delay;
 		if (visibleDuration > 0) this.visibleDuration = visibleDuration;
 		flickersLeft = Std.int(duration / (this.delay + this.visibleDuration));
@@ -59,6 +64,10 @@ class Flicker extends Behavior<Object> {
 				}
 			}
 		}
+	}
+	
+	inline function get_flickering():Bool {
+		return flickersLeft > 0;
 	}
 	
 }
