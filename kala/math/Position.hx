@@ -24,7 +24,7 @@ abstract Position(Vec2T) from Vec2T to Vec2T {
 		return this.x - this.ox;
 	}
 	
-	function get_realY():FastFloat {
+	inline function get_realY():FastFloat {
 		return this.y - this.oy;
 	}
 	
