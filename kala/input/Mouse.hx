@@ -1,6 +1,7 @@
 package kala.input;
 import kala.math.Vec2;
 import kala.objects.group.View;
+import kala.objects.Object;
 
 #if (debug || kala_debug || kala_mouse)
 
@@ -83,6 +84,13 @@ class Mouse {
 		);
 	}
 	
+	public static inline function isHoveringObject(object:Object):Bool {
+		return (
+			Mouse.x >= object.x && Mouse.x <= object.x + object.width &&
+			Mouse.y >= object.y && Mouse.y <= object.y + object.height
+		);
+	}
+	
 	public static inline function didLeftClickOn(x:FastFloat, y:FastFloat, width:FastFloat, height:FastFloat):Bool {
 		return LEFT.justPressed && isHovering(x, y, width, height);
 	}
@@ -91,12 +99,20 @@ class Mouse {
 		return LEFT.justPressed && isHoveringRect(rect);
 	}
 	
+	public static inline function didLeftClickObject(object:Object):Bool {
+		return LEFT.justPressed && isHoveringObject(object);
+	}
+	
 	public static inline function didRightClickOn(x:FastFloat, y:FastFloat, width:FastFloat, height:FastFloat):Bool {
 		return RIGHT.justPressed && isHovering(x, y, width, height);
 	}
 
 	public static inline function didRightClickRect(rect:Rect):Bool {
 		return RIGHT.justPressed && isHoveringRect(rect);
+	}
+	
+	public static inline function didRightClickObject(object:Object):Bool {
+		return RIGHT.justPressed && isHoveringObject(object);
 	}
 	
 	/**
