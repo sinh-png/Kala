@@ -165,15 +165,6 @@ class TouchHandle {
 	}
 	
 	function update(elapsed:FastFloat):Void {
-		var i = 0;
-		var touch:Touch;
-		while (_capturedTouches.length > 0) {
-			touch = _capturedTouches.pop();
-			_registeredTouches.push(touch);
-			for (callback in Touch.onStart) callback.cbFunction(touch);
-			i++;
-		}
-		
 		var i = _registeredTouches.length;
 		var touch:Touch;
 		while (i-- > 0) {
@@ -186,6 +177,15 @@ class TouchHandle {
 				
 				for (callback in Touch.onEnd) callback.cbFunction(touch);
 			}
+		}
+		
+		var i = 0;
+		var touch:Touch;
+		while (_capturedTouches.length > 0) {
+			touch = _capturedTouches.pop();
+			_registeredTouches.push(touch);
+			for (callback in Touch.onStart) callback.cbFunction(touch);
+			i++;
 		}
 	}
 	
