@@ -4,7 +4,7 @@ import kha.FastFloat;
 
 abstract Random(kha.math.Random) from kha.math.Random to kha.math.Random {
 
-	public static var instance(default, never):Random = new Random(6172039);
+	public static var instance:Random = new Random(6172039);
 	
 	public static inline function int(min:Int, max:Int):Int {
 		return instance.getInt(min, max);
