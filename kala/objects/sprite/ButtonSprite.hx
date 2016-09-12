@@ -62,7 +62,7 @@ class ButtonSprite extends Sprite {
 		#if js
 		disableMouseOnMobile = true;
 		#end
-		collider.reset();
+		if (collider != null) collider.reset();
 	}
 	
 	override public function destroy(destroyBehaviors:Bool = true):Void {
