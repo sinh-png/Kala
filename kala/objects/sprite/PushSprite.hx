@@ -62,6 +62,7 @@ class PushSprite extends Sprite {
 		#if js
 		disableMouseOnMobile = true;
 		#end
+		collider.reset();
 	}
 	
 	override public function destroy(destroyBehaviors:Bool = true):Void {
