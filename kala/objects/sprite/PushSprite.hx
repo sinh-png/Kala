@@ -1,4 +1,5 @@
 package kala.objects.sprite;
+
 import kala.behaviors.collision.transformable.shapes.CollisionCircle;
 import kala.behaviors.collision.transformable.shapes.CollisionPolygon;
 import kala.behaviors.collision.transformable.shapes.CollisionShape;
@@ -20,6 +21,7 @@ class PushSprite extends Sprite {
 	public var collider(default, null):Collider;
 	
 	public var hovered(default, null):Bool;
+	public var pushed(get, never):Bool;
 
 	/**
 	 * The second arg is id of touch or mouse button (1 - left, 2 - middle, 3 - right).
@@ -170,6 +172,10 @@ class PushSprite extends Sprite {
 		}
 	}
 	#end
+	
+	function get_pushed():Bool {
+		return _touched || _mouseHovered;
+	}
 	
 }
 
