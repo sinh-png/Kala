@@ -22,6 +22,7 @@ class MouseInteraction extends Behavior<Object> {
 	public var debugFill:Bool = false;
 	public var debugLineStrenght:UInt = 2;
 	
+	public var active:Bool;
 	public var hovered(default, null):Bool;
 	
 	public var left(default, null):MouseInteractionInput = new MouseInteractionInput(MouseButton.LEFT);
@@ -45,7 +46,7 @@ class MouseInteraction extends Behavior<Object> {
 	public function new(?object:Object, ?collider:Collider, objectRectScale:FastFloat = 0) {
 		super();
 		
-		this.collider = collider == null ? new Collider() : collider;
+		this.collider = collider;
 		
 		onButtonInput = addCBHandle(new CallbackHandle<MouseInteraction->MouseInteractionInput->Void>());
 		onWheel = addCBHandle(new CallbackHandle<MouseInteraction->Int->Void>());
@@ -54,12 +55,13 @@ class MouseInteraction extends Behavior<Object> {
 		
 		if (object != null) {
 			addTo(object);
-			if (objectRectScale > 0) addObjectRectMask(objectRectScale);
+			if (objectRectScale > 0) addObjectRectMask();
 		}
 	}
 	
 	override public function reset():Void {
 		super.reset();
+		active = true;
 		hovered = false;
 		dragable = false;
 		dragging = false;
@@ -88,7 +90,8 @@ class MouseInteraction extends Behavior<Object> {
 	
 	override public function addTo(object:Object):MouseInteraction {
 		super.addTo(object);
-		collider.addTo(object);
+		if (collider == null) collider = new Collider(object);
+		else collider.addTo(object);
 		object.onPostUpdate.notifyPrivateCB(this, update);
 		return this;
 	}
@@ -123,6 +126,8 @@ class MouseInteraction extends Behavior<Object> {
 	}
 	
 	function update(obj:Object, elapsed:FastFloat):Void {
+		if (!active) return;
+		
 		var m:Vec2;
 		
 		if (view == null) m = new Vec2(Mouse.x, Mouse.y);
