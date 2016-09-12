@@ -17,7 +17,7 @@ class Collider extends BaseCollider<Object> {
 
 	private var _shapes:Array<CollisionShape>;
 	
-	public function new(object:Object) {
+	public function new(?object:Object) {
 		super(object);
 		_shapes = cast shapes;
 	}
