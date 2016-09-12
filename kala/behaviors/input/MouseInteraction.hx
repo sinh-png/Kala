@@ -63,6 +63,7 @@ class MouseInteraction extends Behavior<Object> {
 		hovered = false;
 		dragable = false;
 		dragging = false;
+		view = null;
 		if (collider != null) collider.reset();
 	}
 	
