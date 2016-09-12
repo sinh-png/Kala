@@ -1,4 +1,5 @@
 package kala.objects.sprite;
+import kala.objects.group.View;
 
 #if (kala_mouse || kala_touch)
 
@@ -33,6 +34,8 @@ class ButtonSprite extends Sprite {
 	public var onOver(default, null):CallbackHandle<ButtonSprite->Void>;
 	public var onOut(default, null):CallbackHandle<ButtonSprite->Void>;
 	
+	public var view:View;
+	
 	#if js
 	public var disableMouseOnMobile:Bool;
 	#end
@@ -62,14 +65,14 @@ class ButtonSprite extends Sprite {
 		#if js
 		disableMouseOnMobile = true;
 		#end
+		view = null;
 		if (collider != null) collider.reset();
 	}
 	
 	override public function destroy(destroyBehaviors:Bool = true):Void {
 		super.destroy(destroyBehaviors);
-		
 		collider = null;
-		
+		view = null;
 		onPush = null;
 		onRelease = null;
 		onOver = null;
@@ -117,7 +120,11 @@ class ButtonSprite extends Sprite {
 	
 	#if kala_mouse
 	function updateMouse():Void {
-		if (collider.testPoint(kala.input.Mouse.x, kala.input.Mouse.y)) {
+		var p:Vec2;
+		if (view == null) p = new Vec2(kala.input.Mouse.x, kala.input.Mouse.y);
+		else p = view.project(kala.input.Mouse.x, kala.input.Mouse.y);
+		
+		if (collider.testPoint(p.x, p.y)) {
 			if (!hovered) {
 				hovered = true;
 				for (callback in onOver) callback.cbFunction(this);
@@ -152,8 +159,13 @@ class ButtonSprite extends Sprite {
 	function updateTouch():Void {
 		_touched = false;
 		
+		var p:Vec2;
+	
 		for (touch in kala.input.Touch.touches) {
-			if (collider.testPoint(touch.x, touch.y)) {
+			if (view == null) p = new Vec2(touch.x, touch.y);
+			else p = view.project(touch.x, touch.y);
+			
+			if (collider.testPoint(p.x, p.y)) {
 				if (!hovered) {
 					hovered = true;
 					for (callback in onOver) callback.cbFunction(this);
