@@ -15,7 +15,7 @@ import kha.Image;
  * Sprite with basic touch and / or mouse interaction using Collider behavior. 
  * Good for making basic button.
  */
-class PushSprite extends Sprite {
+class ButtonSprite extends Sprite {
 
 	public var collider(default, null):Collider;
 	
@@ -25,13 +25,13 @@ class PushSprite extends Sprite {
 	/**
 	 * The second arg is id of touch or mouse button (1 - left, 2 - middle, 3 - right).
 	 */
-	public var onPush(default, null):CallbackHandle<PushSprite->Int->Void>;
+	public var onPush(default, null):CallbackHandle<ButtonSprite->Int->Void>;
 	/**
 	 * The second arg is id of touch or mouse button (1 - left, 2 - middle, 3 - right).
 	 */
-	public var onRelease(default, null):CallbackHandle<PushSprite->Int->Void>;
-	public var onOver(default, null):CallbackHandle<PushSprite->Void>;
-	public var onOut(default, null):CallbackHandle<PushSprite->Void>;
+	public var onRelease(default, null):CallbackHandle<ButtonSprite->Int->Void>;
+	public var onOver(default, null):CallbackHandle<ButtonSprite->Void>;
+	public var onOut(default, null):CallbackHandle<ButtonSprite->Void>;
 	
 	#if js
 	public var disableMouseOnMobile:Bool;
@@ -50,10 +50,10 @@ class PushSprite extends Sprite {
 		
 		this.collider = new Collider(this);
 		
-		onPush = addCBHandle(new CallbackHandle<PushSprite->Int->Void>());
-		onRelease = addCBHandle(new CallbackHandle<PushSprite->Int->Void>());
-		onOver = addCBHandle(new CallbackHandle<PushSprite->Void>());
-		onOut = addCBHandle(new CallbackHandle<PushSprite->Void>());
+		onPush = addCBHandle(new CallbackHandle<ButtonSprite->Int->Void>());
+		onRelease = addCBHandle(new CallbackHandle<ButtonSprite->Int->Void>());
+		onOver = addCBHandle(new CallbackHandle<ButtonSprite->Void>());
+		onOut = addCBHandle(new CallbackHandle<ButtonSprite->Void>());
 	}
 	
 	override public function reset(resetBehaviors:Bool = false):Void {
