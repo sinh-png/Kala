@@ -18,10 +18,7 @@ import kha.FastFloat;
 class MouseInteraction extends Behavior<Object> {
 	
 	public var collider:Collider;
-	public var debugColor:Color = 0xffff00ff;
-	public var debugFill:Bool = false;
-	public var debugLineStrenght:UInt = 2;
-	
+
 	public var active:Bool;
 	public var hovered(default, null):Bool;
 	
@@ -244,14 +241,6 @@ class MouseInteraction extends Behavior<Object> {
 		} else {
 			dragging = false;
 		}
-		
-		#if (debug || kala_debug)
-		if (collider != null) {
-			collider.debugColor = debugColor;
-			collider.debugFill = debugFill;
-			collider.debugLineStrenght = debugLineStrenght;
-		}
-		#end
 	}
 	
 	inline function dispatchButtonInput(input:MouseInteractionInput):Void {
