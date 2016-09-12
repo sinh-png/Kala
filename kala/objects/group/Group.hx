@@ -266,6 +266,18 @@ class Group<T:Object> extends Object implements IGroup {
 		return view;
 	}
 	
+	public function countAlive():Int {
+		var c = 0;
+		for (member in members) if (member.alive) c++;
+		return c;
+	}
+	
+	public function countDead():Int {
+		var c = 0;
+		for (member in members) if (!member.alive) c++;
+		return c;
+	}
+	
 	public inline function iterator():Iterator<T> {
 		return members.iterator();
 	}
