@@ -58,9 +58,7 @@ class PushSprite extends Sprite {
 	
 	override public function reset(resetBehaviors:Bool = false):Void {
 		super.reset(resetBehaviors);
-		
 		hovered = _mouseHovered = _touched = false;
-		
 		#if js
 		disableMouseOnMobile = true;
 		#end
