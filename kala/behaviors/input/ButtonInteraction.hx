@@ -1,5 +1,4 @@
 package kala.behaviors.input;
-import kala.objects.group.View;
 
 #if (kala_mouse || kala_touch)
 import kala.behaviors.collision.transformable.shapes.CollisionCircle;
@@ -8,6 +7,7 @@ import kala.behaviors.collision.transformable.shapes.CollisionShape;
 import kala.behaviors.collision.transformable.Collider;
 import kala.EventHandle.CallbackHandle;
 import kala.math.Vec2;
+import kala.objects.group.View;
 import kala.objects.Object;
 import kha.FastFloat;
 

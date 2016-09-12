@@ -1,14 +1,13 @@
 package kala.objects.sprite;
-import kala.objects.group.View;
 
 #if (kala_mouse || kala_touch)
-
 import kala.behaviors.collision.transformable.shapes.CollisionCircle;
 import kala.behaviors.collision.transformable.shapes.CollisionPolygon;
 import kala.behaviors.collision.transformable.shapes.CollisionShape;
 import kala.behaviors.collision.transformable.Collider;
 import kala.EventHandle.CallbackHandle;
 import kala.math.Vec2;
+import kala.objects.group.View;
 import kha.FastFloat;
 import kha.Image;
 
@@ -22,7 +21,7 @@ class ButtonSprite extends Sprite {
 	
 	public var hovered(default, null):Bool;
 	public var pushed(get, never):Bool;
-
+	
 	/**
 	 * The second arg is id of touch or mouse button (1 - left, 2 - middle, 3 - right).
 	 */
