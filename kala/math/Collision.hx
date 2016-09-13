@@ -12,8 +12,8 @@ class Collision {
 		rectWidth:FastFloat, rectHeight:FastFloat
 	):Bool {
 		return (
-			pointX >= rectX && rectX < rectX + rectWidth &&
-			pointY >= rectY && rectY < rectY + rectHeight
+			pointX >= rectX && pointX < rectX + rectWidth &&
+			pointY >= rectY && pointY < rectY + rectHeight
 		);
 	}
 	
