@@ -26,6 +26,10 @@ class CollisionRectangle extends CollisionShape {
 		type = ShapeType.RECTANGLE;
 	}
 	
+	override public function testPoint(pointX:FastFloat, pointY:FastFloat):Bool {
+		return Collision.pointVsRect(pointX, pointY, absX, absY, width, height);
+	}
+	
 	override public function testCircle(circle:CollisionCircle):Bool {
 		return Collision.fastCircleVsRect(
 			circle.absX, circle.absY, circle.radius,
