@@ -4,7 +4,7 @@ class AudioChannel {
 	
 	public var channel:kha.audio1.AudioChannel;
 	
-	public var group:String;
+	public var group:AudioGroup;
 	public var kept:Bool;
 	
 	public var finished(get, never):Bool;
@@ -16,7 +16,7 @@ class AudioChannel {
 	
 	public var muted(default, set):Bool;
 
-	public inline function new(channel:kha.audio1.AudioChannel, group:String, kept:Bool) {
+	public inline function new(channel:kha.audio1.AudioChannel, group:AudioGroup, kept:Bool) {
 		this.channel = channel;
 		this.group = group;
 		this.kept = kept;
@@ -36,7 +36,22 @@ class AudioChannel {
 	@:extern
 	public inline function stop():Void {
 		channel.stop();
-		if (!kept) Audio._channels.remove(this);
+		if (!kept && group != null) group.channels.remove(this);
+	}
+	
+	function updateVolume():Void {
+		if (muted) {
+			channel.volume = 0;
+			return;
+		} 
+	
+		if (group != null) {
+			if (group.muted) channel.volume = 0;
+			else channel.volume = _volume * group.volume;
+			return;
+		}
+		
+		channel.volume = _volume;
 	}
 	
 	inline function get_finished():Bool {
@@ -56,15 +71,15 @@ class AudioChannel {
 	}
 	
 	inline function set_volume(value:Float):Float {
-		if (!muted) channel.volume = value;
-		return _volume = value;
+		_volume = value;
+		updateVolume();
+		return value;
 	}
 	
 	inline function set_muted(value:Bool):Bool {
-		if (value) channel.volume = 0;
-		else channel.volume = _volume;
-		
-		return muted = value;
+		muted = value;
+		updateVolume();
+		return value;
 	}
 	
 }
