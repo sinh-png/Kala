@@ -19,7 +19,10 @@ class AudioGroup {
 	}
 	
 	public inline function play(sound:Sound, volume:Float = 1, loop:Bool = false, kept:Bool = false):AudioChannel {
-		var channel = new AudioChannel(kha.audio2.Audio1.play(sound, loop), this, kept);
+		var khaChannel = kha.audio2.Audio1.play(sound, loop);
+		if (khaChannel == null) return null;
+		
+		var channel = new AudioChannel(khaChannel, this, kept);
 		channel._volume = volume;
 		channel.channel.volume = muted ? 0 : volume * _volume;
 		channels.push(channel);
@@ -27,7 +30,10 @@ class AudioGroup {
 	}
 	
 	public inline function stream(group:String, sound:Sound, ?volume:Float = 1, loop:Bool = false, kept:Bool = false):AudioChannel {
-		var channel = new AudioChannel(kha.audio2.Audio1.stream(sound, loop), this, kept);
+		var khaChannel = kha.audio2.Audio1.stream(sound, loop);
+		if (khaChannel == null) return null;
+		
+		var channel = new AudioChannel(khaChannel, this, kept);
 		channel._volume = volume;
 		channel.channel.volume = muted ? 0 : volume * _volume;
 		channels.push(channel);
