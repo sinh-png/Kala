@@ -120,7 +120,7 @@ class Text extends BasicText {
 			g2.fillRect(0, 0, width, height);
 		}
 		
-		if (borderOpacity > 0 || borderSize > 0) {
+		if (borderOpacity > 0 && borderSize > 0) {
 			g2.color = Color.getBlendColor(borderColor, color, colorBlendMode, colorAlphaBlendMode);
 			g2.opacity = opacity * borderOpacity;
 			g2.drawRect(0, 0, width, height, borderSize);
