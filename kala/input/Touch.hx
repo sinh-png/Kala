@@ -19,6 +19,7 @@ class Touch {
 	public static var onMove(default, never):CallbackHandle<Touch->Void> = new CallbackHandle<Touch->Void>();
 	
 	public static var touches(default, never):TouchHandle = new TouchHandle();
+	public static var count(default, null):Int = 0;
 	
 	static function init():Void {
 		var surface = Surface.get();
@@ -26,6 +27,8 @@ class Touch {
 	}
 	
 	static function touchStartListener(id:Int, x:Int, y:Int):Void {
+		touches.count++;
+		
 		if (Kala.defaultView == null) {
 			touches._capturedTouches.push(new Touch(id, x, y, x, y));
 		} else {
@@ -35,6 +38,7 @@ class Touch {
 	}
 	
 	static function touchEndListener(id:Int, x:Int, y:Int):Void {
+		touches.count--;
 		touches.findTouch(id)._ending = true;
 	}
 	
@@ -108,7 +112,7 @@ class Touch {
 
 class TouchHandle {
 	
-	public var count(get, never):Int;
+	public var count(default, null):Int = 0;
 	
 	private var _registeredTouches:Array<Touch> = new Array<Touch>();
 	private var _capturedTouches:Array<Touch> = new Array<Touch>();
@@ -176,6 +180,10 @@ class TouchHandle {
 				else touch.justEnded = true;
 				
 				for (callback in Touch.onEnd) callback.cbFunction(touch);
+				
+				if (_registeredTouches.length == 0 && count > 0) {
+					while (_registeredTouches.length > 0) _registeredTouches.pop();
+				}
 			}
 		}
 		
@@ -187,10 +195,6 @@ class TouchHandle {
 			for (callback in Touch.onStart) callback.cbFunction(touch);
 			i++;
 		}
-	}
-	
-	inline function get_count():Int {
-		return _registeredTouches.length;
 	}
 	
 }
