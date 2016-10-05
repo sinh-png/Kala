@@ -89,7 +89,7 @@ class Kala {
 	//
 	
 	#if js
-	public static var html5(default, never):kala.system.HTML5 = new kala.system.HTML5();
+	public static var html5(default, null):kala.system.HTML5;
 	#end
 	
 	//
@@ -123,7 +123,11 @@ class Kala {
 				height: height,
 				samplesPerPixel: antiAliasingSamples
 			},
-			function() {			
+			function() {
+				#if js
+				html5 = new kala.system.HTML5();
+				#end
+				
 				if (loadAllAssets) {
 					Assets.loadEverything(
 						function() startWorld(updateRate)

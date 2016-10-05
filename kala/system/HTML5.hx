@@ -1,16 +1,19 @@
 package kala.system;
-import js.html.Node;
 
 #if js
 import js.Browser;
 import js.html.CanvasElement;
+import js.html.Node;
 import kha.SystemImpl;
 
 class HTML5 {
 
 	public var mobile(get, never):Bool;
+	public var canvas(default, null):CanvasElement;
 
-	public function new() { }
+	public function new() { 
+		canvas = cast Browser.document.getElementById('khanvas');
+	}
 	
 	public function fillPage():Void {
 		var node = Browser.document.createElement('meta');
@@ -19,8 +22,7 @@ class HTML5 {
 		Browser.document.head.appendChild(node);
 		
 		var window = Browser.window;
-		var canvas:CanvasElement = cast Browser.document.getElementById('khanvas');
-
+	
 		function resizeCanvas() {
 			canvas.style.width = window.innerWidth;
 			window.setTimeout(function() {
