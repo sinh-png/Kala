@@ -154,6 +154,10 @@ class Kala {
 		System.loadUrl(url);
 		#end
 	}
+	
+	public static inline function requestFullscreen():Void {
+		SystemImpl.requestFullscreen();	
+	}
 
 	static function startWorld(updateRate:UInt):Void {
 		#if (debug || kala_debug || kala_keyboard)
